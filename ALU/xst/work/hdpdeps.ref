@@ -1,0 +1,7 @@
+V3 3
+FL /home/sunzhenbo/14.6/ISE_DS/ALU/alu.vhd 2018/10/15.16:42:10 P.68d
+EN work/alu 1539593393 FL /home/sunzhenbo/14.6/ISE_DS/ALU/alu.vhd \
+      PB ieee/std_logic_1164 1370735607 PB ieee/STD_LOGIC_UNSIGNED 1370735609 \
+      PB ieee/NUMERIC_STD 1370735611
+AR work/alu/Behavioral 1539593394 \
+      FL /home/sunzhenbo/14.6/ISE_DS/ALU/alu.vhd EN work/alu 1539593393

@@ -1,0 +1,8 @@
+Release 14.6 Drc P.68d (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+Mon Oct 15 16:50:40 2018
+
+drc -z alu.ncd alu.pcf
+
+DRC detected 0 errors and 0 warnings.

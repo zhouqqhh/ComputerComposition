@@ -1,0 +1,1 @@
+-intstyle "ise" -incremental -o "/home/sunzhenbo/14.6/ISE_DS/ALU/test_isim_beh.exe" -prj "/home/sunzhenbo/14.6/ISE_DS/ALU/test_beh.prj" "work.test" 

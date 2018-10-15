@@ -1,0 +1,571 @@
+Release 14.6 - xst P.68d (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.04 secs
+ 
+--> 
+Parameter xsthdpdir set to xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.04 secs
+ 
+--> 
+Reading design: alu.prj
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+	9.1) Device utilization summary
+	9.2) Partition Resource Summary
+	9.3) TIMING REPORT
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "alu.prj"
+Input Format                       : mixed
+Ignore Synthesis Constraint File   : NO
+
+---- Target Parameters
+Output File Name                   : "alu"
+Output Format                      : NGC
+Target Device                      : xc3s1200e-4-fg320
+
+---- Source Options
+Top Module Name                    : alu
+Automatic FSM Extraction           : YES
+FSM Encoding Algorithm             : Auto
+Safe Implementation                : No
+FSM Style                          : LUT
+RAM Extraction                     : Yes
+RAM Style                          : Auto
+ROM Extraction                     : Yes
+Mux Style                          : Auto
+Decoder Extraction                 : YES
+Priority Encoder Extraction        : Yes
+Shift Register Extraction          : YES
+Logical Shifter Extraction         : YES
+XOR Collapsing                     : YES
+ROM Style                          : Auto
+Mux Extraction                     : Yes
+Resource Sharing                   : YES
+Asynchronous To Synchronous        : NO
+Multiplier Style                   : Auto
+Automatic Register Balancing       : No
+
+---- Target Options
+Add IO Buffers                     : YES
+Global Maximum Fanout              : 500
+Add Generic Clock Buffer(BUFG)     : 24
+Register Duplication               : YES
+Slice Packing                      : YES
+Optimize Instantiated Primitives   : NO
+Use Clock Enable                   : Yes
+Use Synchronous Set                : Yes
+Use Synchronous Reset              : Yes
+Pack IO Registers into IOBs        : Auto
+Equivalent register Removal        : YES
+
+---- General Options
+Optimization Goal                  : Speed
+Optimization Effort                : 1
+Keep Hierarchy                     : No
+Netlist Hierarchy                  : As_Optimized
+RTL Output                         : Yes
+Global Optimization                : AllClockNets
+Read Cores                         : YES
+Write Timing Constraints           : NO
+Cross Clock Analysis               : NO
+Hierarchy Separator                : /
+Bus Delimiter                      : <>
+Case Specifier                     : Maintain
+Slice Utilization Ratio            : 100
+BRAM Utilization Ratio             : 100
+Verilog 2001                       : YES
+Auto BRAM Packing                  : NO
+Slice Utilization Ratio Delta      : 5
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling vhdl file "/home/sunzhenbo/14.6/ISE_DS/ALU/alu.vhd" in Library work.
+Entity <alu> compiled.
+Entity <alu> (Architecture <Behavioral>) compiled.
+
+=========================================================================
+*                     Design Hierarchy Analysis                         *
+=========================================================================
+Analyzing hierarchy for entity <alu> in library <work> (architecture <Behavioral>).
+
+
+=========================================================================
+*                            HDL Analysis                               *
+=========================================================================
+Analyzing Entity <alu> in library <work> (Architecture <Behavioral>).
+Entity <alu> analyzed. Unit <alu> generated.
+
+
+=========================================================================
+*                           HDL Synthesis                               *
+=========================================================================
+
+Performing bidirectional port resolution...
+
+Synthesizing Unit <alu>.
+    Related source file is "/home/sunzhenbo/14.6/ISE_DS/ALU/alu.vhd".
+WARNING:Xst:1780 - Signal <success> is never used or assigned. This unconnected signal will be trimmed during the optimization process.
+WARNING:Xst:1780 - Signal <error> is never used or assigned. This unconnected signal will be trimmed during the optimization process.
+    Found finite state machine <FSM_0> for signal <current_state>.
+    -----------------------------------------------------------------------
+    | States             | 5                                              |
+    | Transitions        | 5                                              |
+    | Inputs             | 0                                              |
+    | Outputs            | 5                                              |
+    | Clock              | clk                       (rising_edge)        |
+    | Reset              | rst                       (negative)           |
+    | Reset type         | asynchronous                                   |
+    | Reset State        | s0                                             |
+    | Power Up State     | s0                                             |
+    | Encoding           | automatic                                      |
+    | Implementation     | LUT                                            |
+    -----------------------------------------------------------------------
+WARNING:Xst:737 - Found 4-bit latch for signal <op>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+WARNING:Xst:737 - Found 16-bit latch for signal <a>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+WARNING:Xst:737 - Found 16-bit latch for signal <b>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+    Found 16-bit addsub for signal <c$addsub0000>.
+    Found 16-bit shifter logical left for signal <c$shift0008> created at line 88.
+    Found 16-bit shifter logical right for signal <c$shift0009> created at line 90.
+    Found 16-bit shifter arithmetic left for signal <c$shift0010> created at line 92.
+    Found 16-bit shifter arithmetic right for signal <c$shift0011> created at line 94.
+    Found 16-bit xor2 for signal <c$xor0000> created at line 84.
+    Summary:
+	inferred   1 Finite State Machine(s).
+	inferred   1 Adder/Subtractor(s).
+	inferred   4 Combinational logic shifter(s).
+Unit <alu> synthesized.
+
+INFO:Xst:1767 - HDL ADVISOR - Resource sharing has identified that some arithmetic operations in this design can share the same physical resources for reduced device utilization. For improved clock frequency you may try to disable resource sharing.
+
+=========================================================================
+HDL Synthesis Report
+
+Macro Statistics
+# Adders/Subtractors                                   : 1
+ 16-bit addsub                                         : 1
+# Latches                                              : 3
+ 16-bit latch                                          : 2
+ 4-bit latch                                           : 1
+# Logic shifters                                       : 4
+ 16-bit shifter arithmetic left                        : 1
+ 16-bit shifter arithmetic right                       : 1
+ 16-bit shifter logical left                           : 1
+ 16-bit shifter logical right                          : 1
+# Xors                                                 : 1
+ 16-bit xor2                                           : 1
+
+=========================================================================
+
+=========================================================================
+*                       Advanced HDL Synthesis                          *
+=========================================================================
+
+Analyzing FSM <FSM_0> for best encoding.
+Optimizing FSM <current_state/FSM> on signal <current_state[1:5]> with one-hot encoding.
+-------------------
+ State | Encoding
+-------------------
+ s0    | 00001
+ s1    | 00010
+ s2    | 00100
+ s3    | 01000
+ s4    | 10000
+-------------------
+
+=========================================================================
+Advanced HDL Synthesis Report
+
+Macro Statistics
+# FSMs                                                 : 1
+# Adders/Subtractors                                   : 1
+ 16-bit addsub                                         : 1
+# Latches                                              : 3
+ 16-bit latch                                          : 2
+ 4-bit latch                                           : 1
+# Logic shifters                                       : 4
+ 16-bit shifter arithmetic left                        : 1
+ 16-bit shifter arithmetic right                       : 1
+ 16-bit shifter logical left                           : 1
+ 16-bit shifter logical right                          : 1
+# Xors                                                 : 1
+ 16-bit xor2                                           : 1
+
+=========================================================================
+
+=========================================================================
+*                         Low Level Synthesis                           *
+=========================================================================
+WARNING:Xst:2170 - Unit alu : the following signal(s) form a combinatorial loop: c_shift0006<15>.
+WARNING:Xst:2170 - Unit alu : the following signal(s) form a combinatorial loop: c_shift0007<15>.
+
+Optimizing unit <alu> ...
+
+Mapping all equations...
+Building and optimizing final netlist ...
+Found area constraint ratio of 100 (+ 5) on block alu, actual ratio is 2.
+FlipFlop current_state_FSM_FFd2 has been replicated 1 time(s)
+
+Final Macro Processing ...
+
+=========================================================================
+Final Register Report
+
+Macro Statistics
+# Registers                                            : 6
+ Flip-Flops                                            : 6
+
+=========================================================================
+
+=========================================================================
+*                           Partition Report                            *
+=========================================================================
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+=========================================================================
+*                            Final Report                               *
+=========================================================================
+Final Results
+RTL Top Level Output File Name     : alu.ngr
+Top Level Output File Name         : alu
+Output Format                      : NGC
+Optimization Goal                  : Speed
+Keep Hierarchy                     : No
+
+Design Statistics
+# IOs                              : 34
+
+Cell Usage :
+# BELS                             : 418
+#      INV                         : 1
+#      LUT2                        : 11
+#      LUT3                        : 99
+#      LUT4                        : 229
+#      MUXCY                       : 15
+#      MUXF5                       : 47
+#      XORCY                       : 16
+# FlipFlops/Latches                : 42
+#      FDC                         : 5
+#      FDP                         : 1
+#      LD                          : 36
+# Clock Buffers                    : 1
+#      BUFGP                       : 1
+# IO Buffers                       : 33
+#      IBUF                        : 17
+#      OBUF                        : 16
+=========================================================================
+
+Device utilization summary:
+---------------------------
+
+Selected Device : 3s1200efg320-4 
+
+ Number of Slices:                      187  out of   8672     2%  
+ Number of Slice Flip Flops:             42  out of  17344     0%  
+ Number of 4 input LUTs:                340  out of  17344     1%  
+ Number of IOs:                          34
+ Number of bonded IOBs:                  34  out of    250    13%  
+ Number of GCLKs:                         1  out of     24     4%  
+
+---------------------------
+Partition Resource Summary:
+---------------------------
+
+  No Partitions were found in this design.
+
+---------------------------
+
+
+=========================================================================
+TIMING REPORT
+
+NOTE: THESE TIMING NUMBERS ARE ONLY A SYNTHESIS ESTIMATE.
+      FOR ACCURATE TIMING INFORMATION PLEASE REFER TO THE TRACE REPORT
+      GENERATED AFTER PLACE-and-ROUTE.
+
+Clock Information:
+------------------
+-----------------------------------+------------------------+-------+
+Clock Signal                       | Clock buffer(FF name)  | Load  |
+-----------------------------------+------------------------+-------+
+clk                                | BUFGP                  | 6     |
+current_state_FSM_FFd4             | NONE(b_0)              | 16    |
+current_state_FSM_FFd5             | NONE(a_0)              | 16    |
+current_state_FSM_FFd3             | NONE(op_0)             | 4     |
+-----------------------------------+------------------------+-------+
+INFO:Xst:2169 - HDL ADVISOR - Some clock signals were not automatically buffered by XST with BUFG/BUFR resources. Please use the buffer_type constraint in order to insert these buffers to the clock signals to help prevent skew problems.
+
+Asynchronous Control Signals Information:
+----------------------------------------
+-----------------------------------------------------------------------+-----------------------------+-------+
+Control Signal                                                         | Buffer(FF name)             | Load  |
+-----------------------------------------------------------------------+-----------------------------+-------+
+current_state_FSM_Acst_FSM_inv(current_state_FSM_Acst_FSM_inv1_INV_0:O)| NONE(current_state_FSM_FFd1)| 6     |
+-----------------------------------------------------------------------+-----------------------------+-------+
+
+Timing Summary:
+---------------
+Speed Grade: -4
+
+   Minimum period: 1.967ns (Maximum Frequency: 508.388MHz)
+   Minimum input arrival time before clock: 2.113ns
+   Maximum output required time after clock: 17.366ns
+   Maximum combinational path delay: 7.504ns
+
+Timing Detail:
+--------------
+All values displayed in nanoseconds (ns)
+
+=========================================================================
+Timing constraint: Default period analysis for Clock 'clk'
+  Clock period: 1.967ns (frequency: 508.388MHz)
+  Total number of paths / destination ports: 6 / 6
+-------------------------------------------------------------------------
+Delay:               1.967ns (Levels of Logic = 0)
+  Source:            current_state_FSM_FFd5 (FF)
+  Destination:       current_state_FSM_FFd4 (FF)
+  Source Clock:      clk rising
+  Destination Clock: clk rising
+
+  Data Path: current_state_FSM_FFd5 to current_state_FSM_FFd4
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FDP:C->Q             18   0.591   1.068  current_state_FSM_FFd5 (current_state_FSM_FFd5)
+     FDC:D                     0.308          current_state_FSM_FFd4
+    ----------------------------------------
+    Total                      1.967ns (0.899ns logic, 1.068ns route)
+                                       (45.7% logic, 54.3% route)
+
+=========================================================================
+Timing constraint: Default OFFSET IN BEFORE for Clock 'current_state_FSM_FFd4'
+  Total number of paths / destination ports: 16 / 16
+-------------------------------------------------------------------------
+Offset:              2.113ns (Levels of Logic = 1)
+  Source:            inputSW<0> (PAD)
+  Destination:       b_0 (LATCH)
+  Destination Clock: current_state_FSM_FFd4 falling
+
+  Data Path: inputSW<0> to b_0
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     IBUF:I->O             4   1.218   0.587  inputSW_0_IBUF (inputSW_0_IBUF)
+     LD:D                      0.308          b_0
+    ----------------------------------------
+    Total                      2.113ns (1.526ns logic, 0.587ns route)
+                                       (72.2% logic, 27.8% route)
+
+=========================================================================
+Timing constraint: Default OFFSET IN BEFORE for Clock 'current_state_FSM_FFd5'
+  Total number of paths / destination ports: 16 / 16
+-------------------------------------------------------------------------
+Offset:              2.113ns (Levels of Logic = 1)
+  Source:            inputSW<0> (PAD)
+  Destination:       a_0 (LATCH)
+  Destination Clock: current_state_FSM_FFd5 falling
+
+  Data Path: inputSW<0> to a_0
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     IBUF:I->O             4   1.218   0.587  inputSW_0_IBUF (inputSW_0_IBUF)
+     LD:D                      0.308          a_0
+    ----------------------------------------
+    Total                      2.113ns (1.526ns logic, 0.587ns route)
+                                       (72.2% logic, 27.8% route)
+
+=========================================================================
+Timing constraint: Default OFFSET IN BEFORE for Clock 'current_state_FSM_FFd3'
+  Total number of paths / destination ports: 4 / 4
+-------------------------------------------------------------------------
+Offset:              2.113ns (Levels of Logic = 1)
+  Source:            inputSW<0> (PAD)
+  Destination:       op_0 (LATCH)
+  Destination Clock: current_state_FSM_FFd3 falling
+
+  Data Path: inputSW<0> to op_0
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     IBUF:I->O             4   1.218   0.587  inputSW_0_IBUF (inputSW_0_IBUF)
+     LD:D                      0.308          op_0
+    ----------------------------------------
+    Total                      2.113ns (1.526ns logic, 0.587ns route)
+                                       (72.2% logic, 27.8% route)
+
+=========================================================================
+Timing constraint: Default OFFSET OUT AFTER for Clock 'clk'
+  Total number of paths / destination ports: 68 / 16
+-------------------------------------------------------------------------
+Offset:              9.175ns (Levels of Logic = 4)
+  Source:            current_state_FSM_FFd4 (FF)
+  Destination:       fout<6> (PAD)
+  Source Clock:      clk rising
+
+  Data Path: current_state_FSM_FFd4 to fout<6>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FDC:C->Q             18   0.591   1.243  current_state_FSM_FFd4 (current_state_FSM_FFd4)
+     LUT3:I0->O           16   0.704   1.113  c<2>21 (N7)
+     LUT4:I1->O            1   0.704   0.424  c<0>196 (c<0>196)
+     LUT4:I3->O            1   0.704   0.420  c<0>205 (fout_0_OBUF)
+     OBUF:I->O                 3.272          fout_0_OBUF (fout<0>)
+    ----------------------------------------
+    Total                      9.175ns (5.975ns logic, 3.200ns route)
+                                       (65.1% logic, 34.9% route)
+
+=========================================================================
+Timing constraint: Default OFFSET OUT AFTER for Clock 'current_state_FSM_FFd3'
+  Total number of paths / destination ports: 1372 / 16
+-------------------------------------------------------------------------
+Offset:              16.234ns (Levels of Logic = 10)
+  Source:            op_1 (LATCH)
+  Destination:       fout<9> (PAD)
+  Source Clock:      current_state_FSM_FFd3 falling
+
+  Data Path: op_1 to fout<9>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     LD:G->Q              15   0.676   1.192  op_1 (op_1)
+     LUT3:I0->O           11   0.704   1.108  c_cmp_eq000811 (N76)
+     LUT3:I0->O           19   0.704   1.260  c<2>431 (N42)
+     LUT2:I0->O            1   0.704   0.000  c<9>781 (c<9>781)
+     MUXF5:I1->O           1   0.321   0.424  c<9>78_f5 (c<9>78)
+     LUT4:I3->O            1   0.704   0.455  c<9>149_SW0 (N191)
+     LUT4:I2->O            1   0.704   0.424  c<9>149 (c<9>149)
+     LUT4:I3->O            1   0.704   0.595  c<9>173 (c<9>173)
+     LUT3:I0->O            1   0.704   0.455  c<9>206_SW0 (N227)
+     LUT4:I2->O            1   0.704   0.420  c<9>206 (fout_9_OBUF)
+     OBUF:I->O                 3.272          fout_9_OBUF (fout<9>)
+    ----------------------------------------
+    Total                     16.234ns (9.901ns logic, 6.333ns route)
+                                       (61.0% logic, 39.0% route)
+
+=========================================================================
+Timing constraint: Default OFFSET OUT AFTER for Clock 'current_state_FSM_FFd4'
+  Total number of paths / destination ports: 2872 / 16
+-------------------------------------------------------------------------
+Offset:              17.366ns (Levels of Logic = 11)
+  Source:            b_13 (LATCH)
+  Destination:       fout<9> (PAD)
+  Source Clock:      current_state_FSM_FFd4 falling
+
+  Data Path: b_13 to fout<9>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     LD:G->Q               5   0.676   0.808  b_13 (b_13)
+     LUT4:I0->O            2   0.704   0.622  c_or00044 (c_or00044)
+     LUT3:I0->O           34   0.704   1.298  c_or000423 (c_or0004)
+     LUT3:I2->O           19   0.704   1.260  c<2>431 (N42)
+     LUT2:I0->O            1   0.704   0.000  c<9>781 (c<9>781)
+     MUXF5:I1->O           1   0.321   0.424  c<9>78_f5 (c<9>78)
+     LUT4:I3->O            1   0.704   0.455  c<9>149_SW0 (N191)
+     LUT4:I2->O            1   0.704   0.424  c<9>149 (c<9>149)
+     LUT4:I3->O            1   0.704   0.595  c<9>173 (c<9>173)
+     LUT3:I0->O            1   0.704   0.455  c<9>206_SW0 (N227)
+     LUT4:I2->O            1   0.704   0.420  c<9>206 (fout_9_OBUF)
+     OBUF:I->O                 3.272          fout_9_OBUF (fout<9>)
+    ----------------------------------------
+    Total                     17.366ns (10.605ns logic, 6.761ns route)
+                                       (61.1% logic, 38.9% route)
+
+=========================================================================
+Timing constraint: Default OFFSET OUT AFTER for Clock 'current_state_FSM_FFd5'
+  Total number of paths / destination ports: 1272 / 16
+-------------------------------------------------------------------------
+Offset:              15.841ns (Levels of Logic = 10)
+  Source:            a_13 (LATCH)
+  Destination:       fout<12> (PAD)
+  Source Clock:      current_state_FSM_FFd5 falling
+
+  Data Path: a_13 to fout<12>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     LD:G->Q               9   0.676   0.855  a_13 (a_13)
+     LUT3:I2->O            2   0.704   0.447  Sh108_SW0 (N109)
+     MUXF5:S->O            5   0.739   0.637  Sh108_f5 (Sh108)
+     LUT4:I3->O            1   0.704   0.499  c<12>18 (c<12>18)
+     LUT4:I1->O            1   0.704   0.424  c<12>25_SW0 (N249)
+     LUT4:I3->O            1   0.704   0.595  c<12>25 (c<12>25)
+     LUT4:I0->O            1   0.704   0.595  c<12>86 (c<12>86)
+     LUT4:I0->O            1   0.704   0.595  c<12>116 (c<12>116)
+     LUT3:I0->O            1   0.704   0.455  c<12>149_SW0 (N237)
+     LUT4:I2->O            1   0.704   0.420  c<12>149 (fout_12_OBUF)
+     OBUF:I->O                 3.272          fout_12_OBUF (fout<12>)
+    ----------------------------------------
+    Total                     15.841ns (10.319ns logic, 5.522ns route)
+                                       (65.1% logic, 34.9% route)
+
+=========================================================================
+Timing constraint: Default path analysis
+  Total number of paths / destination ports: 16 / 16
+-------------------------------------------------------------------------
+Delay:               7.504ns (Levels of Logic = 4)
+  Source:            inputSW<0> (PAD)
+  Destination:       fout<0> (PAD)
+
+  Data Path: inputSW<0> to fout<0>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     IBUF:I->O             4   1.218   0.762  inputSW_0_IBUF (inputSW_0_IBUF)
+     LUT4:I0->O            1   0.704   0.424  c<0>196 (c<0>196)
+     LUT4:I3->O            1   0.704   0.420  c<0>205 (fout_0_OBUF)
+     OBUF:I->O                 3.272          fout_0_OBUF (fout<0>)
+    ----------------------------------------
+    Total                      7.504ns (5.898ns logic, 1.606ns route)
+                                       (78.6% logic, 21.4% route)
+
+=========================================================================
+
+
+Total REAL time to Xst completion: 6.00 secs
+Total CPU time to Xst completion: 5.17 secs
+ 
+--> 
+
+
+Total memory usage is 525940 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :    7 (   0 filtered)
+Number of infos    :    2 (   0 filtered)
+

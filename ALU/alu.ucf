@@ -1,0 +1,37 @@
+
+# PlanAhead Generated physical constraints 
+
+NET "fout[15]" LOC = A14;
+NET "fout[14]" LOC = E13;
+NET "fout[13]" LOC = D13;
+NET "fout[12]" LOC = B13;
+NET "fout[11]" LOC = A13;
+NET "fout[10]" LOC = F12;
+NET "fout[8]" LOC = A12;
+NET "fout[7]" LOC = F11;
+NET "fout[9]" LOC = E12;
+NET "fout[6]" LOC = E11;
+NET "fout[5]" LOC = D11;
+NET "fout[4]" LOC = C11;
+NET "fout[3]" LOC = B11;
+NET "fout[1]" LOC = E10;
+NET "fout[0]" LOC = D10;
+NET "fout[2]" LOC = A11;
+NET "inputSW[15]" LOC = J6;
+NET "inputSW[14]" LOC = J7;
+NET "inputSW[13]" LOC = K2;
+NET "inputSW[12]" LOC = K7;
+NET "inputSW[11]" LOC = M1;
+NET "inputSW[10]" LOC = N1;
+NET "inputSW[9]" LOC = N2;
+NET "inputSW[8]" LOC = R1;
+NET "inputSW[7]" LOC = R4;
+NET "inputSW[6]" LOC = U1;
+NET "inputSW[5]" LOC = V2;
+NET "inputSW[3]" LOC = V4;
+NET "inputSW[2]" LOC = U8;
+NET "inputSW[4]" LOC = V3;
+NET "inputSW[1]" LOC = R7;
+NET "inputSW[0]" LOC = T7;
+NET "clk" LOC = U9;
+NET "rst" LOC = U10;

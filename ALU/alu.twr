@@ -1,0 +1,106 @@
+--------------------------------------------------------------------------------
+Release 14.6 Trace  (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+/home/sunzhenbo/14.6/ISE_DS/ISE/bin/lin64/unwrapped/trce -intstyle ise -v 3 -s
+4 -n 3 -fastpaths -xml alu.twx alu.ncd -o alu.twr alu.pcf -ucf alu.ucf
+
+Design file:              alu.ncd
+Physical constraint file: alu.pcf
+Device,package,speed:     xc3s1200e,fg320,-4 (PRODUCTION 1.27 2013-06-08)
+Report level:             verbose report
+
+Environment Variable      Effect 
+--------------------      ------ 
+NONE                      No environment variables were set
+--------------------------------------------------------------------------------
+
+INFO:Timing:2698 - No timing constraints found, doing default enumeration.
+INFO:Timing:3412 - To improve timing, see the Timing Closure User Guide (UG612).
+INFO:Timing:2752 - To get complete path coverage, use the unconstrained paths 
+   option. All paths that are not constrained will be reported in the 
+   unconstrained paths section(s) of the report.
+INFO:Timing:3339 - The clock-to-out numbers in this timing report are based on 
+   a 50 Ohm transmission line loading model.  For the details of this model, 
+   and for more information on accounting for different loading conditions, 
+   please see the device datasheet.
+INFO:Timing:3390 - This architecture does not support a default System Jitter 
+   value, please add SYSTEM_JITTER constraint to the UCF to modify the Clock 
+   Uncertainty calculation.
+INFO:Timing:3389 - This architecture does not support 'Discrete Jitter' and 
+   'Phase Error' calculations, these terms will be zero in the Clock 
+   Uncertainty calculation.  Please make appropriate modification to 
+   SYSTEM_JITTER to account for the unsupported Discrete Jitter and Phase 
+   Error.
+
+
+
+Data Sheet report:
+-----------------
+All values displayed in nanoseconds (ns)
+
+Clock clk to Pad
+------------+------------+------------------+--------+
+            | clk (edge) |                  | Clock  |
+Destination |   to PAD   |Internal Clock(s) | Phase  |
+------------+------------+------------------+--------+
+fout<0>     |   14.628(R)|clk_BUFGP         |   0.000|
+fout<1>     |   14.558(R)|clk_BUFGP         |   0.000|
+fout<2>     |   14.639(R)|clk_BUFGP         |   0.000|
+fout<3>     |   14.159(R)|clk_BUFGP         |   0.000|
+fout<4>     |   13.780(R)|clk_BUFGP         |   0.000|
+fout<5>     |   14.873(R)|clk_BUFGP         |   0.000|
+fout<6>     |   15.504(R)|clk_BUFGP         |   0.000|
+fout<7>     |   14.354(R)|clk_BUFGP         |   0.000|
+fout<8>     |   13.991(R)|clk_BUFGP         |   0.000|
+fout<9>     |   14.745(R)|clk_BUFGP         |   0.000|
+fout<10>    |   14.399(R)|clk_BUFGP         |   0.000|
+fout<11>    |   15.559(R)|clk_BUFGP         |   0.000|
+fout<12>    |   15.452(R)|clk_BUFGP         |   0.000|
+fout<13>    |   15.737(R)|clk_BUFGP         |   0.000|
+fout<14>    |   15.560(R)|clk_BUFGP         |   0.000|
+fout<15>    |   15.123(R)|clk_BUFGP         |   0.000|
+------------+------------+------------------+--------+
+
+Clock to Setup on destination clock clk
+---------------+---------+---------+---------+---------+
+               | Src:Rise| Src:Fall| Src:Rise| Src:Fall|
+Source Clock   |Dest:Rise|Dest:Rise|Dest:Fall|Dest:Fall|
+---------------+---------+---------+---------+---------+
+clk            |    1.691|         |         |         |
+---------------+---------+---------+---------+---------+
+
+Pad to Pad
+---------------+---------------+---------+
+Source Pad     |Destination Pad|  Delay  |
+---------------+---------------+---------+
+inputSW<0>     |fout<0>        |   10.395|
+inputSW<1>     |fout<1>        |   11.175|
+inputSW<2>     |fout<2>        |   10.299|
+inputSW<3>     |fout<3>        |   11.120|
+inputSW<4>     |fout<4>        |   11.139|
+inputSW<5>     |fout<5>        |   12.088|
+inputSW<6>     |fout<6>        |   12.263|
+inputSW<7>     |fout<7>        |   10.818|
+inputSW<8>     |fout<8>        |   11.527|
+inputSW<9>     |fout<9>        |   10.647|
+inputSW<10>    |fout<10>       |   10.234|
+inputSW<11>    |fout<11>       |   12.537|
+inputSW<12>    |fout<12>       |   10.590|
+inputSW<13>    |fout<13>       |   10.222|
+inputSW<14>    |fout<14>       |   10.507|
+inputSW<15>    |fout<15>       |   11.149|
+---------------+---------------+---------+
+
+
+Analysis completed Mon Oct 15 16:50:32 2018 
+--------------------------------------------------------------------------------
+
+Trace Settings:
+-------------------------
+Trace Settings 
+
+Peak Memory Usage: 366 MB
+
+
+

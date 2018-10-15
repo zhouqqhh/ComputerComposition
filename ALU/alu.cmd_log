@@ -1,0 +1,6 @@
+xst -intstyle ise -ifn "/home/sunzhenbo/14.6/ISE_DS/ALU/alu.xst" -ofn "/home/sunzhenbo/14.6/ISE_DS/ALU/alu.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc alu.ucf -p xc3s1200e-fg320-4 alu.ngc alu.ngd  
+map -intstyle ise -p xc3s1200e-fg320-4 -cm area -ir off -pr off -c 100 -o alu_map.ncd alu.ngd alu.pcf 
+par -w -intstyle ise -ol high -t 1 alu_map.ncd alu.ncd alu.pcf 
+trce -intstyle ise -v 3 -s 4 -n 3 -fastpaths -xml alu.twx alu.ncd -o alu.twr alu.pcf -ucf alu.ucf 
+bitgen -intstyle ise -f alu.ut alu.ncd 

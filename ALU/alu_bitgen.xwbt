@@ -1,0 +1,8 @@
+INTSTYLE=ise
+INFILE=/home/sunzhenbo/14.6/ISE_DS/ALU/alu.ncd
+OUTFILE=/home/sunzhenbo/14.6/ISE_DS/ALU/alu.bit
+FAMILY=Spartan3E
+PART=xc3s1200e-4fg320
+WORKINGDIR=/home/sunzhenbo/14.6/ISE_DS/ALU
+LICENSE=WebPack
+USER_INFO=__0_0_0

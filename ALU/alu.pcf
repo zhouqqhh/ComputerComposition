@@ -1,0 +1,42 @@
+//! **************************************************************************
+// Written by: Map P.68d on Mon Oct 15 16:50:16 2018
+//! **************************************************************************
+
+SCHEMATIC START;
+COMP "clk" LOCATE = SITE "U9" LEVEL 1;
+COMP "rst" LOCATE = SITE "U10" LEVEL 1;
+COMP "fout<0>" LOCATE = SITE "D10" LEVEL 1;
+COMP "fout<1>" LOCATE = SITE "E10" LEVEL 1;
+COMP "fout<2>" LOCATE = SITE "A11" LEVEL 1;
+COMP "fout<3>" LOCATE = SITE "B11" LEVEL 1;
+COMP "fout<4>" LOCATE = SITE "C11" LEVEL 1;
+COMP "fout<5>" LOCATE = SITE "D11" LEVEL 1;
+COMP "fout<6>" LOCATE = SITE "E11" LEVEL 1;
+COMP "fout<7>" LOCATE = SITE "F11" LEVEL 1;
+COMP "fout<8>" LOCATE = SITE "A12" LEVEL 1;
+COMP "fout<9>" LOCATE = SITE "E12" LEVEL 1;
+COMP "fout<10>" LOCATE = SITE "F12" LEVEL 1;
+COMP "fout<11>" LOCATE = SITE "A13" LEVEL 1;
+COMP "fout<12>" LOCATE = SITE "B13" LEVEL 1;
+COMP "fout<13>" LOCATE = SITE "D13" LEVEL 1;
+COMP "fout<14>" LOCATE = SITE "E13" LEVEL 1;
+COMP "fout<15>" LOCATE = SITE "A14" LEVEL 1;
+COMP "inputSW<10>" LOCATE = SITE "N1" LEVEL 1;
+COMP "inputSW<11>" LOCATE = SITE "M1" LEVEL 1;
+COMP "inputSW<12>" LOCATE = SITE "K7" LEVEL 1;
+COMP "inputSW<13>" LOCATE = SITE "K2" LEVEL 1;
+COMP "inputSW<14>" LOCATE = SITE "J7" LEVEL 1;
+COMP "inputSW<15>" LOCATE = SITE "J6" LEVEL 1;
+COMP "inputSW<0>" LOCATE = SITE "T7" LEVEL 1;
+COMP "inputSW<1>" LOCATE = SITE "R7" LEVEL 1;
+COMP "inputSW<2>" LOCATE = SITE "U8" LEVEL 1;
+COMP "inputSW<3>" LOCATE = SITE "V4" LEVEL 1;
+COMP "inputSW<4>" LOCATE = SITE "V3" LEVEL 1;
+COMP "inputSW<5>" LOCATE = SITE "V2" LEVEL 1;
+COMP "inputSW<6>" LOCATE = SITE "U1" LEVEL 1;
+COMP "inputSW<7>" LOCATE = SITE "R4" LEVEL 1;
+COMP "inputSW<8>" LOCATE = SITE "R1" LEVEL 1;
+COMP "inputSW<9>" LOCATE = SITE "N2" LEVEL 1;
+NET "clk_BUFGP/IBUFG" BEL "clk_BUFGP/BUFG.GCLKMUX" USELOCALCONNECT;
+SCHEMATIC END;
+
