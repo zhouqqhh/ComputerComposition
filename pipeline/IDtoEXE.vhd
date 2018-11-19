@@ -4,6 +4,7 @@ use WORK.UTILS.ALL;
 
 entity IDtoEXE is
 	port (
+		clk: in std_logic;
 		in_reg1: in std_logic_vector(15 downto 0);
 		in_reg2: in std_logic_vector(15 downto 0);
 		in_control_Mem: in control_M_type;
