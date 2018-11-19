@@ -12,7 +12,7 @@ entity mux_3bit is
 		input6: in std_logic_vector(15 downto 0);
 		input7: in std_logic_vector(15 downto 0);
 		sel: in std_logic_vector(2 downto 0);
-		output: out std_logic_vector(15 downto 0);
+		output: out std_logic_vector(15 downto 0)
 	);
 end mux_3bit;
 
