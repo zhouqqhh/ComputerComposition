@@ -13,4 +13,3 @@ architecture Behavioral of add is
 begin
 	output <= src1 + src2;
 end Behavioral;
-

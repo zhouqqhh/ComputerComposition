@@ -19,8 +19,16 @@ architecture Behavioral of Registers is
 	type regs_data_type is array (integer range<>) of register_data_type;
 	signal regs_data : reegs_data_type(0 to 7);
 begin
+	--read logic
+	read_data1 <= regs_data(conv_integer(unsigned(read_regs1)));
+	read_data2 <= regs_data(conv_integer(unsigned(read_regs2)));
+
 	process(clk)
+	--write process
 	begin
+		if falling_edge(clk) and RegWrite = '0' then
+			regs_data(conv_integer(unsigned(write_regs))) <= write_data;
+		end if;
 	end process;
 end Behavioral;
 
