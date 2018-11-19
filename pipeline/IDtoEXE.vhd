@@ -1,6 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use work.utils.ALL;
+use WORK.UTILS.ALL;
 
 entity IDtoEXE is
 	port (
