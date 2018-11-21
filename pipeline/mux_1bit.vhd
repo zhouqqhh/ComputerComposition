@@ -12,8 +12,9 @@ end mux_1bit;
 
 architecture Behavioral of mux_1bit is
 begin
-		with sel select output <=
+		with sel select output <= 
 			input0 when '0',
-			input1 when '1';
+			input1 when '1',
+			input0 when others;
 end Behavioral;
 
