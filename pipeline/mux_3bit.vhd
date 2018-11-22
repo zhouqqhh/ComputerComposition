@@ -27,6 +27,7 @@ begin
 			input4 when "100",
 			input5 when "101",
 			input6 when "110",
-			input7 when "111";
+			input7 when "111",
+			input0 when others;
 end Behavioral;
 

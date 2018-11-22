@@ -19,6 +19,7 @@ begin
 			input0 when "00",
 			input1 when "01",
 			input2 when "10",
-			input3 when "11";
+			input3 when "11",
+			input0 when others;
 end Behavioral;
 

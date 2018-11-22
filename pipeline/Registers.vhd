@@ -32,6 +32,13 @@ begin
 	begin
 		if rst = '0' then
 			regs_data(0) <= (others=>'0');
+			regs_data(1) <= (others=>'0');
+			regs_data(2) <= (others=>'0');
+			regs_data(3) <= (others=>'0');
+			regs_data(4) <= (others=>'0');
+			regs_data(5) <= (others=>'0');
+			regs_data(6) <= (others=>'0');
+			regs_data(7) <= (others=>'0');
 		elsif falling_edge(clk) and reg_wb_signal = '1' then
 			regs_data(conv_integer(unsigned(reg_wb_place))) <= reg_wb_data;
 		end if;

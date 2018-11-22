@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    16:22:17 11/19/2018 
+-- Create Date:    17:18:38 11/22/2018 
 -- Design Name: 
--- Module Name:    CPU - Behavioral 
+-- Module Name:    mux3_2bit - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -29,35 +29,25 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity CPU is
-	port(
-		--clock
-		clk: in std_logic;
-		rst: in std_logic;
-		
-		led: out std_logic_vector(15 downto 0)
+entity mux3_2bit is
+	port (
+		input0: in std_logic_vector(2 downto 0);
+		input1: in std_logic_vector(2 downto 0);
+		input2: in std_logic_vector(2 downto 0);
+		input3: in std_logic_vector(2 downto 0);
+		sel: in std_logic_vector(1 downto 0);
+		output: out std_logic_vector(2 downto 0)
 	);
-end CPU;
+end mux3_2bit;
 
-architecture Behavioral of CPU is
-	component Computer is
-		port(
-			--clock
-			clk: in std_logic;
-			rst: in std_logic;
-			
-			led: out std_logic_vector(15 downto 0)
-		);
-	end component Computer;
+architecture Behavioral of mux3_2bit is
+
 begin
-	computer_entity: Computer
-		port map(
-			--clock
-			clk=>clk,
-			rst=>rst,
-			
-			led=>led
-		);
-
+		with sel select output <=
+			input0 when "00",
+			input1 when "01",
+			input2 when "10",
+			input3 when "11",
+			input0 when others;
 end Behavioral;
 
