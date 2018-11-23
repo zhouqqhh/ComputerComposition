@@ -282,17 +282,25 @@ begin
 	
 	registers_entity: Registers
 		port map(
+		--in
 			clk => clk,
 			rst => rst,
-			
+		
 			read_regs1 => id_instruction(10 downto 8),
 			read_regs2 => id_instruction(7 downto 5),
+			
 			reg_wb_signal => wb_reg_wb_signal,
 			reg_wb_place => wb_reg_wb_place,
-			--debug
 			reg_wb_data => wb_alu_result,
+			
+			sp_wb_signal => wb_sp_wb_signal,
+			t_wb_signal => wb_t_wb_signal,
+		
+		--out
 			read_data1 => id_rx,
-			read_data2 => id_ry
+			read_data2 => id_ry,
+			sp_out => id_sp,
+			t_out => id_t
 		);
 	
 	control_entity: Controller
@@ -301,11 +309,19 @@ begin
 			instruction => id_instruction,
 		--out
 			alu_op => id_alu_op,
+			alu_src0=> id_alu_src0,
 			alu_src1=> id_alu_src1,
 			alu_src1_immi_chooser=> id_alu_src1_immi_chooser,
 			alu_immi_extend=> id_alu_immi_extend,
 			reg_wb_signal => id_reg_wb_signal,
-			reg_wb_chooser => id_reg_wb_chooser
+			reg_wb_chooser => id_reg_wb_chooser,
+			reg_wb_data_chooser=> id_reg_wb_data_chooser,
+			sp_wb_signal => id_sp_wb_signal,
+			t_wb_signal => id_t_wb_signal,
+			
+			mem_wb_signal=> id_mem_wb_signal,
+			mem_wb_data_chooser=> id_mem_wb_data_chooser,
+			mem_read_signal=> id_mem_read_signal
 		);
 
 	idtoexe_entity: IDtoEXE
@@ -319,12 +335,23 @@ begin
 			reg_wb_rz=> id_instruction(4 downto 2),
 			reg_wb_signal_in=>id_reg_wb_signal,
 			reg_wb_chooser=>id_reg_wb_chooser,
+			reg_wb_data_chooser=> id_reg_wb_data_chooser,
+			sp_wb_signal_in=> id_sp_wb_signal,
+			t_wb_signal_in=> id_t_wb_signal,
+			
+			--mem
+			mem_wb_signal_in=> id_mem_wb_signal,
+			mem_wb_data_chooser_in=> id_mem_wb_data_chooser,
+			mem_read_signal=> id_mem_read_signal,
 			
 			--alu
 			alu_op_in=> id_alu_op,
+			alu_src0_in=> id_alu_src0,			
 			alu_src1_in=> id_alu_src1,
+
 			rx_in=> id_rx,
 			ry_in=> id_ry,
+			sp_in=> id_sp,
 			
 			--immi
 			immi_7_0_in => id_instruction(7 downto 0),
@@ -337,13 +364,21 @@ begin
 			--control signal
 			reg_wb_signal_out=>ex_reg_wb_signal,
 			reg_wb_place_out=>ex_reg_wb_place,
+			reg_wb_data_chooser_out=>ex_reg_wb_data_chooser,
+			sp_wb_signal=>ex_sp_wb_signal,
+			t_wb_signal=>ex_t_wb_signal,
 			
 			--alu
 			alu_op_out=> ex_alu_op,
+			alu_src0_out=> ex_alu_src0,
 			alu_src1_out=> ex_alu_src1,
 			rx_out=> ex_rx,
 			ry_out=> ex_ry,
+			sp_out=> ex_sp,
 			
+			--mem
+			mem_wb_signal_out=> ex_mem_wb_signal,
+			mem_wb_
 			--immi
 			alu_immi_out => ex_alu_immi
 		);
@@ -352,8 +387,10 @@ begin
 		--in
 			--alu
 			alu_op => ex_alu_op,
+			alu_src0 => ex_alu_src0,
 			alu_src1 => ex_alu_src1,
 			
+			sp => ex_sp,
 			rx => ex_rx,
 			ry => ex_ry,
 			alu_immi => ex_alu_immi,
@@ -371,6 +408,8 @@ begin
 			--control signal
 			reg_wb_signal_in=>ex_reg_wb_signal,
 			reg_wb_place_in=>ex_reg_wb_place,
+			sp_wb_signal_in=>ex_sp_wb_signal,
+			t_wb_signal_in=>ex_t_wb_signal,
 			
 			--alu
 			alu_result_in=> ex_alu_result,
@@ -379,6 +418,8 @@ begin
 			--control signal
 			reg_wb_signal_out=>mem_reg_wb_signal,
 			reg_wb_place_out=>mem_reg_wb_place,
+			sp_wb_signal_out=>mem_sp_wb_signal_out,
+			t_wb_signal_out=>mem_t_wb_signal_out,
 			
 			--alu
 			alu_result_out=>mem_alu_result
@@ -392,6 +433,8 @@ begin
 			--control signal
 			reg_wb_signal_in=>mem_reg_wb_signal,
 			reg_wb_place_in=>mem_reg_wb_place,
+			sp_wb_signal_in=>mem_sp_wb_signal,
+			t_wb_signal_in=>mem_sp_wb_signal,
 			
 			--alu
 			alu_result_in=>mem_alu_result,
@@ -399,7 +442,9 @@ begin
 		--out
 			--control signal
 			reg_wb_signal_out=>wb_reg_wb_signal,
-			reg_wb_place_out=>wb_reg_wb_place,			
+			reg_wb_place_out=>wb_reg_wb_place,
+			sp_wb_signal_out=>wb_sp_wb_signal,
+			t_wb_signal_out=>wb_t_wb_signal,
 			
 			--alu
 			alu_result_out=> wb_alu_result

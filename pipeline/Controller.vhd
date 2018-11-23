@@ -37,6 +37,7 @@ entity Controller is
 	--out
 		--alu
 		alu_op: out std_logic_vector(2 downto 0);
+		alu_src0: out std_logic_vector(1 downto 0); --0:rx, 1:sp, 2:0, 3:ry
 		alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
 		alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
 		alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
@@ -44,6 +45,15 @@ entity Controller is
 		--regsters wb
 		reg_wb_signal: out std_logic;	--0:no write, 1:write
 		reg_wb_chooser: out std_logic_vector(1 downto 0) --0: rx, 1: ry, 2: rz
+		reg_wb_data_chooser: out std_logic; --0:alu_result, 1:memRead
+		
+		sp_wb_signal: out std_logic; --1:write
+		t_wb_signal: out std_logic;
+		
+		--mem
+		mem_wb_signal: out std_logic;
+		mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
+		mem_read_signal: out std_logic;
 	);
 end Controller;
 

@@ -34,8 +34,9 @@ entity Executor is
 	--in
 		--alu
 		alu_op: in std_logic_vector(2 downto 0);
+		alu_src0: in std_logic_vector(1 downto 0); 
 		alu_src1: in std_logic_vector(1 downto 0);
-		rx, ry, alu_immi: in std_logic_vector(15 downto 0);
+		sp, rx, ry, alu_immi: in std_logic_vector(15 downto 0);
 		
 	--out
 		alu_result: out std_logic_vector(15 downto 0)
@@ -66,7 +67,16 @@ architecture Behavioral of Executor is
 	
 	signal src0, src1: std_logic_vector(15 downto 0);
 begin
-	src0 <= rx;
+	src0_chooser: mux_2bit
+		port map(
+			input0=>rx,
+			input1=>sp,
+			input2=>(others=>'0'),
+			input3=>ry,
+			sel=>alu_src0,
+			
+			output=>src0
+		);
 	
 	src1_chooser: mux_2bit
 		port map(
