@@ -35,6 +35,9 @@ entity Controller is
 		instruction: in std_logic_vector(15 downto 0);
 	
 	--out
+		--pc source
+		pc_src: out std_logic_vector(2 downto 0);
+		
 		--alu
 		alu_op: out std_logic_vector(2 downto 0);
 		alu_src0: out std_logic_vector(2 downto 0); --0:rx, 1:sp, 2:0, 3:IH, 4:PC, 5:ry
@@ -55,6 +58,9 @@ entity Controller is
 		mem_wb_signal: out std_logic;
 		mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
 		mem_read_signal: out std_logic;
+		
+		--immediate extension
+		imm_ext: out std_logic; --0:zero, 1:signal
 	);
 end Controller;
 
@@ -67,19 +73,50 @@ begin
 		case instruction(15 downto 11) is
 			--addiu
 			when "01001" =>
+				pc_src <= "000";
+				
 				alu_op <= "001";
+				alu_src0 <= "000"; --rx
 				alu_src1 <= "01"; --immi
 				alu_src1_immi_chooser <= "00"; --7_0
 				alu_immi_extend <= '1'; --sign
 				
 				reg_wb_signal <= '1';
 				reg_wb_chooser <= "00"; --rx
+				reg_wb_data_chooser <= '0';
+				
+				sp_wb_signal <= '0';
+				t_wb_signal <= '0';
+				ih_wb_signal <= '0';
+				
+				mem_wb_signal <= '0';
+				mem_wb_data_chooser <= 'Z';
+				mem_read_signal <= '0';
+				
+				imm_ext <= '1';
 			--addiu3
 			when "01000" =>
+				pc_src <= "000";
+				
 				alu_op <= "001";
+				alu_src0 <= "000"; --rx
 				alu_src1 <= "01"; --immi
 				alu_src1_immi_chooser <= "01"; --3_0
-				alu_immi_extend <= '1';
+				alu_immi_extend <= '1'; --sign
+				
+				reg_wb_signal <= '1';
+				reg_wb_chooser <= "00"; --rx
+				reg_wb_data_chooser <= '0';
+				
+				sp_wb_signal <= '0';
+				t_wb_signal <= '0';
+				ih_wb_signal <= '0';
+				
+				mem_wb_signal <= '0';
+				mem_wb_data_chooser <= 'Z';
+				mem_read_signal <= '0';
+				
+				imm_ext <= '1';
 				
 				reg_wb_signal <= '1';
 				reg_wb_chooser <= "01"; --ry		
