@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    20:09:54 11/21/2018 
--- Design Name: 
--- Module Name:    Controller - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    20:09:54 11/21/2018
+-- Design Name:
+-- Module Name:    Controller - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -30,77 +30,512 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity Controller is
-	port (
-	--in
-		instruction: in std_logic_vector(15 downto 0);
-	
-	--out
-		--alu
-		alu_op: out std_logic_vector(2 downto 0);
-		alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
-		alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
-		alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
-		
-		--regsters wb
-		reg_wb_signal: out std_logic;	--0:no write, 1:write
-		reg_wb_chooser: out std_logic_vector(1 downto 0) --0: rx, 1: ry, 2: rz
-	);
+    port (
+    --in
+        instruction: in std_logic_vector(15 downto 0);
+
+    --out
+        --pc
+        pc_src: out std_logic_vector(2 downto 0);
+        --alu
+        alu_op: out std_logic_vector(2 downto 0);
+        alu_src0: out std_logic_vector(2 downto 0); --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
+        alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
+        alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
+        alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
+
+        --regsters wb
+        reg_wb_signal: out std_logic;	--0:no write, 1:write
+        reg_wb_chooser: out std_logic_vector(1 downto 0); --0: rx, 1: ry, 2: rz
+        reg_wb_data_chooser: out std_logic; --0:ALU result, 1:memRead
+        sp_wb_signal: out std_logic;
+        t_wb_signal: out std_logic;
+        ih_wb_signal: out std_logic;
+
+        --memory
+        mem_wb_signal: out std_logic;
+        mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
+        mem_read_signal: out std_logic;
+
+        --others
+        cmpbSrc: out std_logic_vector(2 downto 0);
+        boger: out std_logic;
+        honger: out std_logic
+    );
 end Controller;
 
 architecture Behavioral of Controller is
 
 begin
-	
-	process(instruction)
-	begin
-		case instruction(15 downto 11) is
-			--addiu
-			when "01001" =>
-				alu_op <= "001";
-				alu_src1 <= "01"; --immi
-				alu_src1_immi_chooser <= "00"; --7_0
-				alu_immi_extend <= '1'; --sign
-				
-				reg_wb_signal <= '1';
-				reg_wb_chooser <= "00"; --rx
-			--addiu3
-			when "01000" =>
-				alu_op <= "001";
-				alu_src1 <= "01"; --immi
-				alu_src1_immi_chooser <= "01"; --3_0
-				alu_immi_extend <= '1';
-				
-				reg_wb_signal <= '1';
-				reg_wb_chooser <= "01"; --ry		
-			--addu
-			when "11100" =>
-				alu_op <= "001";
-				alu_src1 <= "00"; --ry
-				alu_src1_immi_chooser <= "00";
-				alu_immi_extend <= '0';
-				
-				reg_wb_signal <= '1';
-				reg_wb_chooser <= "10"; --rz
-			--and
-			when "11101" =>
-				alu_op <= "010";
-				alu_src1 <= "00"; --ry
-				alu_src1_immi_chooser <= "00";
-				alu_immi_extend <= '0';
-				
-				reg_wb_signal <= '1';
-				reg_wb_chooser <= "00"; --rx
-				
-			when others =>
-				alu_op <= "000";
-				alu_src1 <= "00"; 
-				alu_src1_immi_chooser <= "00";
-				alu_immi_extend <= '0';
-				
-				reg_wb_signal <= '0';
-				reg_wb_chooser <= "00"; 
-		end case;
-	end process;		
+
+    process(clk, rst)
+    begin
+        if rst = '0' then
+        elsif rising_edge(clk) then
+            case Instruction(15 downto 11) is
+                when "00001" =>  --NOP
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "000";
+                    alu_src1 <= "00";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '0';
+                    reg_wb_signal <= '0';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '0';
+                when "00010" =>  --B
+                    pc_src <= "001";
+                    alu_op <= "001";
+                    alu_src0 <= "000";
+                    alu_src1 <= "00";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '1';
+                    reg_wb_signal <= '0';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '0';
+                    cmpbSrc <= "000";
+                    boger <= '1';
+                    honger <= '0';
+                when "00100" =>  --BEQZ
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "000";
+                    alu_src1 <= "00";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '1';
+                    reg_wb_signal <= '0';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '0';
+                    cmpbSrc <= "001";
+                    boger <= '0';
+                    honger <= '0';
+                when "00110" =>
+                    case Instruction(1 downto 0) is
+                        when "00" =>  --SLL
+                            pc_src <= "000";
+                            alu_op <= "101";
+                            alu_src0 <= "101";
+                            alu_src1 <= "01";
+                            alu_src1_immi_chooser <= "11";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when "11" =>  --SRA
+                            pc_src <= "000";
+                            alu_op <= "110";
+                            alu_src0 <= "101";
+                            alu_src1 <= "01";
+                            alu_src1_immi_chooser <= "11";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                            end case;
+                when "01000" =>  --ADDIU3
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "000";
+                    alu_src1 <= "01";
+                    alu_src1_immi_chooser <= "01";
+                    alu_immi_extend <= '1';
+                    reg_wb_signal <= '1';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '0';
+                when "01001" =>  --ADDIU
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "000";
+                    alu_src1 <= "01";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '1';
+                    reg_wb_signal <= '1';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '0';
+                when "01010" =>  --SLTI
+                    pc_src <= "000";
+                    alu_op <= "011";
+                    alu_src0 <= "000";
+                    alu_src1 <= "01";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '1';
+                    reg_wb_signal <= '0';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '1';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '0';
+                when "01011" =>  --SLTUI
+                    pc_src <= "000";
+                    alu_op <= "011";
+                    alu_src0 <= "000";
+                    alu_src1 <= "01";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '0';
+                    reg_wb_signal <= '0';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '1';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '0';
+                when "01100" =>
+                    case Instruction(10 downto 8) is
+                        when "011" =>   --ADDSP
+                            pc_src <= "000";
+                            alu_op <= "001";
+                            alu_src0 <= "001";
+                            alu_src1 <= "01";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '1';
+                            reg_wb_signal <= '0';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '1';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when "000" =>  --BTEQZ
+                        when "110" =>  --MTSP
+                            pc_src <= "000";
+                            alu_op <= "001";
+                            alu_src0 <= "000";
+                            alu_src1 <= "11";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '0';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '1';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when "001" =>  --BTNEZ
+                    end case;
+                when "01101" =>  --LI
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "010";
+                    alu_src1 <= "01";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '0';
+                    reg_wb_signal <= '1';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '0';
+                when "10010" =>  --LW_SP
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "001";
+                    alu_src1 <= "01";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '1';
+                    reg_wb_signal <= '1';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '1';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '1';
+                when "10011" =>  --LW
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "000";
+                    alu_src1 <= "01";
+                    alu_src1_immi_chooser <= "10";
+                    alu_immi_extend <= '0';
+                    reg_wb_signal <= '1';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '1';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '0';
+                    mem_wb_data_chooser <= 'Z';
+                    mem_read_signal <= '1';
+                when "11010" =>  --SW_SP
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "001";
+                    alu_src1 <= "01";
+                    alu_src1_immi_chooser <= "00";
+                    alu_immi_extend <= '1';
+                    reg_wb_signal <= '0';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '1';
+                    mem_wb_data_chooser <= '0';
+                    mem_read_signal <= '0';
+                when "11011" =>  --SW
+                    pc_src <= "000";
+                    alu_op <= "001";
+                    alu_src0 <= "000";
+                    alu_src1 <= "00";
+                    alu_src1_immi_chooser <= "10";
+                    alu_immi_extend <= '1';
+                    reg_wb_signal <= '0';
+                    reg_wb_chooser <= "00";
+                    reg_wb_data_chooser <= '0';
+                    sp_wb_signal <= '0';
+                    t_wb_signal <= '0';
+                    ih_wb_signal <= '0';
+                    mem_wb_signal <= '1';
+                    mem_wb_data_chooser <= '1';
+                    mem_read_signal <= '0';
+                when "11100" =>
+                    case Instruction(1 downto 0) is
+                        when "01" =>  --ADDU
+                            pc_src <= "000";
+                            alu_op <= "001";
+                            alu_src0 <= "000";
+                            alu_src1 <= "00";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '1';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when "11" =>  --SUBU
+                            pc_src <= "000";
+                            alu_op <= "011";
+                            alu_src0 <= "000";
+                            alu_src1 <= "00";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                    end case;
+                when "11101" =>
+                    case Instruction(4 downto 0) is
+                        when "01100" =>  --AND
+                            pc_src <= "000";
+                            alu_op <= "001";
+                            alu_src0 <= "000";
+                            alu_src1 <= "00";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '1';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when "01010" =>  --CMP
+                            pc_src <= "000";
+                            alu_op <= "011";
+                            alu_src0 <= "000";
+                            alu_src1 <= "00";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '1';
+                            reg_wb_signal <= '0';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '1';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when "00000" =>
+                            case Instruction(7 DOWNTO 5) is
+                                when "000" =>  --JR
+                                    pc_src <= "010";
+                                    alu_op <= "001";
+                                    alu_src0 <= "000";
+                                    alu_src1 <= "00";
+                                    alu_src1_immi_chooser <= "00";
+                                    alu_immi_extend <= '1';
+                                    reg_wb_signal <= '0';
+                                    reg_wb_chooser <= "00";
+                                    reg_wb_data_chooser <= '0';
+                                    sp_wb_signal <= '0';
+                                    t_wb_signal <= '0';
+                                    ih_wb_signal <= '0';
+                                    mem_wb_signal <= '0';
+                                    mem_wb_data_chooser <= 'Z';
+                                    mem_read_signal <= '0';
+                                    cmpbSrc <= "000";
+                                    boger <= '0';
+                                    honger <= '1';
+                                when "010" =>  --MFPC
+                                    pc_src <= "000";
+                                    alu_op <= "001";
+                                    alu_src0 <= "100";
+                                    alu_src1 <= "11";
+                                    alu_src1_immi_chooser <= "00";
+                                    alu_immi_extend <= '0';
+                                    reg_wb_signal <= '1';
+                                    reg_wb_chooser <= "00";
+                                    reg_wb_data_chooser <= '0';
+                                    sp_wb_signal <= '0';
+                                    t_wb_signal <= '0';
+                                    ih_wb_signal <= '0';
+                                    mem_wb_signal <= '0';
+                                    mem_wb_data_chooser <= 'Z';
+                                    mem_read_signal <= '0';
+                            end case;
+                        when "01101" =>  --OR
+                            pc_src <= "000";
+                            alu_op <= "100";
+                            alu_src0 <= "000";
+                            alu_src1 <= "00";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when "01011" =>  --NEG
+                            pc_src <= "000";
+                            alu_op <= "011";
+                            alu_src0 <= "010";
+                            alu_src1 <= "00";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when "00110" =>  --SRLV
+                            pc_src <= "000";
+                            alu_op <= "111";
+                            alu_src0 <= "101";
+                            alu_src1 <= "10";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                    end case;
+                when "11110" =>
+                    case Instruction(0) is
+                        when '0' =>  --MFIH
+                            pc_src <= "000";
+                            alu_op <= "001";
+                            alu_src0 <= "011";
+                            alu_src1 <= "11";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '1';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '0';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                        when '1' =>  --MTIH
+                            pc_src <= "000";
+                            alu_op <= "001";
+                            alu_src0 <= "000";
+                            alu_src1 <= "11";
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '0';
+                            reg_wb_signal <= '0';
+                            reg_wb_chooser <= "00";
+                            reg_wb_data_chooser <= '0';
+                            sp_wb_signal <= '0';
+                            t_wb_signal <= '0';
+                            ih_wb_signal <= '1';
+                            mem_wb_signal <= '0';
+                            mem_wb_data_chooser <= 'Z';
+                            mem_read_signal <= '0';
+                    end case;
+            end case;
+        end if;
+    end process;
 
 end Behavioral;
-
