@@ -221,6 +221,7 @@ architecture Behavioral of Computer is
 	signal id_rx, id_ry: std_logic_vector(15 downto 0);
 	
 	signal id_alu_op: std_logic_vector(2 downto 0);
+	signal id_alu_src0: std_logic_vector(2 downto 0);
 	signal id_alu_src1: std_logic_vector(1 downto 0);
 	signal id_alu_src1_immi_chooser: std_logic_vector(1 downto 0);
 	signal id_alu_immi_extend: std_logic;
@@ -307,18 +308,25 @@ begin
 		port map(
 		--in
 			instruction => id_instruction,
+			
 		--out
+			--alu
 			alu_op => id_alu_op,
 			alu_src0=> id_alu_src0,
 			alu_src1=> id_alu_src1,
 			alu_src1_immi_chooser=> id_alu_src1_immi_chooser,
 			alu_immi_extend=> id_alu_immi_extend,
+			
+			--register wb
 			reg_wb_signal => id_reg_wb_signal,
 			reg_wb_chooser => id_reg_wb_chooser,
 			reg_wb_data_chooser=> id_reg_wb_data_chooser,
+			
 			sp_wb_signal => id_sp_wb_signal,
 			t_wb_signal => id_t_wb_signal,
+			ih_wb_signal => id_ih_wb_signal,
 			
+			--mem
 			mem_wb_signal=> id_mem_wb_signal,
 			mem_wb_data_chooser=> id_mem_wb_data_chooser,
 			mem_read_signal=> id_mem_read_signal
@@ -329,20 +337,24 @@ begin
 		--in
 			clk=>clk,
 			rst=>rst,
+			
 			--control signal
 			reg_wb_rx=> id_instruction(10 downto 8),
 			reg_wb_ry=> id_instruction(7 downto 5),
 			reg_wb_rz=> id_instruction(4 downto 2),
+			
 			reg_wb_signal_in=>id_reg_wb_signal,
 			reg_wb_chooser=>id_reg_wb_chooser,
-			reg_wb_data_chooser=> id_reg_wb_data_chooser,
+			reg_wb_data_chooser_in=> id_reg_wb_data_chooser,
+			
 			sp_wb_signal_in=> id_sp_wb_signal,
 			t_wb_signal_in=> id_t_wb_signal,
+			ih_wb_signal_in=> id_ih_wb_signal,
 			
 			--mem
 			mem_wb_signal_in=> id_mem_wb_signal,
 			mem_wb_data_chooser_in=> id_mem_wb_data_chooser,
-			mem_read_signal=> id_mem_read_signal,
+			mem_read_signal_int=> id_mem_read_signal,
 			
 			--alu
 			alu_op_in=> id_alu_op,
@@ -352,6 +364,8 @@ begin
 			rx_in=> id_rx,
 			ry_in=> id_ry,
 			sp_in=> id_sp,
+			ih_in=> id_ih,
+			pc_in=> id_pc,
 			
 			--immi
 			immi_7_0_in => id_instruction(7 downto 0),
@@ -365,8 +379,10 @@ begin
 			reg_wb_signal_out=>ex_reg_wb_signal,
 			reg_wb_place_out=>ex_reg_wb_place,
 			reg_wb_data_chooser_out=>ex_reg_wb_data_chooser,
-			sp_wb_signal=>ex_sp_wb_signal,
-			t_wb_signal=>ex_t_wb_signal,
+			
+			sp_wb_signal_out=>ex_sp_wb_signal,
+			t_wb_signal_out=>ex_t_wb_signal,
+			ih_wb_signal_out=>ex_ih_wb_signal,
 			
 			--alu
 			alu_op_out=> ex_alu_op,
@@ -375,13 +391,18 @@ begin
 			rx_out=> ex_rx,
 			ry_out=> ex_ry,
 			sp_out=> ex_sp,
+			ih_out=>ex_ih,
+			pc_out=>ex_pc,
+			
+			--immi
+			alu_immi_out => ex_alu_immi,
 			
 			--mem
 			mem_wb_signal_out=> ex_mem_wb_signal,
-			mem_wb_
-			--immi
-			alu_immi_out => ex_alu_immi
+			mem_wb_data_chooser_out=> ex_mem_wb_data_chooser,
+			mem_read_signal_out=> ex_read_signal_out
 		);
+	
 	exe_entity: Executor
 		port map(
 		--in
@@ -394,11 +415,15 @@ begin
 			rx => ex_rx,
 			ry => ex_ry,
 			alu_immi => ex_alu_immi,
+			ih => ex_ih,
+			pc => ex_pc,
 		
 		--out
 			alu_result=> ex_alu_result
 		);
+		
 	led <= wb_alu_result;
+	
 	exetomem_entity: EXEtoMEM
 		port map(
 		--in
@@ -408,21 +433,57 @@ begin
 			--control signal
 			reg_wb_signal_in=>ex_reg_wb_signal,
 			reg_wb_place_in=>ex_reg_wb_place,
+			reg_wb_data_chooser_in=>ex_reg_wb_data_chooser,
+			
 			sp_wb_signal_in=>ex_sp_wb_signal,
 			t_wb_signal_in=>ex_t_wb_signal,
+			ih_wb_signal_in=>ex_ih_wh_signal,
 			
 			--alu
 			alu_result_in=> ex_alu_result,
+			
+			--mem
+			mem_wb_signal_in=> ex_mem_wb_signal,
+			mem_wb_data_chooser_in=> ex_mem_wb_data_chooser,
+			mem_read_signal_in=> ex_mem_read_signal,
 		
 		--out
 			--control signal
 			reg_wb_signal_out=>mem_reg_wb_signal,
 			reg_wb_place_out=>mem_reg_wb_place,
+			reg_wb_data_chooser=>mem_reg_wb_data_chooser,
+			
 			sp_wb_signal_out=>mem_sp_wb_signal_out,
 			t_wb_signal_out=>mem_t_wb_signal_out,
+			ih_wb_signal_out=> mem_ih_wb_signal,
 			
 			--alu
-			alu_result_out=>mem_alu_result
+			alu_result_out=>mem_alu_result,
+			
+			--mem
+			mem_wb_signal_out=>mem_mem_wb_signal,
+			mem_wb_data_chooser_out=>mem_mem_wb_data_chooser,
+			mem_read_signal_out=>mem_mem_read_signal
+		);
+	
+	mem_entity: MEM
+		port map(
+		--in
+			clk=>clk,
+			rst=>rst,
+			
+			--control signal
+			mem_wb_signal=> mem_mem_wb_signal,
+			mem_wb_signal_data_chooser=> mem_mem_wb_data_chooser,
+			rx=>mem_rx,
+			ry=>mem_ry,
+			
+			mem_read_signal=> mem_mem_read_signal,
+			
+			mem_addr=> mem_alu_result,
+		
+		--out
+			mem_data=> mem_mem_data,
 		);
 	
 	memtowb_entity: MEMtoWB
