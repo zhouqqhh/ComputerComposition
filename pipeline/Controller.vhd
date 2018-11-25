@@ -68,10 +68,8 @@ architecture Behavioral of Controller is
 
 begin
 
-    process(clk, rst)
+    process(instruction)
     begin
-        if rst = '0' then
-        elsif rising_edge(clk) then
             case Instruction(15 downto 11) is
                 when "00001" =>  --NOP
                     pc_src <= "000";
@@ -161,7 +159,8 @@ begin
                             mem_wb_signal <= '0';
                             mem_wb_data_chooser <= 'Z';
                             mem_read_signal <= '0';
-                            end case;
+								when others =>
+							end case;
                 when "01000" =>  --ADDIU3
                     pc_src <= "000";
                     alu_op <= "001";
@@ -262,6 +261,7 @@ begin
                             mem_wb_data_chooser <= 'Z';
                             mem_read_signal <= '0';
                         when "001" =>  --BTNEZ
+								when others =>
                     end case;
                 when "01101" =>  --LI
                     pc_src <= "000";
@@ -377,6 +377,7 @@ begin
                             mem_wb_signal <= '0';
                             mem_wb_data_chooser <= 'Z';
                             mem_read_signal <= '0';
+								when others =>
                     end case;
                 when "11101" =>
                     case Instruction(4 downto 0) is
@@ -449,6 +450,7 @@ begin
                                     mem_wb_signal <= '0';
                                     mem_wb_data_chooser <= 'Z';
                                     mem_read_signal <= '0';
+									     when others =>
                             end case;
                         when "01101" =>  --OR
                             pc_src <= "000";
@@ -498,6 +500,7 @@ begin
                             mem_wb_signal <= '0';
                             mem_wb_data_chooser <= 'Z';
                             mem_read_signal <= '0';
+								when others =>
                     end case;
                 when "11110" =>
                     case Instruction(0) is
@@ -533,9 +536,10 @@ begin
                             mem_wb_signal <= '0';
                             mem_wb_data_chooser <= 'Z';
                             mem_read_signal <= '0';
+								when others =>
                     end case;
+					when others =>
             end case;
-        end if;
     end process;
 
 end Behavioral;
