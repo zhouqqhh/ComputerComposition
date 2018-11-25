@@ -2,7 +2,8 @@ import csv
 
 openname = "1.csv"
 writename = "code.txt"
-tab = "    "
+init_tab = "        "
+tab = init_tab + "    "
 lookup_dict = {"alu_src0":{"rx":"000","SP":"001","0":"010","IH":"011","PC":"100","ry":"101"},
                "alu_src1":{"ry":"00","Immi":"01","rx":"10","0":"11"},
                "alu_src1_immi_chooser":{"Imm[0:7]":"00","Imm[0:3]":"01","Imm[0:4]":"10","Imm[2:4]":"11"},
@@ -32,8 +33,8 @@ with open(openname) as rf:
         for row in tmp:
             print(row)
         for row in sigList:
-            wf.write("--" + row[1] + "\n")
-            wf.write('when "' + row[3] + ' =>"\n')
+            wf.write(init_tab + "--" + row[1] + "\n")
+            wf.write(init_tab + 'when "' + row[3] + '" =>\n')
             if len(row[0]) == 0:
                 exit(0)
             for i in range(4, len(row)):
