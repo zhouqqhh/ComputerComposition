@@ -124,45 +124,7 @@
             boger <= '0';
             honger <= '0';
         --BNEZ
-        when "" =>
-            pc_src <= "000";
-            alu_op <= "001";
-            alu_src0 <= "000";
-            alu_src1 <= "00";
-            alu_src1_immi_chooser <= "00";
-            alu_immi_extend <= '1';
-            reg_wb_signal <= '0';
-            reg_wb_chooser <= "00";
-            reg_wb_data_chooser <= '0';
-            sp_wb_signal <= '0';
-            t_wb_signal <= '0';
-            ih_wb_signal <= '0';
-            mem_wb_signal <= '0';
-            mem_wb_data_chooser <= 'Z';
-            mem_read_signal <= '0';
-            cmpbSrc <= "010";
-            boger <= '0';
-            honger <= '0';
         --BTEQZ
-        when "" =>
-            pc_src <= "000";
-            alu_op <= "001";
-            alu_src0 <= "000";
-            alu_src1 <= "00";
-            alu_src1_immi_chooser <= "00";
-            alu_immi_extend <= '1';
-            reg_wb_signal <= '0';
-            reg_wb_chooser <= "00";
-            reg_wb_data_chooser <= '0';
-            sp_wb_signal <= '0';
-            t_wb_signal <= '0';
-            ih_wb_signal <= '0';
-            mem_wb_signal <= '0';
-            mem_wb_data_chooser <= 'Z';
-            mem_read_signal <= '0';
-            cmpbSrc <= "011";
-            boger <= '0';
-            honger <= '0';
         --CMP
         when "11101" =>
             pc_src <= "000";
@@ -490,25 +452,6 @@
             mem_wb_data_chooser <= 'Z';
             mem_read_signal <= '0';
         --BTNEZ
-        when "" =>
-            pc_src <= "000";
-            alu_op <= "001";
-            alu_src0 <= "000";
-            alu_src1 <= "00";
-            alu_src1_immi_chooser <= "00";
-            alu_immi_extend <= '0';
-            reg_wb_signal <= '0';
-            reg_wb_chooser <= "00";
-            reg_wb_data_chooser <= '0';
-            sp_wb_signal <= '0';
-            t_wb_signal <= '0';
-            ih_wb_signal <= '0';
-            mem_wb_signal <= '0';
-            mem_wb_data_chooser <= 'Z';
-            mem_read_signal <= '0';
-            cmpbSrc <= "100";
-            boger <= '0';
-            honger <= '0';
         --SRLV
         when "11101" =>
             pc_src <= "000";
@@ -526,3 +469,4 @@
             mem_wb_signal <= '0';
             mem_wb_data_chooser <= 'Z';
             mem_read_signal <= '0';
+        when others =>

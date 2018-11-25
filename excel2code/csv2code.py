@@ -34,28 +34,31 @@ with open(openname) as rf:
             print(row)
         for row in sigList:
             wf.write(init_tab + "--" + row[1] + "\n")
-            wf.write(init_tab + 'when "' + row[3] + '" =>\n')
-            if len(row[0]) == 0:
-                exit(0)
-            for i in range(4, len(row)):
-                if (signame[i] not in lookup_dict or row[i] not in lookup_dict[signame[i]])\
-                        and row[i].isdigit():
-                    if len(row[i]) == 1:
-                        if int(row[i]) > 1:
-                            row[i] = bin(row[i])
-                        wf.write(tab + signame[i] + " <= '" + row[i] + "';\n")
-                    else:
-                        wf.write(tab + signame[i] + ' <= "' + row[i] + '";\n')
-                elif signame[i] in lookup_dict and row[i] in lookup_dict[signame[i]]:
-                    val = lookup_dict[signame[i]][row[i]]
-                    if len(val) > 1:
-                        wf.write(tab + signame[i] + ' <= "' + val + '";\n')
-                    else:
-                        wf.write(tab + signame[i] + " <= '" + val + "';\n")
-                else:
-                    if signame[i] in default_dict:
-                        val = default_dict[signame[i]]
+            if len(row[3]) > 0:
+                wf.write(init_tab + 'when "' + row[3] + '" =>\n')
+                if len(row[0]) == 0:
+                    wf.write(init_tab + 'when others =>\n')
+                    exit(0)
+                for i in range(4, len(row)):
+                    if (signame[i] not in lookup_dict or row[i] not in lookup_dict[signame[i]]) \
+                            and row[i].isdigit():
+                        if len(row[i]) == 1:
+                            if int(row[i]) > 1:
+                                row[i] = bin(row[i])
+                            wf.write(tab + signame[i] + " <= '" + row[i] + "';\n")
+                        else:
+                            wf.write(tab + signame[i] + ' <= "' + row[i] + '";\n')
+                    elif signame[i] in lookup_dict and row[i] in lookup_dict[signame[i]]:
+                        val = lookup_dict[signame[i]][row[i]]
                         if len(val) > 1:
                             wf.write(tab + signame[i] + ' <= "' + val + '";\n')
                         else:
                             wf.write(tab + signame[i] + " <= '" + val + "';\n")
+                    else:
+                        if signame[i] in default_dict:
+                            val = default_dict[signame[i]]
+                            if len(val) > 1:
+                                wf.write(tab + signame[i] + ' <= "' + val + '";\n')
+                            else:
+                                wf.write(tab + signame[i] + " <= '" + val + "';\n")
+        wf.write(init_tab + 'when others =>\n')
