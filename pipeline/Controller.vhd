@@ -104,7 +104,7 @@ begin
                     mem_wb_signal <= '0';
                     mem_wb_data_chooser <= 'Z';
                     mem_read_signal <= '0';
-						  
+
                     JR_signal <= '0';
                     B_signal <= "01";
                     B_com_chooser <= "ZZ";
@@ -144,7 +144,7 @@ begin
                     mem_wb_signal <= '0';
                     mem_wb_data_chooser <= 'Z';
                     mem_read_signal <= '0';
-						  
+
                     JR_signal <= '0';
                     B_signal <= "10";
                     B_com_chooser <= "01";

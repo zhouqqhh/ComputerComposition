@@ -150,17 +150,38 @@ architecture Behavioral of Computer is
 			--control signal
 			reg_wb_signal_in: in std_logic;
 			reg_wb_place_in: in std_logic_vector(2 downto 0);
+			reg_wb_data_chooser_in: in std_logic;
+
+			sp_wb_signal_in: in std_logic;
+			t_wb_signal_in: in std_logic;
+			ih_wb_signal_in: in std_logic;
+
 
 			--alu
 			alu_result_in: in std_logic_vector(15 downto 0);
+
+			--Memory
+			mem_wb_signal_in: in std_logic;
+			mem_wb_data_chooser_in: in std_logic;
+			mem_read_signal_in: in std_logic;
 
 		--out
 			--control signal
 			reg_wb_signal_out: out std_logic;
 			reg_wb_place_out: out std_logic_vector(2 downto 0);
+			reg_wb_data_chooser_out: out std_logic;
+
+			sp_wb_signal_out: out std_logic;
+			t_wb_signal_out: out std_logic;
+			ih_wb_signal_out: out std_logic;
 
 			--alu
 			alu_result_out: out std_logic_vector(15 downto 0)
+
+			--Memory
+			mem_wb_signal_out: out std_logic;
+			mem_wb_data_chooser_out: out std_logic;
+			mem_read_signal_out: out std_logic;
 		);
 	end component EXEtoMEM;
 
