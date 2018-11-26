@@ -53,26 +53,22 @@ architecture Behavioral of MEMtoWB is
 	--mem
 	signal MEMtoWB_mem_data: std_logic_vector(15 downto 0);
 begin
-	reg_wb_signal_out <= reg_wb_signal;
-	reg_wb_place_out <= reg_wb_place;
-	alu_result_out <= alu_result;
+	--control signal
+	reg_wb_signal_out <= MEMtoWB_reg_wb_signal;
+	reg_wb_place_out <= MEMtoWB_reg_wb_place;
+	reg_wb_data_chooser_out <= MEMtoWB_reg_wb_data_chooser;
+	sp_wb_signal_out <= MEMtoWB_sp_wb_signal;
+	t_wb_signal_out <= MEMtoWB_t_wb_signal;
+	ih_wb_signal_out <= MEMtoWB_ih_wb_signal;
+
+	--alu
+	alu_result_out <= MEMtoWB_alu_result;
+
+	--mem
+	mem_data_out <= MEMtoWB_mem_data;
 	process(rst, clk)
 	begin
 		if rst = '0' then
-			--control signal
-			reg_wb_signal_out <= '0';
-			reg_wb_place_out <= "000";
-			reg_wb_data_chooser_out <= '0';
-			sp_wb_signal_out <= '0';
-			t_wb_signal_out <= '0';
-			ih_wb_signal_out <= '0';
-
-			--alu
-			alu_result_out <= (others=>'0');
-
-			--mem
-			mem_data_out <= (others=>'0');
-
 			--control signal
 			MEMtoWB_reg_wb_signal <= '0';
 			MEMtoWB_reg_wb_place <= "000";
@@ -87,21 +83,6 @@ begin
 			--mem
 			MEMtoWB_mem_data <= (others=>'0');
 		elsif rising_edge(clk) then
-			--control signal
-			reg_wb_signal_out <= MEMtoWB_reg_wb_signal;
-			reg_wb_place_out <= MEMtoWB_reg_wb_place;
-			reg_wb_data_chooser_out <= MEMtoWB_reg_wb_data_chooser;
-			sp_wb_signal_out <= MEMtoWB_sp_wb_signal;
-			t_wb_signal_out <= MEMtoWB_t_wb_signal;
-			ih_wb_signal_out <= MEMtoWB_ih_wb_signal;
-
-			--alu
-			alu_result_out <= MEMtoWB_alu_result;
-
-			--mem
-			mem_data_out <= MEMtoWB_mem_data;
-
-
 			--control signal
 			MEMtoWB_reg_wb_signal <= reg_wb_signal_in;
 			MEMtoWB_reg_wb_place <= reg_wb_place_in;

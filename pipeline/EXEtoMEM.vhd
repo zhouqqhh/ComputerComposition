@@ -73,32 +73,25 @@ architecture Behavioral of EXEtoMEM is
 	signal EXEtoMEM_mem_wb_data_chooser: std_logic;
 	signal EXEtoMEM_mem_read_signal: std_logic;
 begin
-	reg_wb_signal_out <= reg_wb_signal;
-	reg_wb_place_out <= reg_wb_place;
+	--control signal
+	reg_wb_signal_out <= EXEtoMEM_reg_wb_signal;
+	reg_wb_place_out <= EXEtoMEM_reg_wb_place;
+	reg_wb_data_chooser_out <= EXEtoMEM_reg_wb_data_chooser;
 
-	alu_result_out <= alu_result;
+	sp_wb_signal_out <= EXEtoMEM_sp_wb_signal;
+	t_wb_signal_out <= EXEtoMEM_t_wb_signal;
+	ih_wb_signal_out <= EXEtoMEM_ih_wb_signal;
 
+	--alu
+	alu_result_out <= EXEtoMEM_alu_result;
+
+	--Memory
+	mem_wb_signal_out <= EXEtoMEM_mem_wb_signal;
+	mem_wb_data_chooser_out <= EXEtoMEM_mem_wb_data_chooser;
+	mem_read_signal_out <= EXEtoMEM_mem_read_signal;
 	process(clk, rst)
 	begin
 		if rst = '0' then
-			--control signal
-			reg_wb_signal_out <= '0';
-			reg_wb_place_out <= (others=>'0');
-			reg_wb_data_chooser_out <= '0';
-
-			sp_wb_signal_out <= '0';
-			t_wb_signal_out <= '0';
-			ih_wb_signal_out <= '0';
-
-			--alu
-			alu_result_out <= (others=>'0');
-
-			--Memory
-			mem_wb_signal_out <= '0';
-			mem_wb_data_chooser_out <= '0';
-			mem_read_signal_out <= '0';
-
-
 			--control signal
 			EXEtoMEM_reg_wb_signal <= '0';
 			EXEtoMEM_reg_wb_place <= (others=>'0');
@@ -117,24 +110,6 @@ begin
 			EXEtoMEM_mem_read_signal <= '0';
 
 		elsif rising_edge(clk) then
-			--control signal
-			reg_wb_signal_out <= EXEtoMEM_reg_wb_signal;
-			reg_wb_place_out <= EXEtoMEM_reg_wb_place;
-			reg_wb_data_chooser_out <= EXEtoMEM_reg_wb_data_chooser;
-
-			sp_wb_signal_out <= EXEtoMEM_sp_wb_signal;
-			t_wb_signal_out <= EXEtoMEM_t_wb_signal;
-			ih_wb_signal_out <= EXEtoMEM_ih_wb_signal;
-
-			--alu
-			alu_result_out <= EXEtoMEM_alu_result;
-
-			--Memory
-			mem_wb_signal_out <= EXEtoMEM_mem_wb_signal;
-			mem_wb_data_chooser_out <= EXEtoMEM_mem_wb_data_chooser;
-			mem_read_signal_out <= EXEtoMEM_mem_read_signal;
-
-
 			--control signal
 			EXEtoMEM_reg_wb_signal <= reg_wb_signal_in;
 			EXEtoMEM_reg_wb_place <= reg_wb_place_in;
