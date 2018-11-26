@@ -59,7 +59,7 @@ entity Controller is
         --memory
         mem_wb_signal: out std_logic;
         mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
-        mem_read_signal: out std_logic;
+        mem_read_signal: out std_logic
     );
 end Controller;
 
