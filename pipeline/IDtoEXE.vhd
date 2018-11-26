@@ -4,35 +4,6 @@ use WORK.UTILS.ALL;
 
 entity IDtoEXE is
 	port (
---		clk: in std_logic;
---		in_reg1: in std_logic_vector(15 downto 0);
---		in_reg2: in std_logic_vector(15 downto 0);
---		in_control_Mem: in control_M_type;
---		in_control_WB: in control_WB_type;
---		in_control_EXE: in control_EXE_type;
---		in_imm_3_0: in std_logic_vector(3 downto 0);
---		in_imm_4_2: in std_logic_vector(2 downto 0);
---		in_imm_7_0: in std_logic_vector(7 downto 0);
---		in_RegDst_10_8: in std_logic_vector(2 downto 0);
---		in_RegDst_7_5: in std_logic_vector(2 downto 0);
---		in_RegDst_4_2: in std_logic_vector(2 downto 0);
---		
---		out_reg1: out std_logic_vector(15 downto 0);
---		out_reg2: out std_logic_vector(15 downto 0);
---		out_control_Mem: out control_M_type;
---		out_control_WB: out control_WB_type;
---		out_control_EXE: out control_EXE_type;
---		out_control_ALUSrc0: out std_logic_vector(2 downto 0);
---		out_control_ALUSrc1: out std_logic_vector(2 downto 0);
---		out_control_ALUOP: out std_logic_vector(2 downto 0);
---		out_control_RegDst: out std_logic_vector(1 downto 0);
---		out_imm_4_0: out std_logic_vector(4 downto 0);
---		out_imm_3_0: out std_logic_vector(3 downto 0);
---		out_imm_4_2: out std_logic_vector(2 downto 0);
---		out_imm_7_0: out std_logic_vector(7 downto 0);
---		out_RegDst_10_8: out std_logic_vector(2 downto 0);
---		out_RegDst_7_5: out std_logic_vector(2 downto 0);
---		out_RegDst_4_2: out std_logic_vector(2 downto 0)
 	--in
 		clk: in std_logic;
 		rst: in std_logic;
@@ -41,12 +12,15 @@ entity IDtoEXE is
 		reg_wb_rx, reg_wb_ry, reg_wb_rz: in std_logic_vector(2 downto 0);
 		reg_wb_signal_in: in std_logic;
 		reg_wb_chooser: in std_logic_vector(1 downto 0);
+		reg_wb_data_chooser_in: in std_logic;
 		
 		--alu
 		alu_op_in: in std_logic_vector(2 downto 0);
+		alu_src0_in: in std_logic_vector(2 downto 0);
 		alu_src1_in: in std_logic_vector(1 downto 0);
 		rx_in: in std_logic_vector(15 downto 0);
 		ry_in: in std_logic_vector(15 downto 0);
+		sp_in, pc_in, ih_in: in std_logic_vector(15 downto 0);
 		
 		immi_7_0_in: in std_logic_vector(7 downto 0);
 		immi_3_0_in: in std_logic_vector(3 downto 0);
@@ -54,19 +28,39 @@ entity IDtoEXE is
 		immi_4_2_in: in std_logic_vector(2 downto 0);
 		alu_src1_immi_chooser: in std_logic_vector(1 downto 0);
 		alu_immi_extend: in std_logic;
+		
+		sp_wb_signal_in: in std_logic;
+		t_wb_signal_in: in std_logic;
+		ih_wb_signal_in: in std_logic;
+	
+		mem_wb_signal_in: in std_logic;
+		mem_wb_data_chooser_in: in std_logic;
+		mem_read_signal_in: in std_logic;
+		
 	--out
 		--control signal
 		reg_wb_signal_out: out std_logic;
 		reg_wb_place_out: out std_logic_vector(2 downto 0);
 		
+		sp_wb_signal_out: out std_logic;
+		t_wb_signal_out: out std_logic;
+		ih_wb_signal_out: out std_logic;
+		
 		--alu
 		alu_op_out: out std_logic_vector(2 downto 0);
+		alu_src0_out: out std_logic_vector(2 downto 0);
 		alu_src1_out: out std_logic_vector(1 downto 0);
 		rx_out: out std_logic_vector(15 downto 0);
 		ry_out: out std_logic_vector(15 downto 0);
+		sp_out, pc_out, ih_out: out std_logic_vector(15 downto 0);
 		
 		--immi
-		alu_immi_out: out std_logic_vector(15 downto 0)
+		alu_immi_out: out std_logic_vector(15 downto 0),
+		
+		--mem
+		mem_wb_signal_out: out std_logic;
+		mem_wb_data_chooser_out: out std_logic;
+		mem_read_signal_out: out std_logic
 	);
 end IDtoEXE;
 
@@ -101,11 +95,17 @@ architecture Behavioral of IDtoEXE is
 	signal reg_wb_place, reg_wb_place_cand: std_logic_vector(2 downto 0);
 	
 	signal alu_op: std_logic_vector(2 downto 0);
+	signal alu_src0: std_logic_vector(2 downto 0);
 	signal alu_src1: std_logic_vector(1 downto 0);
-	signal rx, ry: std_logic_vector(15 downto 0);
+	
+	signal mem_wb_signal, mem_read_signal, mem_wb_data_chooser: std_logic;
+	
+	signal sp_wb_signal, t_wb_signal, ih_wb_signal: std_logic;
+	signal rx, ry, sp, ih, pc: std_logic_vector(15 downto 0);
 	signal alu_immi, alu_immi_cand: std_logic_vector(15 downto 0);
 	signal immi_7_0_sign, immi_7_0_zero, immi_3_0_sign, immi_3_0_zero, immi_4_0_sign, immi_4_0_zero, immi_4_2_sign, immi_4_2_zero: std_logic_vector(15 downto 0);
 	signal immi_chooser_concat: std_logic_vector(2 downto 0);
+	
 begin
 	reg_wb_signal_out <= reg_wb_signal;
 	reg_wb_place_out <= reg_wb_place;
@@ -174,6 +174,7 @@ begin
 		alu_immi <= alu_immi_cand;
 		
 		alu_op <= alu_op_in;
+		alu_src0 <= alu_src0_in;
 		alu_src1 <= alu_src1_in;
 	end if;
 	end process;

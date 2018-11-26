@@ -276,9 +276,11 @@ begin
 	iftoid_entity: IFtoID
 		port map(
 			instruction_in => if_instruction,
+			pc_in=> if_pc,
 			clk => clk,
 			rst => rst,
-			instruction_out => id_instruction
+			instruction_out => id_instruction,
+			pc_out => id_pc,
 		);
 	
 	registers_entity: Registers
@@ -292,16 +294,21 @@ begin
 			
 			reg_wb_signal => wb_reg_wb_signal,
 			reg_wb_place => wb_reg_wb_place,
-			reg_wb_data => wb_alu_result,
+			reg_wb_alu_result => wb_alu_result,
+			reg_wb_mem_data => wb_mem_data,
 			
 			sp_wb_signal => wb_sp_wb_signal,
 			t_wb_signal => wb_t_wb_signal,
+			ih_wb_signal => wb_ih_wb_signal,
+			
+			t_wb_data => wb_t_wb_data,
 		
 		--out
 			read_data1 => id_rx,
 			read_data2 => id_ry,
 			sp_out => id_sp,
-			t_out => id_t
+			t_out => id_t,
+			ih_out => id_ih,
 		);
 	
 	control_entity: Controller
@@ -310,6 +317,9 @@ begin
 			instruction => id_instruction,
 			
 		--out
+			--pc_source
+			pc_src=> id_pc_source,
+			
 			--alu
 			alu_op => id_alu_op,
 			alu_src0=> id_alu_src0,
@@ -494,21 +504,26 @@ begin
 			--control signal
 			reg_wb_signal_in=>mem_reg_wb_signal,
 			reg_wb_place_in=>mem_reg_wb_place,
+			reg_wb_data_chooser=>mem_reg_wb_data_chooser,
 			sp_wb_signal_in=>mem_sp_wb_signal,
 			t_wb_signal_in=>mem_sp_wb_signal,
+			ih_wb_signal_in=>mem_ih_wb_signal,
 			
 			--alu
 			alu_result_in=>mem_alu_result,
+			mem_data_in=>mem_mem_data,
 			
 		--out
 			--control signal
 			reg_wb_signal_out=>wb_reg_wb_signal,
 			reg_wb_place_out=>wb_reg_wb_place,
+			reg_wb_data_chooser=>wb_reg_wb_data_chooser,
 			sp_wb_signal_out=>wb_sp_wb_signal,
 			t_wb_signal_out=>wb_t_wb_signal,
 			
 			--alu
-			alu_result_out=> wb_alu_result
+			alu_result_out=> wb_alu_result,
+			mem_data_out=>wb_mem_data
 		);
 end Behavioral;
 
