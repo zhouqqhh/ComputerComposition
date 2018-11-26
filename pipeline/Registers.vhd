@@ -1,6 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_arith.all;
+use work.utils.all;
 
 entity Registers is
 	port (
@@ -13,15 +14,12 @@ entity Registers is
 			read_regs1: in std_logic_vector(2 downto 0);
 			read_regs2: in std_logic_vector(2 downto 0);
 
-			reg_wb_signal: in std_logic;
-			reg_wb_place: in std_logic_vector(2 downto 0);
-			reg_wb_alu_result: in std_logic_vector(15 downto 0);
+			reg_wb_control_in: in reg_wb_control;
+				
 			reg_wb_mem_data: in std_logic_vector(15 downto 0);
-			reg_wb_data_chooser: in std_logic;
+			reg_wb_alu_result: in std_logic_vector(15 downto 0);
 			
-			sp_wb_signal: in std_logic;
-			t_wb_signal: in std_logic;
-			ih_wb_signal: in std_logic;
+			reg_other_control_in: in reg_other_control;
 			
 			t_wb_data: in std_logic;
 			
@@ -61,7 +59,7 @@ begin
 		port map(
 			input0=>reg_wb_alu_result,
 			input1=>reg_wb_mem_data,
-			sel=>reg_wb_data_chooser,
+			sel=>reg_wb_control_in.reg_wb_data_chooser,
 			
 			output=>input_data
 		);
@@ -82,16 +80,16 @@ begin
 			sp <= (others=>'0');
 			ih <= (others=>'0');
 		elsif falling_edge(clk) then
-			if reg_wb_signal = '1' then
-				regs_data(conv_integer(unsigned(reg_wb_place))) <= input_data;
+			if reg_wb_control_in.reg_wb_signal = '1' then
+				regs_data(conv_integer(unsigned(reg_wb_control_in.reg_wb_regs))) <= input_data;
 			end if;
-			if sp_wb_signal = '1' then
+			if reg_other_control_in.sp_wb_signal = '1' then
 				sp <= input_data;
 			end if;
-			if t_wb_signal = '1' then
+			if reg_other_control_in.t_wb_signal = '1' then
 				t <= t_wb_data;
 			end if;
-			if ih_wb_signal = '1' then
+			if reg_other_control_in.ih_wb_signal = '1' then
 				ih <= input_data;
 			end if;
 		end if;

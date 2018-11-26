@@ -10,7 +10,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 
-package utils is
+package constant is
 
 -- type <new_type> is
 --  record
@@ -28,51 +28,10 @@ package utils is
 -- function <function_name>  (signal <signal_name> : in <type_declaration>) return <type_declaration>;
 -- procedure <procedure_name> (<type_declaration> <constant_name>	: in <type_declaration>);
 --
-	type reg_wb_control is
-		record
-			reg_wb_signal: std_logic;
-			reg_wb_regs: std_logic_vector(2 downto 0);
-			reg_wb_data_chooser: std_logic;
-		end record;
-	
-	constant zero_reg_wb_control : reg_wb_control :=
-		(
-			reg_wb_signal => '0',
-			reg_wb_regs => (others=>'0'),
-			reg_wb_data_chooser => '0'
-		);
-	
-	type reg_other_control is
-		record
-			sp_wb_signal: std_logic;
-			t_wb_signal: std_logic;
-			ih_wb_signal: std_logic;
-		end record;
-	
-	constant zero_reg_other_control : reg_other_control :=
-		(
-			sp_wb_signal => '0',
-			t_wb_signal => '0',
-			ih_wb_signal => '0'
-		);
-	
-	type mem_control is
-		record
-			wb_signal: std_logic;
-			wb_data_chooser: std_logic;
-			read_signal: std_logic;
-		end record;
-	
-	constant zero_mem_control : mem_control := 
-		(
-			wb_signal => '0',
-			wb_data_chooser => '0',
-			read_signal => '0'
-		);
-		
-end utils;
 
-package body utils is
+end constant;
+
+package body constant is
 
 ---- Example 1
 --  function <function_name>  (signal <signal_name> : in <type_declaration>  ) return <type_declaration> is
@@ -100,4 +59,4 @@ package body utils is
 --    
 --  end <procedure_name>;
  
-end utils;
+end constant;

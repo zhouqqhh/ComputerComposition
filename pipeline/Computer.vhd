@@ -349,15 +349,13 @@ begin
 			read_regs1 => id_instruction(10 downto 8),
 			read_regs2 => id_instruction(7 downto 5),
 			
-			reg_wb_signal => wb_reg_wb_signal,
-			reg_wb_place => wb_reg_wb_place,
-			reg_wb_alu_result => wb_reg_wb_alu_result,
-			reg_wb_mem_data => wb_reg_wb_mem_data,
-			reg_wb_data_chooser=> wb_reg_wb_data_chooser,
+			reg_wb_control_in => wb_reg_wb_control,
 			
-			sp_wb_signal => wb_sp_wb_signal,
-			t_wb_signal => wb_t_wb_signal,
-			ih_wb_signal => wb_ih_wb_signal,
+			reg_wb_alu_result => wb_alu_result,
+			reg_wb_mem_data => wb_mem_data,
+			
+			
+			reg_other_control_in => wb_reg_other_control,
 			
 			t_wb_data => wb_t_wb_data,
 		
@@ -504,39 +502,34 @@ begin
 			rst=> rst,
 			
 			--control signal
-			reg_wb_signal_in=>ex_reg_wb_signal,
-			reg_wb_place_in=>ex_reg_wb_place,
-			reg_wb_data_chooser_in=>ex_reg_wb_data_chooser,
+			reg_wb_control_in=> ex_reg_wb_control,
 			
-			sp_wb_signal_in=>ex_sp_wb_signal,
-			t_wb_signal_in=>ex_t_wb_signal,
-			ih_wb_signal_in=>ex_ih_wh_signal,
+			reg_other_control_in=> ex_reg_other_control,
 			
 			--alu
 			alu_result_in=> ex_alu_result,
 			
 			--mem
-			mem_wb_signal_in=> ex_mem_wb_signal,
-			mem_wb_data_chooser_in=> ex_mem_wb_data_chooser,
-			mem_read_signal_in=> ex_mem_read_signal,
+			mem_control_signal_in => ex_mem_control_signal,
+			rx_in => ex_rx,
+			ry_in => ex_ry,
 		
 		--out
 			--control signal
-			reg_wb_signal_out=>mem_reg_wb_signal,
-			reg_wb_place_out=>mem_reg_wb_place,
-			reg_wb_data_chooser=>mem_reg_wb_data_chooser,
+			reg_wb_control_out=> mem_reg_wb_control,
 			
-			sp_wb_signal_out=>mem_sp_wb_signal_out,
-			t_wb_signal_out=>mem_t_wb_signal_out,
-			ih_wb_signal_out=> mem_ih_wb_signal,
+			reg_other_control_out=> mem_reg_other_control,
+			
+			t_wb_data_out=>mem_t_wb_data,
 			
 			--alu
 			alu_result_out=>mem_alu_result,
 			
 			--mem
-			mem_wb_signal_out=>mem_mem_wb_signal,
-			mem_wb_data_chooser_out=>mem_mem_wb_data_chooser,
-			mem_read_signal_out=>mem_mem_read_signal
+			mem_control_signal_out => mem_mem_control_signal,
+			
+			rx_out => mem_rx,
+			ry_out => mem_ry
 		);
 	
 	mem_entity: MEM
@@ -546,12 +539,10 @@ begin
 			rst=>rst,
 			
 			--control signal
-			mem_wb_signal=> mem_mem_wb_signal,
-			mem_wb_signal_data_chooser=> mem_mem_wb_data_chooser,
+			mem_control_signal <= mem_mem_control_signal,
+			
 			rx=>mem_rx,
 			ry=>mem_ry,
-			
-			mem_read_signal=> mem_mem_read_signal,
 			
 			mem_addr=> mem_alu_result,
 		
@@ -565,12 +556,11 @@ begin
 			clk=> clk,
 			rst=> rst,
 			--control signal
-			reg_wb_signal_in=>mem_reg_wb_signal,
-			reg_wb_place_in=>mem_reg_wb_place,
-			reg_wb_data_chooser=>mem_reg_wb_data_chooser,
-			sp_wb_signal_in=>mem_sp_wb_signal,
-			t_wb_signal_in=>mem_sp_wb_signal,
-			ih_wb_signal_in=>mem_ih_wb_signal,
+			reg_wb_control_in=> mem_reg_wb_control,
+			
+			reg_other_control_in=> mem_reg_other_control,
+			
+			t_wb_data_in=>mem_t_wb_data,
 			
 			--alu
 			alu_result_in=>mem_alu_result,
@@ -578,11 +568,11 @@ begin
 			
 		--out
 			--control signal
-			reg_wb_signal_out=>wb_reg_wb_signal,
-			reg_wb_place_out=>wb_reg_wb_place,
-			reg_wb_data_chooser=>wb_reg_wb_data_chooser,
-			sp_wb_signal_out=>wb_sp_wb_signal,
-			t_wb_signal_out=>wb_t_wb_signal,
+			reg_wb_control_out=> wb_reg_wb_control,
+			
+			reg_other_control_out=> wb_reg_other_control,
+			
+			t_wb_data_out=>wb_t_wb_data,
 			
 			--alu
 			alu_result_out=> wb_alu_result,
