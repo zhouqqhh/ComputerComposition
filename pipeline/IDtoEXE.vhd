@@ -55,7 +55,7 @@ entity IDtoEXE is
 		sp_out, pc_out, ih_out: out std_logic_vector(15 downto 0);
 		
 		--immi
-		alu_immi_out: out std_logic_vector(15 downto 0),
+		alu_immi_out: out std_logic_vector(15 downto 0);
 		
 		--mem
 		mem_wb_signal_out: out std_logic;

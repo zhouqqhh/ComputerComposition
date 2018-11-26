@@ -280,7 +280,7 @@ begin
 			clk => clk,
 			rst => rst,
 			instruction_out => id_instruction,
-			pc_out => id_pc,
+			pc_out => id_pc
 		);
 
 	registers_entity: Registers
@@ -308,7 +308,7 @@ begin
 			read_data2 => id_ry,
 			sp_out => id_sp,
 			t_out => id_t,
-			ih_out => id_ih,
+			ih_out => id_ih
 		);
 
 	control_entity: Controller
@@ -493,7 +493,7 @@ begin
 			mem_addr=> mem_alu_result,
 
 		--out
-			mem_data=> mem_mem_data,
+			mem_data=> mem_mem_data
 		);
 
 	memtowb_entity: MEMtoWB

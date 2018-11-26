@@ -64,6 +64,21 @@ architecture Behavioral of Executor is
 			output: out std_logic_vector(15 downto 0)
 		);
 	end component mux_2bit;
+	
+	component mux_3bit is
+		port (
+			input0: in std_logic_vector(15 downto 0);
+			input1: in std_logic_vector(15 downto 0);
+			input2: in std_logic_vector(15 downto 0);
+			input3: in std_logic_vector(15 downto 0);
+			input4: in std_logic_vector(15 downto 0);
+			input5: in std_logic_vector(15 downto 0);
+			input6: in std_logic_vector(15 downto 0);
+			input7: in std_logic_vector(15 downto 0);
+			sel: in std_logic_vector(2 downto 0);
+			output: out std_logic_vector(15 downto 0)
+		);
+	end component mux_3bit;
 
 	signal src0, src1: std_logic_vector(15 downto 0);
 begin
@@ -74,8 +89,10 @@ begin
 			input1=>sp,
 			input2=>(others=>'0'),
 			input3=>ih,
-            input4=>pc,
-            input5=>ry,
+         input4=>pc,
+         input5=>ry,
+			input6=>(others=>'0'),
+			input7=>(others=>'0'),
 			sel=>alu_src0,
 
 			output=>src0
