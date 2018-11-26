@@ -53,10 +53,38 @@ end Computer;
 architecture Behavioral of Computer is
 
 	--IF
---	component IF is
---		port(
---			pc: in std_logic_vector(15 downto 0);
---		);
+	component InstructionFetch is
+		port (
+		--in
+			clk: in std_logic;
+			rst: in std_logic;
+			
+			pc: in std_logic_vector(15 downto 0);
+		--out
+			instruction: out std_logic_vector(15 downto 0)
+		);
+	end component InstructionFetch;
+	
+	--pc
+	component PC_write is
+		port (
+		--in
+			clk: in std_logic;
+			rst: in std_logic;
+			
+			--control signal
+			JR_signal: in std_logic;
+			B_signal: in std_logic_vector(1 downto 0);
+			B_com_chooser: in std_logic_vector(1 downto 0);
+			
+			--data
+			last_pc, id_pc, immi, rx: in std_logic_vector(15 downto 0);
+			t: in std_logic;
+			
+		--out
+			pc_out: out std_logic_vector(15 downto 0)
+		);
+	end component PC_write;
 
 	--IFtoID(registers)
 	component IFtoID is
@@ -271,29 +299,40 @@ architecture Behavioral of Computer is
 
 	--debug
 	signal if_pc: std_logic_vector(15 downto 0);
-	type memdef is array(15 downto 0) of std_logic_vector(15 downto 0);
-	signal memory : memdef;
-
 begin
-
-	--simulate if
-	fetch_instrcution_entity:process(rst, clk)
-		begin
-			if rst = '0' then
-				memory(0) <= "0000100000000000"; --NOP
-				memory(1) <= "0100000100000001";
-				memory(2) <= "0100001000000010";
-				memory(3) <= "0100001100000011";
-				memory(4) <= "0100010000000100";
-				memory(5) <= "0100010100000101";
-				memory(6) <= "0100011000000110";
-				if_pc <= (others=>'0');
-			elsif rising_edge(clk) then
-				if_pc <= if_pc + 1;
-			end if;
-		end process;
-	if_instruction <= memory(conv_integer(if_pc));
-
+	
+	pc_write_entity: PC_Write
+		port map{
+		--in
+			clk=>clk,
+			rst=>rst,
+			
+			--control signal
+			JR_signal=> id_JR_signal,
+			B_signal=> id_B_signal,
+			B_com_chooser=> id_B_com_chooser,
+			
+			--data
+			last_pc=>if_pc,
+			id_pc=>id_pc,
+			immi=>id_immi_final,
+			rx=>id_rx,
+			t=>id_t,
+		--out
+			pc_out=>if_pc
+		);
+	
+	instruction_fetch_entity: InstructionFetch
+		port map(
+		--in
+			clk=>clk,
+			rst=>rst,
+			
+			pc=>if_pc,
+		--out
+			instruction=> if_instruction
+		);
+			
 	iftoid_entity: IFtoID
 		port map(
 			instruction_in => if_instruction,
@@ -340,7 +379,10 @@ begin
 		--out
 			--pc_source
 			pc_src=> id_pc_source,
-
+			B_signal=> id_B_signal,
+			B_com_chooser=> id_B_com_chooser,
+			JR_singal=> id_JR_signal,
+			
 			--alu
 			alu_op => id_alu_op,
 			alu_src0=> id_alu_src0,
@@ -405,6 +447,7 @@ begin
 			immi_4_2_in => id_instruction(4 downto 2),
 			alu_src1_immi_chooser=> id_alu_src1_immi_chooser,
 			alu_immi_extend => id_alu_immi_extend,
+		
 		--out
 			--control signal
 			reg_wb_signal_out=>ex_reg_wb_signal,
@@ -426,6 +469,7 @@ begin
 			pc_out=>ex_pc,
 
 			--immi
+			alu_immi_former_out=> id_immi_final, --for B/JR
 			alu_immi_out => ex_alu_immi,
 
 			--mem

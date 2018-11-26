@@ -10,8 +10,7 @@ entity Compare is
 end Compare;
 
 architecture Behavioral of Compare is
-
 begin
-	output <= (number1 = number2);
+	output <= '1' when number1 = number2 else '0';
 end Behavioral;
 
