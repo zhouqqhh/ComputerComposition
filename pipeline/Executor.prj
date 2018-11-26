@@ -1,4 +1,0 @@
-vhdl work "mux_3bit.vhd"
-vhdl work "mux_2bit.vhd"
-vhdl work "alu.vhd"
-vhdl work "Executor.vhd"
