@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    00:04:08 11/22/2018 
--- Design Name: 
--- Module Name:    Executor - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    00:04:08 11/22/2018
+-- Design Name:
+-- Module Name:    Executor - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -30,14 +30,14 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity Executor is
-	port (			
+	port (
 	--in
 		--alu
 		alu_op: in std_logic_vector(2 downto 0);
-		alu_src0: in std_logic_vector(1 downto 0); 
+		alu_src0: in std_logic_vector(2 downto 0);
 		alu_src1: in std_logic_vector(1 downto 0);
-		sp, rx, ry, alu_immi: in std_logic_vector(15 downto 0);
-		
+		pc, ih, sp, rx, ry, alu_immi: in std_logic_vector(15 downto 0);
+
 	--out
 		alu_result: out std_logic_vector(15 downto 0)
 	);
@@ -53,7 +53,7 @@ architecture Behavioral of Executor is
 			result: out std_logic_vector(15 downto 0)
 		);
 	end component alu;
-	
+
 	component mux_2bit is
 		port(
 			input0: in std_logic_vector(15 downto 0);
@@ -64,31 +64,35 @@ architecture Behavioral of Executor is
 			output: out std_logic_vector(15 downto 0)
 		);
 	end component mux_2bit;
-	
+
 	signal src0, src1: std_logic_vector(15 downto 0);
 begin
-	src0_chooser: mux_2bit
+    --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
+	src0_chooser: mux_3bit
 		port map(
 			input0=>rx,
 			input1=>sp,
 			input2=>(others=>'0'),
-			input3=>ry,
+			input3=>ih,
+            input4=>pc,
+            input5=>ry,
 			sel=>alu_src0,
-			
+
 			output=>src0
 		);
-	
+
+    --0:ry, 1:immi, 2:rx, 3:0
 	src1_chooser: mux_2bit
 		port map(
 			input0 => ry,
 			input1 => alu_immi,
-			input2 => (others=>'0'),
-			input3 => rx,
+			input2 => rx,
+			input3 => (others=>'0'),
 			sel => alu_src1,
-			
+
 			output => src1
 		);
-	
+
 	alu_entity:alu
 		port map(
 			src0 => src0,
@@ -98,4 +102,3 @@ begin
 		);
 
 end Behavioral;
-
