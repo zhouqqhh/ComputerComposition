@@ -1,0 +1,5 @@
+set -tmpdir "C:/Users/zhouqh/Desktop/ComputerComposition/pipeline/xst/projnav.tmp"
+set -xsthdpdir "C:/Users/zhouqh/Desktop/ComputerComposition/pipeline/xst"
+elaborate
+-ifn EXEtoMEM.prj
+-ifmt mixed

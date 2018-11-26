@@ -37,12 +37,12 @@ entity EXEtoMEM is
 		ih_wb_signal_out: out std_logic;
 
 		--alu
-		alu_result_out: out std_logic_vector(15 downto 0)
+		alu_result_out: out std_logic_vector(15 downto 0);
 
 		--Memory
 		mem_wb_signal_out: out std_logic;
 		mem_wb_data_chooser_out: out std_logic;
-		mem_read_signal_out: out std_logic;
+		mem_read_signal_out: out std_logic
 	);
 end EXEtoMEM;
 
