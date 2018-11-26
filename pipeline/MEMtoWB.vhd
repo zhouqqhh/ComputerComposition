@@ -31,10 +31,10 @@ entity MEMtoWB is
 		ih_wb_signal_out: out std_logic;
 
 		--alu
-		alu_result_out: out std_logic_vector(15 downto 0)
+		alu_result_out: out std_logic_vector(15 downto 0);
 
 		--mem
-		mem_data_out: out std_logic_vector(15 downto 0);
+		mem_data_out: out std_logic_vector(15 downto 0)
 	);
 end MEMtoWB;
 
@@ -48,7 +48,7 @@ architecture Behavioral of MEMtoWB is
 	signal MEMtoWB_ih_wb_signal: std_logic;
 
 	--alu
-	signal MEMtoWB_alu_result: std_logic_vector(15 downto 0)
+	signal MEMtoWB_alu_result: std_logic_vector(15 downto 0);
 
 	--mem
 	signal MEMtoWB_mem_data: std_logic_vector(15 downto 0);
