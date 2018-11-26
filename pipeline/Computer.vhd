@@ -541,6 +541,7 @@ begin
 			reg_wb_data_chooser=>wb_reg_wb_data_chooser,
 			sp_wb_signal_out=>wb_sp_wb_signal,
 			t_wb_signal_out=>wb_t_wb_signal,
+			ih_wb_signal_out=>wb_ih_wb_signal,
 
 			--alu
 			alu_result_out=> wb_alu_result,
