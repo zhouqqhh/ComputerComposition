@@ -260,6 +260,7 @@ architecture Behavioral of Computer is
 	--exe
 	signal ex_reg_wb_signal: std_logic;
 	signal ex_reg_wb_place: std_logic_vector(2 downto 0);
+	signal ex_reg_wb_data_chooser: std_logic;
 	
 	signal ex_alu_src1: std_logic_vector(1 downto 0);
 	signal ex_alu_src1_immi_chooser: std_logic_vector(1 downto 0);
@@ -321,7 +322,7 @@ begin
 			clk => clk,
 			rst => rst,
 			instruction_out => id_instruction,
-			pc_out => id_pc,
+			pc_out => id_pc
 		);
 	
 	registers_entity: Registers
@@ -349,7 +350,7 @@ begin
 			read_data2 => id_ry,
 			sp_out => id_sp,
 			t_out => id_t,
-			ih_out => id_ih,
+			ih_out => id_ih
 		);
 	
 	control_entity: Controller
@@ -408,7 +409,7 @@ begin
 			--mem
 			mem_wb_signal_in=> id_mem_wb_signal,
 			mem_wb_data_chooser_in=> id_mem_wb_data_chooser,
-			mem_read_signal_int=> id_mem_read_signal,
+			mem_read_signal_in=> id_mem_read_signal,
 			
 			--alu
 			alu_op_in=> id_alu_op,
@@ -539,7 +540,7 @@ begin
 			mem_addr=> mem_alu_result,
 		
 		--out
-			mem_data=> mem_mem_data,
+			mem_data=> mem_mem_data
 		);
 	
 	memtowb_entity: MEMtoWB
