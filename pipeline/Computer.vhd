@@ -224,19 +224,34 @@ architecture Behavioral of Computer is
 --		);
 	
 	component Registers is
-		port(
-			--work on failing edge
-			clk: in std_logic;
-			rst: in std_logic;
-			
-			--write signal 1: write			
-			reg_wb_signal: in std_logic;
-			read_regs1: in std_logic_vector(2 downto 0);
-			read_regs2: in std_logic_vector(2 downto 0);
-			reg_wb_place: in std_logic_vector(2 downto 0);
-			reg_wb_data: in std_logic_vector(15 downto 0);
-			read_data1: out std_logic_vector(15 downto 0);
-			read_data2: out std_logic_vector(15 downto 0)	
+		port (
+		--out
+				--work on failing edge
+				clk: in std_logic;
+				rst: in std_logic;
+				
+				--write signal 1: write			
+				read_regs1: in std_logic_vector(2 downto 0);
+				read_regs2: in std_logic_vector(2 downto 0);
+
+				reg_wb_signal: in std_logic;
+				reg_wb_place: in std_logic_vector(2 downto 0);
+				reg_wb_alu_result: in std_logic_vector(15 downto 0);
+				reg_wb_mem_data: in std_logic_vector(15 downto 0);
+				reg_wb_data_chooser: in std_logic;
+				
+				sp_wb_signal: in std_logic;
+				t_wb_signal: in std_logic;
+				ih_wb_signal: in std_logic;
+				
+				t_wb_data: in std_logic;
+				
+			--out
+				read_data1: out std_logic_vector(15 downto 0);
+				read_data2: out std_logic_vector(15 downto 0);
+				sp_out: out std_logic_vector(15 downto 0);
+				t_out: out std_logic;
+				ih_out: out std_logic_vector(15 downto 0)
 		);
 	end component Registers;
 	
@@ -335,8 +350,9 @@ begin
 			
 			reg_wb_signal => wb_reg_wb_signal,
 			reg_wb_place => wb_reg_wb_place,
-			reg_wb_alu_result => wb_alu_result,
-			reg_wb_mem_data => wb_mem_data,
+			reg_wb_alu_result => wb_reg_wb_alu_result,
+			reg_wb_mem_data => wb_reg_wb_mem_data,
+			reg_wb_data_chooser=> wb_reg_wb_data_chooser,
 			
 			sp_wb_signal => wb_sp_wb_signal,
 			t_wb_signal => wb_t_wb_signal,
