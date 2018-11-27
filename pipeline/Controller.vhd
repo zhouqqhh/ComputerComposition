@@ -9,22 +9,35 @@ entity Controller is
 
     --out
         --pc
-        pc_src: out std_logic_vector(1 downto 0);
-        B_signal: out std_logic_vector(1 downto 0);
-        B_com_chooser: out std_logic_vector(1 downto 0);
-        JR_signal: out std_logic;
+--        pc_src: out std_logic_vector(1 downto 0);
+--        B_signal: out std_logic_vector(1 downto 0);
+--        B_com_chooser: out std_logic_vector(1 downto 0);
+--        JR_signal: out std_logic;
+			jump_control_signal: out jump_control;
 
         --alu
-        alu_sigs: out alu_control;
+--        alu_op: out std_logic_vector(2 downto 0);
+--        alu_src0: out std_logic_vector(2 downto 0); --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
+--        alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
+		  alu_control_signal: out alu_control;
         alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
         alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
 
         --regsters wb
-        reg_wb_sigs: out reg_wb_control;
-        reg_other_sigs: out reg_other_control;
+--        reg_wb_signal: out std_logic;	--0:no write, 1:write
+--        reg_wb_chooser: out std_logic_vector(1 downto 0); --0: rx, 1: ry, 2: rz
+--        reg_wb_data_chooser: out std_logic; --0:ALU result, 1:memRead
+        reg_wb_init_control_signal: out reg_wb_init_control;
+--		  sp_wb_signal: out std_logic;
+--        t_wb_signal: out std_logic;
+--        ih_wb_signal: out std_logic;
+		  reg_other_control_signal: out reg_other_control;
 
-        --memory
-        mem_sigs: out mem_control;
+		  --memory
+--        mem_wb_signal: out std_logic;
+--        mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
+--        mem_read_signal: out std_logic
+		  mem_control_signal: out mem_control;
     );
 end Controller;
 
