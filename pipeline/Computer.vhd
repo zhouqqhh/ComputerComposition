@@ -374,31 +374,21 @@ begin
 			
 		--out
 			--pc_source
-			pc_src=> id_pc_source,
-			B_signal=> id_B_signal,
-			B_com_chooser=> id_B_com_chooser,
-			JR_singal=> id_JR_signal,
+			jump_control_signal=> id_jump_contol,
 			
 			--alu
-			alu_op => id_alu_op,
-			alu_src0=> id_alu_src0,
-			alu_src1=> id_alu_src1,
+			alu_control_signal=>id_alu_control,
+			
 			alu_src1_immi_chooser=> id_alu_src1_immi_chooser,
 			alu_immi_extend=> id_alu_immi_extend,
 			
 			--register wb
-			reg_wb_signal => id_reg_wb_signal,
-			reg_wb_chooser => id_reg_wb_chooser,
-			reg_wb_data_chooser=> id_reg_wb_data_chooser,
+			reg_wb_init_control_signal=>id_reg_wb_init_control,
 			
-			sp_wb_signal => id_sp_wb_signal,
-			t_wb_signal => id_t_wb_signal,
-			ih_wb_signal => id_ih_wb_signal,
+			reg_other_control_signal=> id_reg_other_control,
 			
 			--mem
-			mem_wb_signal=> id_mem_wb_signal,
-			mem_wb_data_chooser=> id_mem_wb_data_chooser,
-			mem_read_signal=> id_mem_read_signal
+			mem_control_signal => id_mem_control,
 		);
 
 	idtoexe_entity: IDtoEXE
@@ -412,23 +402,14 @@ begin
 			reg_wb_ry=> id_instruction(7 downto 5),
 			reg_wb_rz=> id_instruction(4 downto 2),
 			
-			reg_wb_signal_in=>id_reg_wb_signal,
-			reg_wb_chooser=>id_reg_wb_chooser,
-			reg_wb_data_chooser_in=> id_reg_wb_data_chooser,
-			
-			sp_wb_signal_in=> id_sp_wb_signal,
-			t_wb_signal_in=> id_t_wb_signal,
-			ih_wb_signal_in=> id_ih_wb_signal,
+			reg_wb_init_control_signal_in=> id_reg_wb_init_control,
+			reg_other_control_signal_in=> id_reg_other_control,
 			
 			--mem
-			mem_wb_signal_in=> id_mem_wb_signal,
-			mem_wb_data_chooser_in=> id_mem_wb_data_chooser,
-			mem_read_signal_in=> id_mem_read_signal,
+			mem_control_signal_in => id_mem_control,
 			
 			--alu
-			alu_op_in=> id_alu_op,
-			alu_src0_in=> id_alu_src0,			
-			alu_src1_in=> id_alu_src1,
+			alu_control_signal_in <= id_alu_control,
 
 			rx_in=> id_rx,
 			ry_in=> id_ry,
@@ -446,18 +427,13 @@ begin
 		
 		--out
 			--control signal
-			reg_wb_signal_out=>ex_reg_wb_signal,
-			reg_wb_place_out=>ex_reg_wb_place,
-			reg_wb_data_chooser_out=>ex_reg_wb_data_chooser,
+			reg_wb_control_signal_out=>ex_reg_wb_control,
 			
-			sp_wb_signal_out=>ex_sp_wb_signal,
-			t_wb_signal_out=>ex_t_wb_signal,
-			ih_wb_signal_out=>ex_ih_wb_signal,
+			reg_other_control_signal_out=> ex_reg_other_control,
 			
 			--alu
-			alu_op_out=> ex_alu_op,
-			alu_src0_out=> ex_alu_src0,
-			alu_src1_out=> ex_alu_src1,
+			alu_control_signal_out=>ex_alu_control,
+			
 			rx_out=> ex_rx,
 			ry_out=> ex_ry,
 			sp_out=> ex_sp,
@@ -469,16 +445,14 @@ begin
 			alu_immi_out => ex_alu_immi,
 			
 			--mem
-			mem_wb_signal_out=> ex_mem_wb_signal,
-			mem_wb_data_chooser_out=> ex_mem_wb_data_chooser,
-			mem_read_signal_out=> ex_read_signal_out
+			mem_control_signal_out => ex_mem_control,
 		);
 	
 	exe_entity: Executor
 		port map(
 		--in
 			--alu
-			alu_control_signal <= ex_alu_control_signal,
+			alu_control_signal <= ex_alu_control,
 			
 			sp => ex_sp,
 			rx => ex_rx,
@@ -510,7 +484,7 @@ begin
 			alu_result_in=> ex_alu_result,
 			
 			--mem
-			mem_control_signal_in => ex_mem_control_signal,
+			mem_control_signal_in => ex_mem_control,
 			rx_in => ex_rx,
 			ry_in => ex_ry,
 		
@@ -526,7 +500,7 @@ begin
 			alu_result_out=>mem_alu_result,
 			
 			--mem
-			mem_control_signal_out => mem_mem_control_signal,
+			mem_control_signal_out => mem_mem_control,
 			
 			rx_out => mem_rx,
 			ry_out => mem_ry
@@ -539,7 +513,7 @@ begin
 			rst=>rst,
 			
 			--control signal
-			mem_control_signal <= mem_mem_control_signal,
+			mem_control_signal <= mem_mem_control,
 			
 			rx=>mem_rx,
 			ry=>mem_ry,

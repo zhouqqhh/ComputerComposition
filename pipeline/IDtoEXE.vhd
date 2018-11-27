@@ -10,14 +10,11 @@ entity IDtoEXE is
 		
 		--control signal
 		reg_wb_rx, reg_wb_ry, reg_wb_rz: in std_logic_vector(2 downto 0);
-		reg_wb_signal_in: in std_logic;
-		reg_wb_chooser: in std_logic_vector(1 downto 0);
-		reg_wb_data_chooser_in: in std_logic;
+		reg_wb_init_control_signal_in: in reg_wb_init_control;
 		
 		--alu
-		alu_op_in: in std_logic_vector(2 downto 0);
-		alu_src0_in: in std_logic_vector(2 downto 0);
-		alu_src1_in: in std_logic_vector(1 downto 0);
+		alu_control_signal_in: in alu_control;
+		
 		rx_in: in std_logic_vector(15 downto 0);
 		ry_in: in std_logic_vector(15 downto 0);
 		sp_in, pc_in, ih_in: in std_logic_vector(15 downto 0);
@@ -29,39 +26,28 @@ entity IDtoEXE is
 		alu_src1_immi_chooser: in std_logic_vector(1 downto 0);
 		alu_immi_extend: in std_logic;
 		
-		sp_wb_signal_in: in std_logic;
-		t_wb_signal_in: in std_logic;
-		ih_wb_signal_in: in std_logic;
+		reg_other_control_signal_in: in reg_other_control;
 	
-		mem_wb_signal_in: in std_logic;
-		mem_wb_data_chooser_in: in std_logic;
-		mem_read_signal_in: in std_logic;
+		mem_control_signal_in: in mem_control;
 		
 	--out
 		--control signal
-		reg_wb_signal_out: out std_logic;
-		reg_wb_place_out: out std_logic_vector(2 downto 0);
-		reg_wb_data_chooser_out: out std_logic;
+		reg_wb_control_signal_out: out reg_wb_control;
 		
-		sp_wb_signal_out: out std_logic;
-		t_wb_signal_out: out std_logic;
-		ih_wb_signal_out: out std_logic;
+		reg_other_control_signal_out: out reg_other_control;
 		
 		--alu
-		alu_op_out: out std_logic_vector(2 downto 0);
-		alu_src0_out: out std_logic_vector(2 downto 0);
-		alu_src1_out: out std_logic_vector(1 downto 0);
+		alu_control_signal_out: out alu_control;
 		rx_out: out std_logic_vector(15 downto 0);
 		ry_out: out std_logic_vector(15 downto 0);
 		sp_out, pc_out, ih_out: out std_logic_vector(15 downto 0);
 		
 		--immi
 		alu_immi_out: out std_logic_vector(15 downto 0);
+		alu_immi_former_out: out std_logic_vector(15 downto 0); --for b and jr
 		
 		--mem
-		mem_wb_signal_out: out std_logic;
-		mem_wb_data_chooser_out: out std_logic;
-		mem_read_signal_out: out std_logic
+		mem_control_signal_out: out mem_control
 	);
 end IDtoEXE;
 
@@ -92,47 +78,38 @@ architecture Behavioral of IDtoEXE is
 		);
 	end component mux3_2bit;
 	
-	signal reg_wb_signal: std_logic;
-	signal reg_wb_place, reg_wb_place_cand: std_logic_vector(2 downto 0);
-	signal reg_wb_data_chooser: std_logic;
+
+	signal reg_wb_place_cand: std_logic_vector(2 downto 0);
+	signal reg_wb_control_signal: reg_wb_control;
 	
-	signal alu_op: std_logic_vector(2 downto 0);
-	signal alu_src0: std_logic_vector(2 downto 0);
-	signal alu_src1: std_logic_vector(1 downto 0);
+	signal alu_control_signal: alu_control;
 	
-	signal mem_wb_signal, mem_read_signal, mem_wb_data_chooser: std_logic;
+	signal mem_control_signal: mem_control;
 	
-	signal sp_wb_signal, t_wb_signal, ih_wb_signal: std_logic;
+	signal reg_other_control_signal: reg_other_control;
+	
 	signal rx, ry, sp, ih, pc: std_logic_vector(15 downto 0);
 	signal alu_immi, alu_immi_cand: std_logic_vector(15 downto 0);
 	signal immi_7_0_sign, immi_7_0_zero, immi_3_0_sign, immi_3_0_zero, immi_4_0_sign, immi_4_0_zero, immi_4_2_sign, immi_4_2_zero: std_logic_vector(15 downto 0);
 	signal immi_chooser_concat: std_logic_vector(2 downto 0);
-	signal read_signal_out: std_logic;
 	
 begin
-	reg_wb_signal_out <= reg_wb_signal;
-	reg_wb_place_out <= reg_wb_place;
-	reg_wb_data_chooser_out <= reg_wb_data_chooser;
+	reg_wb_control_signal_out <= reg_wb_control_signal;	
+	reg_other_control_signal_out <= reg_other_control_signal;
 	
-	sp_wb_signal_out <= sp_wb_signal;
-	t_wb_signal_out <= t_wb_signal;
-	ih_wb_signal_out <= ih_wb_signal;
+	alu_control_signal_out <= alu_control_signal;
 	
-	alu_op_out <= alu_op;
-	alu_src0_out <= alu_src0;
-	alu_src1_out <= alu_src1;
 	rx_out <= rx;
 	ry_out <= ry;
 	sp_out <= sp;
 	ih_out <= ih;
 	pc_out <= pc;
 	
-	mem_wb_signal_out <= mem_wb_signal;
-	mem_wb_data_chooser_out <= mem_wb_data_chooser;
-	mem_read_signal_out <= read_signal_out;
+	mem_control_signal_out <= mem_control_signal;
 	
 	alu_immi_out <= alu_immi;
 	
+	-----
 	immi_7_0_sign(7 downto 0) <= immi_7_0_in;
 	immi_7_0_sign(15 downto 8) <= (others=>immi_7_0_in(7));
 	immi_7_0_zero <= "00000000" & immi_7_0_in;
@@ -163,6 +140,8 @@ begin
 			sel=> immi_chooser_concat,
 			output=> alu_immi_cand
 		);
+	--for jr/b
+	alu_immi_former_out <= alu_immi_cand;
 	
 	wb_place_chooser: mux3_2bit
 		port map(
@@ -170,43 +149,44 @@ begin
 			input1=> reg_wb_ry,
 			input2=> reg_wb_rz,
 			input3=> "000",
-			sel=> reg_wb_chooser,
+			sel=> reg_wb_init_control_signal_in.reg_wb_chooser,
 			output=> reg_wb_place_cand
 		);
 	
 	process(clk, rst)
 	begin
-	if rst = '0' then
-		alu_op <= "000";
-		alu_src1 <= "00";
-		rx <= (others=>'0');
-		ry <= (others=>'0');
-		alu_immi <= (others=>'0');
-	elsif rising_edge(clk) then
-		reg_wb_signal <= reg_wb_signal_in;
-		reg_wb_place <= reg_wb_place_cand;
-		reg_wb_data_chooser <= reg_wb_data_chooser_in;
-		
-		sp_wb_signal <= sp_wb_signal_in;
-		t_wb_signal <= t_wb_signal_in;
-		ih_wb_signal <= ih_wb_signal_in;
-		
-		alu_op <= alu_op_in;
-		alu_src0 <= alu_src0_in;
-		alu_src1 <= alu_src1_in;
-		
-		sp <= sp_in;
-		ih <= ih_in;
-		pc <= pc_in;
+		if rst = '0' then
+			reg_wb_control_signal <= zero_reg_wb_control;
+			reg_other_control_signal <= zero_reg_other_control;
+			mem_control_signal <= zero_mem_control;
+			alu_control_signal <= zero_alu_control;
+			
+			rx <= (others=>'0');
+			ry <= (others=>'0');
+			sp <= (others=>'0');
+			pc <= (others=>'0');
+			ih <= (others=>'0');
+			alu_immi <= (others=>'0');
+		elsif rising_edge(clk) then
+			reg_wb_control_signal.reg_wb_signal <= reg_wb_init_control_signal_in.reg_wb_signal;
+			reg_wb_control_signal.reg_wb_data_chooser <= reg_wb_init_control_signal_in.reg_wb_data_chooser;
+			reg_wb_control_signal.reg_wb_regs <= reg_wb_place_cand;
+			
+			reg_other_control_signal <= reg_other_control_signal_in;
+			
+			alu_control_signal <= alu_control_signal_in;
+			
+			sp <= sp_in;
+			ih <= ih_in;
+			pc <= pc_in;
 
-		mem_wb_signal <= mem_wb_signal_in;
-		mem_wb_data_chooser <= mem_wb_data_chooser_in;
-		read_signal_out <= mem_read_signal_in;
-		rx <= rx_in;
-		ry <= ry_in;
-		alu_immi <= alu_immi_cand;
-		
-	end if;
+			mem_control_signal <= mem_control_signal_in;
+			
+			rx <= rx_in;
+			ry <= ry_in;
+			alu_immi <= alu_immi_cand;
+			
+		end if;
 	end process;
 end Behavioral;
 

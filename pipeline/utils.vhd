@@ -28,6 +28,20 @@ package utils is
 -- function <function_name>  (signal <signal_name> : in <type_declaration>) return <type_declaration>;
 -- procedure <procedure_name> (<type_declaration> <constant_name>	: in <type_declaration>);
 --
+	type reg_wb_init_control is
+		record
+			reg_wb_signal: std_logic;
+			reg_wb_chooser: std_logic_vector(1 downto 0);
+			reg_wb_data_chooser: std_logic;
+		end record;
+	
+	constant zero_reg_wb_init_control : reg_wb_init_control :=
+		(
+			reg_wb_signal => '0',
+			reg_wb_chooser => "00",
+			reg_wb_data_chooser => '0'
+		);
+	
 	type reg_wb_control is
 		record
 			reg_wb_signal: std_logic;
@@ -84,6 +98,22 @@ package utils is
 			alu_src0 => (others=>'0'),
 			alu_src1 => (others=>'0'),
 			t_src => '0'
+		);
+	
+	type jump_control is
+		record
+			pc_src: std_logic_vector(1 downto 0);
+			B_signal: std_logic_vector(1 downto 0);
+			B_com_chooser: std_logic_vector(1 downto 0);
+			JR_signal: std_logic;
+		end record;
+	
+	constant zero_jump_control: jump_control :=
+		(
+			pc_src => "00",
+			B_signal => "00",
+			B_com_chooser => "00",
+			JR_signal => '0'
 		);
 		
 end utils;
