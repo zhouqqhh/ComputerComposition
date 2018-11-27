@@ -245,19 +245,34 @@ architecture Behavioral of Computer is
 --		);
 
 	component Registers is
-		port(
-			--work on failing edge
-			clk: in std_logic;
-			rst: in std_logic;
+		port (
+		--out
+				--work on failing edge
+				clk: in std_logic;
+				rst: in std_logic;
+				
+				--write signal 1: write			
+				read_regs1: in std_logic_vector(2 downto 0);
+				read_regs2: in std_logic_vector(2 downto 0);
 
-			--write signal 1: write
-			reg_wb_signal: in std_logic;
-			read_regs1: in std_logic_vector(2 downto 0);
-			read_regs2: in std_logic_vector(2 downto 0);
-			reg_wb_place: in std_logic_vector(2 downto 0);
-			reg_wb_data: in std_logic_vector(15 downto 0);
-			read_data1: out std_logic_vector(15 downto 0);
-			read_data2: out std_logic_vector(15 downto 0)
+				reg_wb_signal: in std_logic;
+				reg_wb_place: in std_logic_vector(2 downto 0);
+				reg_wb_alu_result: in std_logic_vector(15 downto 0);
+				reg_wb_mem_data: in std_logic_vector(15 downto 0);
+				reg_wb_data_chooser: in std_logic;
+				
+				sp_wb_signal: in std_logic;
+				t_wb_signal: in std_logic;
+				ih_wb_signal: in std_logic;
+				
+				t_wb_data: in std_logic;
+				
+			--out
+				read_data1: out std_logic_vector(15 downto 0);
+				read_data2: out std_logic_vector(15 downto 0);
+				sp_out: out std_logic_vector(15 downto 0);
+				t_out: out std_logic;
+				ih_out: out std_logic_vector(15 downto 0)
 		);
 	end component Registers;
 
@@ -281,7 +296,8 @@ architecture Behavioral of Computer is
 	--exe
 	signal ex_reg_wb_signal: std_logic;
 	signal ex_reg_wb_place: std_logic_vector(2 downto 0);
-
+	signal ex_reg_wb_data_chooser: std_logic;
+	
 	signal ex_alu_src1: std_logic_vector(1 downto 0);
 	signal ex_alu_src1_immi_chooser: std_logic_vector(1 downto 0);
 	signal ex_alu_op: std_logic_vector(2 downto 0);
@@ -351,16 +367,15 @@ begin
 
 			read_regs1 => id_instruction(10 downto 8),
 			read_regs2 => id_instruction(7 downto 5),
-
-			reg_wb_signal => wb_reg_wb_signal,
-			reg_wb_place => wb_reg_wb_place,
+			
+			reg_wb_control_in => wb_reg_wb_control,
+			
 			reg_wb_alu_result => wb_alu_result,
 			reg_wb_mem_data => wb_mem_data,
-
-			sp_wb_signal => wb_sp_wb_signal,
-			t_wb_signal => wb_t_wb_signal,
-			ih_wb_signal => wb_ih_wb_signal,
-
+			
+			
+			reg_other_control_in => wb_reg_other_control,
+			
 			t_wb_data => wb_t_wb_data,
 
 		--out
@@ -427,8 +442,8 @@ begin
 			--mem
 			mem_wb_signal_in=> id_mem_wb_signal,
 			mem_wb_data_chooser_in=> id_mem_wb_data_chooser,
-			mem_read_signal_int=> id_mem_read_signal,
-
+			mem_read_signal_in=> id_mem_read_signal,
+			
 			--alu
 			alu_op_in=> id_alu_op,
 			alu_src0_in=> id_alu_src0,
@@ -482,10 +497,8 @@ begin
 		port map(
 		--in
 			--alu
-			alu_op => ex_alu_op,
-			alu_src0 => ex_alu_src0,
-			alu_src1 => ex_alu_src1,
-
+			alu_control_signal <= ex_alu_control_signal,
+			
 			sp => ex_sp,
 			rx => ex_rx,
 			ry => ex_ry,
@@ -494,7 +507,8 @@ begin
 			pc => ex_pc,
 
 		--out
-			alu_result=> ex_alu_result
+			alu_result=> ex_alu_result,
+			t_wb_data=> ex_t_wb_data
 		);
 
 	led <= wb_alu_result;
@@ -506,39 +520,35 @@ begin
 			rst=> rst,
 
 			--control signal
-			reg_wb_signal_in=>ex_reg_wb_signal,
-			reg_wb_place_in=>ex_reg_wb_place,
-			reg_wb_data_chooser_in=>ex_reg_wb_data_chooser,
-
-			sp_wb_signal_in=>ex_sp_wb_signal,
-			t_wb_signal_in=>ex_t_wb_signal,
-			ih_wb_signal_in=>ex_ih_wh_signal,
-
+			reg_wb_control_in=> ex_reg_wb_control,
+			
+			reg_other_control_in=> ex_reg_other_control,
+			
+			t_wb_data_in=> ex_t_wb_data,
 			--alu
 			alu_result_in=> ex_alu_result,
 
 			--mem
-			mem_wb_signal_in=> ex_mem_wb_signal,
-			mem_wb_data_chooser_in=> ex_mem_wb_data_chooser,
-			mem_read_signal_in=> ex_mem_read_signal,
-
+			mem_control_signal_in => ex_mem_control_signal,
+			rx_in => ex_rx,
+			ry_in => ex_ry,
+		
 		--out
 			--control signal
-			reg_wb_signal_out=>mem_reg_wb_signal,
-			reg_wb_place_out=>mem_reg_wb_place,
-			reg_wb_data_chooser=>mem_reg_wb_data_chooser,
-
-			sp_wb_signal_out=>mem_sp_wb_signal_out,
-			t_wb_signal_out=>mem_t_wb_signal_out,
-			ih_wb_signal_out=> mem_ih_wb_signal,
-
+			reg_wb_control_out=> mem_reg_wb_control,
+			
+			reg_other_control_out=> mem_reg_other_control,
+			
+			t_wb_data_out=>mem_t_wb_data,
+			
 			--alu
 			alu_result_out=>mem_alu_result,
 
 			--mem
-			mem_wb_signal_out=>mem_mem_wb_signal,
-			mem_wb_data_chooser_out=>mem_mem_wb_data_chooser,
-			mem_read_signal_out=>mem_mem_read_signal
+			mem_control_signal_out => mem_mem_control_signal,
+			
+			rx_out => mem_rx,
+			ry_out => mem_ry
 		);
 
 	mem_entity: MEM
@@ -548,13 +558,10 @@ begin
 			rst=>rst,
 
 			--control signal
-			mem_wb_signal=> mem_mem_wb_signal,
-			mem_wb_signal_data_chooser=> mem_mem_wb_data_chooser,
+			mem_control_signal <= mem_mem_control_signal,
+			
 			rx=>mem_rx,
 			ry=>mem_ry,
-
-			mem_read_signal=> mem_mem_read_signal,
-
 			mem_addr=> mem_alu_result,
 
 		--out
@@ -567,26 +574,24 @@ begin
 			clk=> clk,
 			rst=> rst,
 			--control signal
-			reg_wb_signal_in=>mem_reg_wb_signal,
-			reg_wb_place_in=>mem_reg_wb_place,
-			reg_wb_data_chooser=>mem_reg_wb_data_chooser,
-			sp_wb_signal_in=>mem_sp_wb_signal,
-			t_wb_signal_in=>mem_sp_wb_signal,
-			ih_wb_signal_in=>mem_ih_wb_signal,
-
+			reg_wb_control_in=> mem_reg_wb_control,
+			
+			reg_other_control_in=> mem_reg_other_control,
+			
+			t_wb_data_in=>mem_t_wb_data,
+			
 			--alu
 			alu_result_in=>mem_alu_result,
 			mem_data_in=>mem_mem_data,
 
 		--out
 			--control signal
-			reg_wb_signal_out=>wb_reg_wb_signal,
-			reg_wb_place_out=>wb_reg_wb_place,
-			reg_wb_data_chooser=>wb_reg_wb_data_chooser,
-			sp_wb_signal_out=>wb_sp_wb_signal,
-			t_wb_signal_out=>wb_t_wb_signal,
-			ih_wb_signal_out=>wb_ih_wb_signal,
-
+			reg_wb_control_out=> wb_reg_wb_control,
+			
+			reg_other_control_out=> wb_reg_other_control,
+			
+			t_wb_data_out=>wb_t_wb_data,
+			
 			--alu
 			alu_result_out=> wb_alu_result,
 			mem_data_out=>wb_mem_data
