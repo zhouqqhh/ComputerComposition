@@ -613,6 +613,21 @@ begin
 			alu_result_out => wb_alu_result,
 			mem_data_out => wb_mem_data
 		);
+	
+	hazard_entity: Hazard
+		port map(
+		--in
+			mem_mem_control_signal=> mem_mem_control,
+			
+			id_reg0=> id_instruction(10 downto 8),
+			id_reg1=> id_instruction(7 downto 5),
+			
+			exe_mem_control_signal => exe_mem_control,
+			exe_reg_wb_control_signal=> exe_reg_wb_control,
+		
+		--out
+			buble_maker_signal=> buble_maker
+		);
 
 	forwarding_entity: forwarding
 		port map(
@@ -620,9 +635,9 @@ begin
 	        --ID
 	        ID_reg0 => id_instruction(10 downto 8),
 	        ID_reg1 => id_instruction(7 downto 5),
-	        --ID to EXE
+	      --ID to EXE
 			IDtoEXE_reg_wb_control_in => ex_reg_wb_control,
-	        --EXE to MEM
+	      --EXE to MEM
 			EXEtoMEM_reg_wb_control_in => mem_reg_wb_control,
 
 	    --out

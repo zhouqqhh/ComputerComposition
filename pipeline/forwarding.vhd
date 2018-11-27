@@ -36,5 +36,5 @@ begin
     forwarding_control_signal_out.alu_forwarding_EXEtoMEM_src1 <= EXEtoMEM_reg_wb_control_in.reg_wb_signal and (not(ID_reg1(0) xor EXEtoMEM_reg_wb_control_in.reg_wb_regs(0)))
 																	  and (not(ID_reg1(1) xor EXEtoMEM_reg_wb_control_in.reg_wb_regs(1)))
 																	  and (not(ID_reg1(2) xor EXEtoMEM_reg_wb_control_in.reg_wb_regs(2)));
-
+	 forwarding_control_signal_out.alu_forwarding_EXEtoMEM_sel <= EXEtoMEM_reg_wb_control_in.reg_wb_data_chooser;
 end Behavioral;
