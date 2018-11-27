@@ -43,7 +43,7 @@ begin
                     reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
                     reg_wb_init_control_signal.reg_wb_data_chooser <= 'Z';
                     reg_other_control_signal.sp_wb_signal <= '0';
-                    reg_other_control_signal.reg_other_control_signal.t_wb_signal <= '0';
+                    reg_other_control_signal.t_wb_signal <= '0';
                     reg_other_control_signal.ih_wb_signal <= '0';
                     mem_control_signal.wb_signal <= '0';
                     mem_control_signal.wb_data_chooser <= 'Z';
