@@ -46,9 +46,7 @@ architecture Behavioral of Computer is
 			rst: in std_logic;
 
 			--control signal
-			JR_signal: in std_logic;
-			B_signal: in std_logic_vector(1 downto 0);
-			B_com_chooser: in std_logic_vector(1 downto 0);
+			jump_control_signal: in jump_control;
 
 			--data
 			last_pc, id_pc, immi, rx: in std_logic_vector(15 downto 0);
@@ -74,55 +72,60 @@ architecture Behavioral of Computer is
 	end component IFtoID;
 
 	component Controller is
-		port(
-	    --in
-	        instruction: in std_logic_vector(15 downto 0);
+		 port (
+		 --in
+			  instruction: in std_logic_vector(15 downto 0);
 
-	    --out
-	        --pc
-	        pc_src: out std_logic_vector(1 downto 0);
-	        B_signal: out std_logic_vector(1 downto 0);
-	        B_com_chooser: out std_logic_vector(1 downto 0);
-	        JR_signal: out std_logic;
+		 --out
+			  --pc
+	--        pc_src: out std_logic_vector(1 downto 0);
+	--        B_signal: out std_logic_vector(1 downto 0);
+	--        B_com_chooser: out std_logic_vector(1 downto 0);
+	--        JR_signal: out std_logic;
+				jump_control_signal: out jump_control;
 
-	        --alu
-	        alu_op: out std_logic_vector(2 downto 0);
-	        alu_src0: out std_logic_vector(2 downto 0); --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
-	        alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
-	        alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
-	        alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
+			  --alu
+	--        alu_op: out std_logic_vector(2 downto 0);
+	--        alu_src0: out std_logic_vector(2 downto 0); --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
+	--        alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
+			  alu_control_signal: out alu_control;
+			  alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
+			  alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
 
-	        --regsters wb
-	        reg_wb_signal: out std_logic;	--0:no write, 1:write
-	        reg_wb_chooser: out std_logic_vector(1 downto 0); --0: rx, 1: ry, 2: rz
-	        reg_wb_data_chooser: out std_logic; --0:ALU result, 1:memRead
-	        sp_wb_signal: out std_logic;
-	        t_wb_signal: out std_logic;
-	        ih_wb_signal: out std_logic;
+			  --regsters wb
+	--        reg_wb_signal: out std_logic;	--0:no write, 1:write
+	--        reg_wb_chooser: out std_logic_vector(1 downto 0); --0: rx, 1: ry, 2: rz
+	--        reg_wb_data_chooser: out std_logic; --0:ALU result, 1:memRead
+			  reg_wb_init_control_signal: out reg_wb_init_control;
+	--		  sp_wb_signal: out std_logic;
+	--        t_wb_signal: out std_logic;
+	--        ih_wb_signal: out std_logic;
+			  reg_other_control_signal: out reg_other_control;
 
-	        --memory
-	        mem_wb_signal: out std_logic;
-	        mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
-	        mem_read_signal: out std_logic
-		);
+			  --memory
+	--        mem_wb_signal: out std_logic;
+	--        mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
+	--        mem_read_signal: out std_logic
+			  mem_control_signal: out mem_control
+		 );
 	end component Controller;
 
 	component IDtoEXE is
-		port(
+		port (
 		--in
 			clk: in std_logic;
 			rst: in std_logic;
 
 			--control signal
 			reg_wb_rx, reg_wb_ry, reg_wb_rz: in std_logic_vector(2 downto 0);
-			reg_wb_signal_in: in std_logic;
-			reg_wb_chooser: in std_logic_vector(1 downto 0);
+			reg_wb_init_control_signal_in: in reg_wb_init_control;
 
 			--alu
-			alu_op_in: in std_logic_vector(2 downto 0);
-			alu_src1_in: in std_logic_vector(1 downto 0);
+			alu_control_signal_in: in alu_control;
+
 			rx_in: in std_logic_vector(15 downto 0);
 			ry_in: in std_logic_vector(15 downto 0);
+			sp_in, pc_in, ih_in: in std_logic_vector(15 downto 0);
 
 			immi_7_0_in: in std_logic_vector(7 downto 0);
 			immi_3_0_in: in std_logic_vector(3 downto 0);
@@ -130,19 +133,29 @@ architecture Behavioral of Computer is
 			immi_4_2_in: in std_logic_vector(2 downto 0);
 			alu_src1_immi_chooser: in std_logic_vector(1 downto 0);
 			alu_immi_extend: in std_logic;
+
+			reg_other_control_signal_in: in reg_other_control;
+
+			mem_control_signal_in: in mem_control;
+
 		--out
 			--control signal
-			reg_wb_signal_out: out std_logic;
-			reg_wb_place_out: out std_logic_vector(2 downto 0);
+			reg_wb_control_signal_out: out reg_wb_control;
+
+			reg_other_control_signal_out: out reg_other_control;
 
 			--alu
-			alu_op_out: out std_logic_vector(2 downto 0);
-			alu_src1_out: out std_logic_vector(1 downto 0);
+			alu_control_signal_out: out alu_control;
 			rx_out: out std_logic_vector(15 downto 0);
 			ry_out: out std_logic_vector(15 downto 0);
+			sp_out, pc_out, ih_out: out std_logic_vector(15 downto 0);
 
 			--immi
-			alu_immi_out: out std_logic_vector(15 downto 0)
+			alu_immi_out: out std_logic_vector(15 downto 0);
+			alu_immi_former_out: out std_logic_vector(15 downto 0); --for b and jr
+
+			--mem
+			mem_control_signal_out: out mem_control
 		);
 	end component IDtoEXE;
 
@@ -150,12 +163,13 @@ architecture Behavioral of Computer is
 		port(
 		--in
 			--alu
-			alu_op: in std_logic_vector(2 downto 0);
-			alu_src1: in std_logic_vector(1 downto 0);
-			rx, ry, alu_immi: in std_logic_vector(15 downto 0);
+			alu_control_signal: in alu_control;
+
+			sp, rx, ry, alu_immi, ih, pc: in std_logic_vector(15 downto 0);
 
 		--out
-			alu_result: out std_logic_vector(15 downto 0)
+			alu_result: out std_logic_vector(15 downto 0);
+			t_wb_data: out std_logic
 		);
 	end component Executor;
 
@@ -166,67 +180,77 @@ architecture Behavioral of Computer is
 			rst: in std_logic;
 
 			--control signal
-			reg_wb_signal_in: in std_logic;
-			reg_wb_place_in: in std_logic_vector(2 downto 0);
-			reg_wb_data_chooser_in: in std_logic;
+			reg_wb_control_in: in reg_wb_control;
+			reg_other_control_in: in reg_other_control;
 
-			sp_wb_signal_in: in std_logic;
-			t_wb_signal_in: in std_logic;
-			ih_wb_signal_in: in std_logic;
-
+			t_wb_data_in: in std_logic;
 
 			--alu
 			alu_result_in: in std_logic_vector(15 downto 0);
 
-			--Memory
-			mem_wb_signal_in: in std_logic;
-			mem_wb_data_chooser_in: in std_logic;
-			mem_read_signal_in: in std_logic;
+			--mem
+			mem_control_signal_in: in mem_control;
+
+			rx_in, ry_in: in std_logic_vector(15 downto 0);
 
 		--out
 			--control signal
-			reg_wb_signal_out: out std_logic;
-			reg_wb_place_out: out std_logic_vector(2 downto 0);
-			reg_wb_data_chooser_out: out std_logic;
+			reg_wb_control_out: out reg_wb_control;
+			reg_other_control_out: out reg_other_control;
 
-			sp_wb_signal_out: out std_logic;
-			t_wb_signal_out: out std_logic;
-			ih_wb_signal_out: out std_logic;
+			t_wb_data_out: out std_logic;
 
 			--alu
 			alu_result_out: out std_logic_vector(15 downto 0);
 
-			--Memory
-			mem_wb_signal_out: out std_logic;
-			mem_wb_data_chooser_out: out std_logic;
-			mem_read_signal_out: out std_logic
+			--mem
+			mem_control_signal_out: out mem_control;
+			rx_out, ry_out: out std_logic_vector(15 downto 0)
 		);
 	end component EXEtoMEM;
 
---	component MEM is
---		port(
---		);
---
-	component MEMtoWB is
+	component mem is
 		port(
+		--in
+			clk, rst: in std_logic;
+
+			--control signal
+			mem_control_signal: in mem_control;
+
+			rx, ry: in std_logic_vector(15 downto 0);
+
+			mem_addr: in std_logic_vector(15 downto 0);
+
+		--out
+			mem_data: out std_logic_vector(15 downto 0)
+		);
+	end component mem;
+
+	component MEMtoWB is
+		port (
 		--in
 			clk: in std_logic;
 			rst: in std_logic;
 
 			--control signal
-			reg_wb_signal_in: in std_logic;
-			reg_wb_place_in: in std_logic_vector(2 downto 0);
+			reg_wb_control_in: in reg_wb_control;
+			reg_other_control_in: in reg_other_control;
+
+			t_wb_data_in: in std_logic;
 
 			--alu
 			alu_result_in: in std_logic_vector(15 downto 0);
+			mem_data_in: in std_logic_vector(15 downto 0);
 
 		--out
 			--control signal
-			reg_wb_signal_out: out std_logic;
-			reg_wb_place_out: out std_logic_vector(2 downto 0);
+			reg_wb_control_out: out reg_wb_control;
+			reg_other_control_out: out reg_other_control;
+
+			t_wb_data_out: out std_logic;
 
 			--alu
-			alu_result_out: out std_logic_vector(15 downto 0)
+			alu_result_out, mem_data_out: out std_logic_vector(15 downto 0)
 		);
 	end component MEMtoWB;
 
@@ -245,15 +269,12 @@ architecture Behavioral of Computer is
 			read_regs1: in std_logic_vector(2 downto 0);
 			read_regs2: in std_logic_vector(2 downto 0);
 
-			reg_wb_signal: in std_logic;
-			reg_wb_place: in std_logic_vector(2 downto 0);
-			reg_wb_alu_result: in std_logic_vector(15 downto 0);
-			reg_wb_mem_data: in std_logic_vector(15 downto 0);
-			reg_wb_data_chooser: in std_logic;
+			reg_wb_control_in: in reg_wb_control;
 
-			sp_wb_signal: in std_logic;
-			t_wb_signal: in std_logic;
-			ih_wb_signal: in std_logic;
+			reg_wb_mem_data: in std_logic_vector(15 downto 0);
+			reg_wb_alu_result: in std_logic_vector(15 downto 0);
+
+			reg_other_control_in: in reg_other_control;
 
 			t_wb_data: in std_logic;
 
@@ -299,45 +320,46 @@ architecture Behavioral of Computer is
 
 	--if
 	signal if_instruction: std_logic_vector(15 downto 0);
+	signal if_pc: std_logic_vector(15 downto 0);
 
 	--id
-	signal id_instruction: std_logic_vector(15 downto 0);
+	signal id_instruction, id_pc: std_logic_vector(15 downto 0);
 
-	signal id_rx, id_ry, selected_rx, selected_ry: std_logic_vector(15 downto 0);
+	signal id_jump_control: jump_control;
+	signal id_rx, id_ry, id_sp, id_ih, id_immi_final, selected_rx, selected_ry: std_logic_vector(15 downto 0);
+	signal id_t: std_logic;
 
-	signal id_alu_op: std_logic_vector(2 downto 0);
-	signal id_alu_src0: std_logic_vector(2 downto 0);
-	signal id_alu_src1: std_logic_vector(1 downto 0);
+	signal id_alu_control: alu_control;
+	signal id_reg_wb_init_control: reg_wb_init_control;
+	signal id_reg_other_control: reg_other_control;
+	signal id_mem_control: mem_control;
 	signal id_alu_src1_immi_chooser: std_logic_vector(1 downto 0);
 	signal id_alu_immi_extend: std_logic;
-
-	signal id_reg_wb_signal: std_logic;
-	signal id_reg_wb_chooser: std_logic_vector(1 downto 0);
-
 	signal forwarding_control_signal: forwarding_control;
 
 	--exe
-	signal ex_reg_wb_signal: std_logic;
-	signal ex_reg_wb_place: std_logic_vector(2 downto 0);
-	signal ex_reg_wb_data_chooser: std_logic;
-
-	signal ex_alu_src1: std_logic_vector(1 downto 0);
-	signal ex_alu_src1_immi_chooser: std_logic_vector(1 downto 0);
-	signal ex_alu_op: std_logic_vector(2 downto 0);
-	signal ex_rx, ex_ry, ex_alu_immi, ex_alu_result: std_logic_vector(15 downto 0);
+	signal ex_reg_wb_control: reg_wb_control;
+	signal ex_reg_other_control: reg_other_control;
+	signal ex_alu_control: alu_control;
+	signal ex_rx, ex_ry, ex_sp, ex_ih, ex_pc, ex_alu_immi: std_logic_vector(15 downto 0);
+	signal ex_mem_control: mem_control;
+	signal ex_alu_result: std_logic_vector(15 downto 0);
+	signal ex_t_wb_data: std_logic;
 
 	--mem
-	signal mem_reg_wb_signal: std_logic;
-	signal mem_reg_wb_place: std_logic_vector(2 downto 0);
-	signal mem_alu_result: std_logic_vector(15 downto 0);
-	--wb
-	signal wb_reg_wb_signal: std_logic;
-	signal wb_reg_wb_data: std_logic_vector(15 downto 0);
-	signal wb_reg_wb_place: std_logic_vector(2 downto 0);
-	signal wb_alu_result: std_logic_vector(15 downto 0);
+	signal mem_reg_wb_control: reg_wb_control;
+	signal mem_reg_other_control: reg_other_control;
+	signal mem_t_wb_data: std_logic;
+	signal mem_mem_control: mem_control;
+	signal mem_alu_result, mem_mem_data: std_logic_vector(15 downto 0);
+	signal mem_rx, mem_ry: std_logic_vector(15 downto 0);
 
-	--debug
-	signal if_pc: std_logic_vector(15 downto 0);
+	--wb
+	signal wb_reg_wb_control: reg_wb_control;
+	signal wb_reg_other_control: reg_other_control;
+	signal wb_alu_result, wb_mem_data: std_logic_vector(15 downto 0);
+	signal wb_t_wb_data: std_logic;
+
 begin
 
 	pc_write_entity: PC_Write
@@ -347,9 +369,7 @@ begin
 			rst=>rst,
 
 			--control signal
-			JR_signal=> id_JR_signal,
-			B_signal=> id_B_signal,
-			B_com_chooser=> id_B_com_chooser,
+			jump_control_signal=>id_jump_control,
 
 			--data
 			last_pc=>if_pc,
@@ -416,7 +436,7 @@ begin
 
 		--out
 			--pc_source
-			jump_control_signal=> id_jump_contol,
+			jump_control_signal=> id_jump_control,
 
 			--alu
 			alu_control_signal=>id_alu_control,
@@ -430,7 +450,7 @@ begin
 			reg_other_control_signal=> id_reg_other_control,
 
 			--mem
-			mem_control_signal => id_mem_control,
+			mem_control_signal => id_mem_control
 		);
 
 	idtoexe_entity: IDtoEXE
@@ -451,7 +471,7 @@ begin
 			mem_control_signal_in => id_mem_control,
 
 			--alu
-			alu_control_signal_in <= id_alu_control,
+			alu_control_signal_in => id_alu_control,
 
 			rx_in=> selected_rx,
 			ry_in=> selected_ry,
@@ -487,14 +507,14 @@ begin
 			alu_immi_out => ex_alu_immi,
 
 			--mem
-			mem_control_signal_out => ex_mem_control,
+			mem_control_signal_out => ex_mem_control
 		);
 
 	exe_entity: Executor
 		port map(
 		--in
 			--alu
-			alu_control_signal <= ex_alu_control,
+			alu_control_signal => ex_alu_control,
 
 			sp => ex_sp,
 			rx => ex_rx,
@@ -555,7 +575,7 @@ begin
 			rst=>rst,
 
 			--control signal
-			mem_control_signal <= mem_mem_control,
+			mem_control_signal => mem_mem_control,
 
 			rx=>mem_rx,
 			ry=>mem_ry,

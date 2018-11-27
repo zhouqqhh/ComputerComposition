@@ -1,6 +1,14 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use utils.ALL;
+use work.utils.all;
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx primitives in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
 
 entity Controller is
     port (
@@ -18,10 +26,16 @@ entity Controller is
 
         --regsters wb
         reg_wb_init_control_signal: out reg_wb_init_control;
-	    reg_other_control_signal: out reg_other_control;
-
-	    --memory
-	    mem_control_signal: out mem_control
+--		  sp_wb_signal: out std_logic;
+--        t_wb_signal: out std_logic;
+--        ih_wb_signal: out std_logic;
+		  reg_other_control_signal: out reg_other_control;
+        
+		  --memory
+--        mem_wb_signal: out std_logic;
+--        mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
+--        mem_read_signal: out std_logic
+		  mem_control_signal: out mem_control
     );
 end Controller;
 

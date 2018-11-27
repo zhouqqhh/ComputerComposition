@@ -1,6 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_unsigned.all;
+use work.utils.all;
 
 entity PC_write is
 	port (
@@ -9,10 +10,8 @@ entity PC_write is
 		rst: in std_logic;
 
 		--control signal
-		JR_signal: in std_logic;
-		B_signal: in std_logic_vector(1 downto 0);
-		B_com_chooser: in std_logic_vector(1 downto 0);
-
+		jump_control_signal: in jump_control;
+		
 		--data
 		last_pc, id_pc, immi, rx: in std_logic_vector(15 downto 0);
 		t: in std_logic;
@@ -98,13 +97,13 @@ begin
 			input1=>rx_not_zero,
 			input2=>t_zero,
 			input3=>t_not_zero,
-			sel=>B_com_chooser,
+			sel=>jump_control_signal.B_com_chooser,
 		--out
 			output=>b_com_choose_result
 		);
-
-	b_signal_final <= b_signal & b_com_choose_result;
-
+		
+	b_signal_final <= jump_control_signal.b_signal & b_com_choose_result;
+	
 	pc_b_result_chooser: mux_3bit
 		port map(
 			input0=>pc_one,
@@ -122,7 +121,7 @@ begin
 		port map(
 			input0=>pc_b_result,
 			input1=>rx,
-			sel=>jr_signal,
+			sel=>jump_control_signal.jr_signal,
 			output=>pc_cand
 		);
 
