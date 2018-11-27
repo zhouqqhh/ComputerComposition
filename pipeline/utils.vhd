@@ -112,8 +112,8 @@ package utils is
 		(
 			B_signal => "00",
 			B_com_chooser => "00",
-			JR_signal => '0'
-			pc_src: => "00";
+			JR_signal => '0',
+			pc_src => "00"
 		);
 
 end utils;

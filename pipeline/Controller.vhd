@@ -21,7 +21,7 @@ entity Controller is
 	    reg_other_control_signal: out reg_other_control;
 
 	    --memory
-	    mem_control_signal: out mem_control;
+	    mem_control_signal: out mem_control
     );
 end Controller;
 
