@@ -1,35 +1,8 @@
-----------------------------------------------------------------------------------
--- Company:
--- Engineer:
---
--- Create Date:    21:19:01 11/19/2018
--- Design Name:
--- Module Name:    Computer - Behavioral
--- Project Name:
--- Target Devices:
--- Tool versions:
--- Description:
---
--- Dependencies:
---
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
-----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_unsigned.all;
 
 use work.utils.all;
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity Computer is
 	port(
@@ -58,29 +31,29 @@ architecture Behavioral of Computer is
 		--in
 			clk: in std_logic;
 			rst: in std_logic;
-			
+
 			pc: in std_logic_vector(15 downto 0);
 		--out
 			instruction: out std_logic_vector(15 downto 0)
 		);
 	end component InstructionFetch;
-	
+
 	--pc
 	component PC_write is
 		port (
 		--in
 			clk: in std_logic;
 			rst: in std_logic;
-			
+
 			--control signal
 			JR_signal: in std_logic;
 			B_signal: in std_logic_vector(1 downto 0);
 			B_com_chooser: in std_logic_vector(1 downto 0);
-			
+
 			--data
 			last_pc, id_pc, immi, rx: in std_logic_vector(15 downto 0);
 			t: in std_logic;
-			
+
 		--out
 			pc_out: out std_logic_vector(15 downto 0)
 		);
@@ -89,31 +62,48 @@ architecture Behavioral of Computer is
 	--IFtoID(registers)
 	component IFtoID is
 		port(
-			--new instruction
+		--in
 			instruction_in: in std_logic_vector(15 downto 0);
+			pc_in: in std_logic_vector(15 downto 0);
 			clk: in std_logic;
 			rst: in std_logic;
-
-			--out instruction
-			instruction_out: out std_logic_vector(15 downto 0)
+		--out
+			instruction_out: out std_logic_vector(15 downto 0);
+			pc_out: out std_logic_vector(15 downto 0)
 		);
 	end component IFtoID;
 
 	component Controller is
 		port(
-		--in
-			instruction: in std_logic_vector(15 downto 0);
+	    --in
+	        instruction: in std_logic_vector(15 downto 0);
 
-		--out
-			--alu
-			alu_op: out std_logic_vector(2 downto 0);
-			alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
-			alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
-			alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
+	    --out
+	        --pc
+	        pc_src: out std_logic_vector(1 downto 0);
+	        B_signal: out std_logic_vector(1 downto 0);
+	        B_com_chooser: out std_logic_vector(1 downto 0);
+	        JR_signal: out std_logic;
 
-			--regsters wb
-			reg_wb_signal: out std_logic;	--0:no write, 1:write
-			reg_wb_chooser: out std_logic_vector(1 downto 0) --0: rx, 1: ry, 2: rz
+	        --alu
+	        alu_op: out std_logic_vector(2 downto 0);
+	        alu_src0: out std_logic_vector(2 downto 0); --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
+	        alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
+	        alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
+	        alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
+
+	        --regsters wb
+	        reg_wb_signal: out std_logic;	--0:no write, 1:write
+	        reg_wb_chooser: out std_logic_vector(1 downto 0); --0: rx, 1: ry, 2: rz
+	        reg_wb_data_chooser: out std_logic; --0:ALU result, 1:memRead
+	        sp_wb_signal: out std_logic;
+	        t_wb_signal: out std_logic;
+	        ih_wb_signal: out std_logic;
+
+	        --memory
+	        mem_wb_signal: out std_logic;
+	        mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
+	        mem_read_signal: out std_logic
 		);
 	end component Controller;
 
@@ -250,8 +240,8 @@ architecture Behavioral of Computer is
 				--work on failing edge
 				clk: in std_logic;
 				rst: in std_logic;
-				
-				--write signal 1: write			
+
+				--write signal 1: write
 				read_regs1: in std_logic_vector(2 downto 0);
 				read_regs2: in std_logic_vector(2 downto 0);
 
@@ -260,13 +250,13 @@ architecture Behavioral of Computer is
 				reg_wb_alu_result: in std_logic_vector(15 downto 0);
 				reg_wb_mem_data: in std_logic_vector(15 downto 0);
 				reg_wb_data_chooser: in std_logic;
-				
+
 				sp_wb_signal: in std_logic;
 				t_wb_signal: in std_logic;
 				ih_wb_signal: in std_logic;
-				
+
 				t_wb_data: in std_logic;
-				
+
 			--out
 				read_data1: out std_logic_vector(15 downto 0);
 				read_data2: out std_logic_vector(15 downto 0);
@@ -297,7 +287,7 @@ architecture Behavioral of Computer is
 	signal ex_reg_wb_signal: std_logic;
 	signal ex_reg_wb_place: std_logic_vector(2 downto 0);
 	signal ex_reg_wb_data_chooser: std_logic;
-	
+
 	signal ex_alu_src1: std_logic_vector(1 downto 0);
 	signal ex_alu_src1_immi_chooser: std_logic_vector(1 downto 0);
 	signal ex_alu_op: std_logic_vector(2 downto 0);
@@ -316,18 +306,18 @@ architecture Behavioral of Computer is
 	--debug
 	signal if_pc: std_logic_vector(15 downto 0);
 begin
-	
+
 	pc_write_entity: PC_Write
 		port map(
 		--in
 			clk=>clk,
 			rst=>rst,
-			
+
 			--control signal
 			JR_signal=> id_JR_signal,
 			B_signal=> id_B_signal,
 			B_com_chooser=> id_B_com_chooser,
-			
+
 			--data
 			last_pc=>if_pc,
 			id_pc=>id_pc,
@@ -337,18 +327,18 @@ begin
 		--out
 			pc_out=>if_pc
 		);
-	
+
 	instruction_fetch_entity: InstructionFetch
 		port map(
 		--in
 			clk=>clk,
 			rst=>rst,
-			
+
 			pc=>if_pc,
 		--out
 			instruction=> if_instruction
 		);
-			
+
 	iftoid_entity: IFtoID
 		port map(
 			instruction_in => if_instruction,
@@ -367,15 +357,15 @@ begin
 
 			read_regs1 => id_instruction(10 downto 8),
 			read_regs2 => id_instruction(7 downto 5),
-			
+
 			reg_wb_control_in => wb_reg_wb_control,
-			
+
 			reg_wb_alu_result => wb_alu_result,
 			reg_wb_mem_data => wb_mem_data,
-			
-			
+
+
 			reg_other_control_in => wb_reg_other_control,
-			
+
 			t_wb_data => wb_t_wb_data,
 
 		--out
@@ -397,7 +387,7 @@ begin
 			B_signal=> id_B_signal,
 			B_com_chooser=> id_B_com_chooser,
 			JR_singal=> id_JR_signal,
-			
+
 			--alu
 			alu_op => id_alu_op,
 			alu_src0=> id_alu_src0,
@@ -443,7 +433,7 @@ begin
 			mem_wb_signal_in=> id_mem_wb_signal,
 			mem_wb_data_chooser_in=> id_mem_wb_data_chooser,
 			mem_read_signal_in=> id_mem_read_signal,
-			
+
 			--alu
 			alu_op_in=> id_alu_op,
 			alu_src0_in=> id_alu_src0,
@@ -462,7 +452,7 @@ begin
 			immi_4_2_in => id_instruction(4 downto 2),
 			alu_src1_immi_chooser=> id_alu_src1_immi_chooser,
 			alu_immi_extend => id_alu_immi_extend,
-		
+
 		--out
 			--control signal
 			reg_wb_signal_out=>ex_reg_wb_signal,
@@ -498,7 +488,7 @@ begin
 		--in
 			--alu
 			alu_control_signal <= ex_alu_control_signal,
-			
+
 			sp => ex_sp,
 			rx => ex_rx,
 			ry => ex_ry,
@@ -521,9 +511,9 @@ begin
 
 			--control signal
 			reg_wb_control_in=> ex_reg_wb_control,
-			
+
 			reg_other_control_in=> ex_reg_other_control,
-			
+
 			t_wb_data_in=> ex_t_wb_data,
 			--alu
 			alu_result_in=> ex_alu_result,
@@ -532,21 +522,21 @@ begin
 			mem_control_signal_in => ex_mem_control_signal,
 			rx_in => ex_rx,
 			ry_in => ex_ry,
-		
+
 		--out
 			--control signal
 			reg_wb_control_out=> mem_reg_wb_control,
-			
+
 			reg_other_control_out=> mem_reg_other_control,
-			
+
 			t_wb_data_out=>mem_t_wb_data,
-			
+
 			--alu
 			alu_result_out=>mem_alu_result,
 
 			--mem
 			mem_control_signal_out => mem_mem_control_signal,
-			
+
 			rx_out => mem_rx,
 			ry_out => mem_ry
 		);
@@ -559,7 +549,7 @@ begin
 
 			--control signal
 			mem_control_signal <= mem_mem_control_signal,
-			
+
 			rx=>mem_rx,
 			ry=>mem_ry,
 			mem_addr=> mem_alu_result,
@@ -575,11 +565,11 @@ begin
 			rst=> rst,
 			--control signal
 			reg_wb_control_in=> mem_reg_wb_control,
-			
+
 			reg_other_control_in=> mem_reg_other_control,
-			
+
 			t_wb_data_in=>mem_t_wb_data,
-			
+
 			--alu
 			alu_result_in=>mem_alu_result,
 			mem_data_in=>mem_mem_data,
@@ -587,11 +577,11 @@ begin
 		--out
 			--control signal
 			reg_wb_control_out=> wb_reg_wb_control,
-			
+
 			reg_other_control_out=> wb_reg_other_control,
-			
+
 			t_wb_data_out=>wb_t_wb_data,
-			
+
 			--alu
 			alu_result_out=> wb_alu_result,
 			mem_data_out=>wb_mem_data

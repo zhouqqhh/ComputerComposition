@@ -1,33 +1,6 @@
-----------------------------------------------------------------------------------
--- Company:
--- Engineer:
---
--- Create Date:    20:09:54 11/21/2018
--- Design Name:
--- Module Name:    Controller - Behavioral
--- Project Name:
--- Target Devices:
--- Tool versions:
--- Description:
---
--- Dependencies:
---
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
-----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+use utils.ALL;
 
 entity Controller is
     port (
@@ -42,24 +15,16 @@ entity Controller is
         JR_signal: out std_logic;
 
         --alu
-        alu_op: out std_logic_vector(2 downto 0);
-        alu_src0: out std_logic_vector(2 downto 0); --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
-        alu_src1: out std_logic_vector(1 downto 0); --0:ry, 1:immi, 2:rx, 3:0
+        alu_sigs: out alu_control;
         alu_src1_immi_chooser: out std_logic_vector(1 downto 0); --0:immi_7_0, 1:immi_3_0, 2:immi_4_0, 3:immi_4_2
         alu_immi_extend: out std_logic; --0: 0-extend, 1-sign extend
 
         --regsters wb
-        reg_wb_signal: out std_logic;	--0:no write, 1:write
-        reg_wb_chooser: out std_logic_vector(1 downto 0); --0: rx, 1: ry, 2: rz
-        reg_wb_data_chooser: out std_logic; --0:ALU result, 1:memRead
-        sp_wb_signal: out std_logic;
-        t_wb_signal: out std_logic;
-        ih_wb_signal: out std_logic;
+        reg_wb_sigs: out reg_wb_control;
+        reg_other_sigs: out reg_other_control;
 
         --memory
-        mem_wb_signal: out std_logic;
-        mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
-        mem_read_signal: out std_logic
+        mem_sigs: out mem_control;
     );
 end Controller;
 
