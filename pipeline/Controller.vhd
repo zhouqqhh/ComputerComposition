@@ -19,7 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
+use work.utils.all;
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --use IEEE.NUMERIC_STD.ALL;
@@ -64,7 +64,7 @@ entity Controller is
 --        mem_wb_signal: out std_logic;
 --        mem_wb_data_chooser: out std_logic; --0:rx, 1:ry
 --        mem_read_signal: out std_logic
-		  mem_control_signal: out mem_control;
+		  mem_control_signal: out mem_control
     );
 end Controller;
 

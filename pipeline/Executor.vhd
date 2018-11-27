@@ -35,7 +35,7 @@ entity Executor is
 		--alu
 		alu_control_signal: in alu_control;
 		
-		sp, rx, ry, alu_immi: in std_logic_vector(15 downto 0);
+		sp, rx, ry, alu_immi, pc, ih: in std_logic_vector(15 downto 0);
 		
 	--out
 		alu_result: out std_logic_vector(15 downto 0);
@@ -75,16 +75,34 @@ architecture Behavioral of Executor is
 		);
 	end component mux1_1bit;
 
+	component mux_3bit is
+		port (
+			input0: in std_logic_vector(15 downto 0);
+			input1: in std_logic_vector(15 downto 0);
+			input2: in std_logic_vector(15 downto 0);
+			input3: in std_logic_vector(15 downto 0);
+			input4: in std_logic_vector(15 downto 0);
+			input5: in std_logic_vector(15 downto 0);
+			input6: in std_logic_vector(15 downto 0);
+			input7: in std_logic_vector(15 downto 0);
+			sel: in std_logic_vector(2 downto 0);
+			output: out std_logic_vector(15 downto 0)
+		);
+	end component mux_3bit;
 	
 	signal src0, src1: std_logic_vector(15 downto 0);
 	signal t0, t1: std_logic;
 begin
-	src0_chooser: mux_2bit
+	src0_chooser: mux_3bit
 		port map(
 			input0=>rx,
 			input1=>sp,
 			input2=>(others=>'0'),
-			input3=>ry,
+			input3=>ih,
+			input4=>pc,
+			input5=>ry,
+			input6=>(others=>'0'),
+			input7=>(others=>'0'),
 			sel=>alu_control_signal.alu_src0,
 			
 			output=>src0
