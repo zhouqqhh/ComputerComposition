@@ -102,7 +102,6 @@ package utils is
 	
 	type jump_control is
 		record
-			pc_src: std_logic_vector(1 downto 0);
 			B_signal: std_logic_vector(1 downto 0);
 			B_com_chooser: std_logic_vector(1 downto 0);
 			JR_signal: std_logic;
@@ -110,7 +109,6 @@ package utils is
 	
 	constant zero_jump_control: jump_control :=
 		(
-			pc_src => "00",
 			B_signal => "00",
 			B_com_chooser => "00",
 			JR_signal => '0'
