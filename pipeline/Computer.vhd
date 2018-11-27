@@ -397,7 +397,7 @@ begin
 			reg_other_control_signal=> id_reg_other_control,
 
 			--mem
-			mem_control_signal => id_mem_control,
+			mem_control_signal => id_mem_control
 		);
 
 	idtoexe_entity: IDtoEXE
@@ -454,7 +454,7 @@ begin
 			alu_immi_out => ex_alu_immi,
 
 			--mem
-			mem_control_signal_out => ex_mem_control,
+			mem_control_signal_out => ex_mem_control
 		);
 
 	exe_entity: Executor
