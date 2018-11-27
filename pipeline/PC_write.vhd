@@ -1,49 +1,21 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    16:13:59 11/26/2018 
--- Design Name: 
--- Module Name:    PC_write - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
---
--- Dependencies: 
---
--- Revision: 
--- Revision 0.01 - File Created
--- Additional Comments: 
---
-----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_unsigned.all;
 use work.utils.all;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity PC_write is
 	port (
 	--in
 		clk: in std_logic;
 		rst: in std_logic;
-		
+
 		--control signal
 		jump_control_signal: in jump_control;
 		
 		--data
 		last_pc, id_pc, immi, rx: in std_logic_vector(15 downto 0);
 		t: in std_logic;
-		
+
 	--out
 		pc_out: out std_logic_vector(15 downto 0)
 	);
@@ -58,7 +30,7 @@ architecture Behavioral of PC_write is
 			output: out std_logic_vector(15 downto 0)
 		);
 	end component mux_1bit;
-	
+
 	component Compare is
 		port (
 			number1: in std_logic_vector(15 downto 0);
@@ -66,7 +38,7 @@ architecture Behavioral of PC_write is
 			output: out std_logic
 		);
 	end component Compare;
-	
+
 	component mux1_2bit is
 		port (
 			input0: in std_logic;
@@ -92,19 +64,19 @@ architecture Behavioral of PC_write is
 			output: out std_logic_vector(15 downto 0)
 		);
 	end component mux_3bit;
-	
+
 	signal pc: std_logic_vector(15 downto 0);
 	signal pc_cand, pc_one, pc_immi, pc_b_result: std_logic_vector(15 downto 0);
 	signal rx_zero, rx_not_zero, t_zero, t_not_zero, b_com_choose_result: std_logic;
 	signal b_signal_final: std_logic_vector(2 downto 0);
-begin	
+begin
 	--out
 	pc_out <= pc;
-	
+
 	--internal calculate
 	pc_one <= last_pc + 1;
 	pc_immi <= id_pc + immi;
-	
+
 	rx_zero_comparator: Compare
 		port map(
 		--in
@@ -114,10 +86,10 @@ begin
 			output=>rx_zero
 		);
 	rx_not_zero <= not rx_zero;
-	
+
 	t_zero <= not t;
 	t_not_zero <= t;
-	
+
 	comparator_result_chooser: mux1_2bit
 		port map(
 		--in
@@ -152,7 +124,7 @@ begin
 			sel=>jump_control_signal.jr_signal,
 			output=>pc_cand
 		);
-	
+
 	process(clk, rst)
 	begin
 		if rst = '0' then
@@ -161,6 +133,5 @@ begin
 			pc <= pc_cand;
 		end if;
 	end process;
-			
-end Behavioral;
 
+end Behavioral;

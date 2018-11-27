@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    00:04:08 11/22/2018 
--- Design Name: 
--- Module Name:    Executor - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    00:04:08 11/22/2018
+-- Design Name:
+-- Module Name:    Executor - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -30,7 +30,7 @@ use work.utils.all;
 --use UNISIM.VComponents.all;
 
 entity Executor is
-	port (			
+	port (
 	--in
 		--alu
 		alu_control_signal: in alu_control;
@@ -54,7 +54,7 @@ architecture Behavioral of Executor is
 			t0, t1: out std_logic
 		);
 	end component alu;
-	
+
 	component mux_2bit is
 		port(
 			input0: in std_logic_vector(15 downto 0);
@@ -93,6 +93,8 @@ architecture Behavioral of Executor is
 	signal src0, src1: std_logic_vector(15 downto 0);
 	signal t0, t1: std_logic;
 begin
+
+    --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
 	src0_chooser: mux_3bit
 		port map(
 			input0=>rx,
@@ -107,7 +109,8 @@ begin
 			
 			output=>src0
 		);
-	
+
+    --0:ry, 1:immi, 2:rx, 3:0
 	src1_chooser: mux_2bit
 		port map(
 			input0 => ry,
@@ -118,7 +121,7 @@ begin
 			
 			output => src1
 		);
-	
+
 	alu_entity:alu
 		port map(
 			src0 => src0,
@@ -139,4 +142,3 @@ begin
 		);
 
 end Behavioral;
-

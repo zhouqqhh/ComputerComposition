@@ -7,7 +7,7 @@ entity MEMtoWB is
 	--in
 		clk: in std_logic;
 		rst: in std_logic;
-		
+
 		--control signal
 		reg_wb_control_in: in reg_wb_control;
 		reg_other_control_in: in reg_other_control;
@@ -68,4 +68,3 @@ begin
 	end process;
 
 end Behavioral;
-
