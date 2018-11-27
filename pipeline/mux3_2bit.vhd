@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    17:18:38 11/22/2018 
--- Design Name: 
--- Module Name:    mux3_2bit - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    17:18:38 11/22/2018
+-- Design Name:
+-- Module Name:    mux3_2bit - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -43,11 +43,10 @@ end mux3_2bit;
 architecture Behavioral of mux3_2bit is
 
 begin
-		with sel select output <=
-			input0 when "00",
-			input1 when "01",
-			input2 when "10",
-			input3 when "11",
-			input0 when others;
+	with sel select output <=
+		input0 when "00",
+		input1 when "01",
+		input2 when "10",
+		input3 when "11",
+		input0 when others;
 end Behavioral;
-

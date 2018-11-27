@@ -236,35 +236,66 @@ architecture Behavioral of Computer is
 
 	component Registers is
 		port (
+		--in
+			--work on failing edge
+			clk: in std_logic;
+			rst: in std_logic;
+
+			--write signal 1: write
+			read_regs1: in std_logic_vector(2 downto 0);
+			read_regs2: in std_logic_vector(2 downto 0);
+
+			reg_wb_signal: in std_logic;
+			reg_wb_place: in std_logic_vector(2 downto 0);
+			reg_wb_alu_result: in std_logic_vector(15 downto 0);
+			reg_wb_mem_data: in std_logic_vector(15 downto 0);
+			reg_wb_data_chooser: in std_logic;
+
+			sp_wb_signal: in std_logic;
+			t_wb_signal: in std_logic;
+			ih_wb_signal: in std_logic;
+
+			t_wb_data: in std_logic;
+
 		--out
-				--work on failing edge
-				clk: in std_logic;
-				rst: in std_logic;
-
-				--write signal 1: write
-				read_regs1: in std_logic_vector(2 downto 0);
-				read_regs2: in std_logic_vector(2 downto 0);
-
-				reg_wb_signal: in std_logic;
-				reg_wb_place: in std_logic_vector(2 downto 0);
-				reg_wb_alu_result: in std_logic_vector(15 downto 0);
-				reg_wb_mem_data: in std_logic_vector(15 downto 0);
-				reg_wb_data_chooser: in std_logic;
-
-				sp_wb_signal: in std_logic;
-				t_wb_signal: in std_logic;
-				ih_wb_signal: in std_logic;
-
-				t_wb_data: in std_logic;
-
-			--out
-				read_data1: out std_logic_vector(15 downto 0);
-				read_data2: out std_logic_vector(15 downto 0);
-				sp_out: out std_logic_vector(15 downto 0);
-				t_out: out std_logic;
-				ih_out: out std_logic_vector(15 downto 0)
+			read_data1: out std_logic_vector(15 downto 0);
+			read_data2: out std_logic_vector(15 downto 0);
+			sp_out: out std_logic_vector(15 downto 0);
+			t_out: out std_logic;
+			ih_out: out std_logic_vector(15 downto 0)
 		);
 	end component Registers;
+
+	component forwarding is
+		port (
+	    --in
+	        --ID
+	        ID_reg0: in std_logic_vector(2 downto 0);
+	        ID_reg1: in std_logic_vector(2 downto 0);
+	        --ID to EXE
+			IDtoEXE_reg_wb_control_in: reg_wb_control;
+	        --EXE to MEM
+			EXEtoMEM_reg_wb_control_in: reg_wb_control;
+
+	    --out
+			forwarding_control_signal_out: out fowarding_control
+		);
+	end component forwarding;
+
+	component ID is
+		port (
+			--in
+			reg0_data_in: in std_logic_vector(15 downto 0);
+			reg1_data_in: in std_logic_vector(15 downto 0);
+			alu_result_EXE_in: in std_logic_vector(15 downto 0);
+			alu_result_MEM_in: in std_logic_vector(15 downto 0);
+			forwarding_control_in: in forwarding_control;
+
+			--out
+			reg0_data_out: in std_logic_vector(15 downto 0);
+			reg1_data_out: in std_logic_vector(15 downto 0)
+		);
+	end component ID;
 
 	--if
 	signal if_instruction: std_logic_vector(15 downto 0);
@@ -272,7 +303,7 @@ architecture Behavioral of Computer is
 	--id
 	signal id_instruction: std_logic_vector(15 downto 0);
 
-	signal id_rx, id_ry: std_logic_vector(15 downto 0);
+	signal id_rx, id_ry, selected_rx, selected_ry: std_logic_vector(15 downto 0);
 
 	signal id_alu_op: std_logic_vector(2 downto 0);
 	signal id_alu_src0: std_logic_vector(2 downto 0);
@@ -282,6 +313,8 @@ architecture Behavioral of Computer is
 
 	signal id_reg_wb_signal: std_logic;
 	signal id_reg_wb_chooser: std_logic_vector(1 downto 0);
+
+	signal forwarding_control_signal: forwarding_control;
 
 	--exe
 	signal ex_reg_wb_signal: std_logic;
@@ -322,7 +355,7 @@ begin
 			last_pc=>if_pc,
 			id_pc=>id_pc,
 			immi=>id_immi_final,
-			rx=>id_rx,
+			rx=>selected_rx,
 			t=>id_t,
 		--out
 			pc_out=>if_pc
@@ -420,8 +453,8 @@ begin
 			--alu
 			alu_control_signal_in <= id_alu_control,
 
-			rx_in=> id_rx,
-			ry_in=> id_ry,
+			rx_in=> selected_rx,
+			ry_in=> selected_ry,
 			sp_in=> id_sp,
 			ih_in=> id_ih,
 			pc_in=> id_pc,
@@ -526,10 +559,10 @@ begin
 
 			rx=>mem_rx,
 			ry=>mem_ry,
-			mem_addr=> mem_alu_result,
+			mem_addr => mem_alu_result,
 
 		--out
-			mem_data=> mem_mem_data
+			mem_data => mem_mem_data
 		);
 
 	memtowb_entity: MEMtoWB
@@ -538,26 +571,57 @@ begin
 			clk=> clk,
 			rst=> rst,
 			--control signal
-			reg_wb_control_in=> mem_reg_wb_control,
+			reg_wb_control_in => mem_reg_wb_control,
 
-			reg_other_control_in=> mem_reg_other_control,
+			reg_other_control_in => mem_reg_other_control,
 
-			t_wb_data_in=>mem_t_wb_data,
+			t_wb_data_in => mem_t_wb_data,
 
 			--alu
-			alu_result_in=>mem_alu_result,
-			mem_data_in=>mem_mem_data,
+			alu_result_in => mem_alu_result,
+			mem_data_in => mem_mem_data,
 
 		--out
 			--control signal
-			reg_wb_control_out=> wb_reg_wb_control,
+			reg_wb_control_out => wb_reg_wb_control,
 
-			reg_other_control_out=> wb_reg_other_control,
+			reg_other_control_out => wb_reg_other_control,
 
-			t_wb_data_out=>wb_t_wb_data,
+			t_wb_data_out => wb_t_wb_data,
 
 			--alu
-			alu_result_out=> wb_alu_result,
-			mem_data_out=>wb_mem_data
+			alu_result_out => wb_alu_result,
+			mem_data_out => wb_mem_data
 		);
+
+	forwarding_entity: forwarding
+		port map(
+	    --in
+	        --ID
+	        ID_reg0 => id_instruction(10 downto 8),
+	        ID_reg1 => id_instruction(7 downto 5),
+	        --ID to EXE
+			IDtoEXE_reg_wb_control_in => ex_reg_wb_control,
+	        --EXE to MEM
+			EXEtoMEM_reg_wb_control_in => mem_reg_wb_control,
+
+	    --out
+			forwarding_control_signal_out => forwarding_control_signal
+	);
+
+	ID_entity: ID
+		port map(
+			--in
+			reg0_data_in => id_rx,
+			reg1_data_in => id_ry,
+			alu_result_EXE_in => ex_alu_result,
+			alu_result_MEM_in => mem_alu_result,
+			forwarding_control_in => forwarding_control_signal,
+
+			--out
+			reg0_data_out => selected_rx,
+			reg1_data_out => selected_ry
+	);
+
+
 end Behavioral;
