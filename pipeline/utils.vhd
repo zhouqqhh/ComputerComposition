@@ -87,8 +87,8 @@ package utils is
 	type alu_control is
 		record
 			alu_op: std_logic_vector(2 downto 0);
-			alu_src0: std_logic_vector(2 downto 0);
-			alu_src1: std_logic_vector(1 downto 0);
+			alu_src0: std_logic_vector(2 downto 0);  --0:rx, 1:sp, 2:0, 3:ih, 4:pc, 5:ry
+			alu_src1: std_logic_vector(1 downto 0);  --0:ry, 1:immi, 2:rx, 3:0
 			t_src: std_logic;
 		end record;
 

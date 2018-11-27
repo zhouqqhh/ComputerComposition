@@ -35,7 +35,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "ZZZ";
                     alu_control_signal.alu_src0 <= "ZZZ";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "00";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "ZZ";
                     alu_immi_extend <= 'Z';
@@ -55,7 +55,7 @@ begin
                     jump_control_signal.pc_src <= "01";
                     alu_control_signal.alu_op <= "ZZZ";
                     alu_control_signal.alu_src0 <= "ZZZ";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "00";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "ZZ";
                     alu_immi_extend <= '1';
@@ -77,7 +77,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "ZZZ";
                     alu_control_signal.alu_src0 <= "ZZZ";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "00";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "ZZ";
                     alu_immi_extend <= '1';
@@ -97,7 +97,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "ZZZ";
                     alu_control_signal.alu_src0 <= "ZZZ";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "00";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "ZZ";
                     alu_immi_extend <= '1';
@@ -121,8 +121,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "101";
                             alu_control_signal.alu_src0 <= "101";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "01";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "11";
                             alu_immi_extend <= '0';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -141,8 +141,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "110";
                             alu_control_signal.alu_src0 <= "101";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "01";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "11";
                             alu_immi_extend <= '0';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -163,7 +163,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
                     alu_control_signal.alu_src0 <= "000";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "01";
                     alu_immi_extend <= '1';
@@ -183,7 +183,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
                     alu_control_signal.alu_src0 <= "000";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '1';
@@ -203,7 +203,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "011";
                     alu_control_signal.alu_src0 <= "000";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '1';
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '1';
@@ -223,7 +223,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "011";
                     alu_control_signal.alu_src0 <= "000";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '1';
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '0';
@@ -245,8 +245,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "001";
                             alu_control_signal.alu_src0 <= "001";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "01";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "00";
                             alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
@@ -265,8 +265,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "ZZZ";
                             alu_control_signal.alu_src0 <= "ZZZ";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "00";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
@@ -285,8 +285,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "001";
                             alu_control_signal.alu_src0 <= "000";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "11";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
@@ -305,8 +305,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "ZZZ";
                             alu_control_signal.alu_src0 <= "ZZZ";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "00";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
@@ -327,7 +327,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
                     alu_control_signal.alu_src0 <= "010";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '0';
@@ -347,7 +347,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
                     alu_control_signal.alu_src0 <= "001";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '1';
@@ -367,7 +367,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
                     alu_control_signal.alu_src0 <= "000";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "10";
                     alu_immi_extend <= 'Z';
@@ -387,7 +387,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
                     alu_control_signal.alu_src0 <= "001";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '1';
@@ -407,7 +407,7 @@ begin
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
                     alu_control_signal.alu_src0 <= "000";
-                    alu_control_signal.alu_src1 <= "..";
+                    alu_control_signal.alu_src1 <= "01";
                     alu_control_signal.t_src <= '0';
                     alu_src1_immi_chooser <= "10";
                     alu_immi_extend <= '1';
@@ -429,8 +429,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "001";
                             alu_control_signal.alu_src0 <= "000";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "00";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -449,8 +449,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "011";
                             alu_control_signal.alu_src0 <= "000";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "00";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -473,8 +473,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "010";
                             alu_control_signal.alu_src0 <= "000";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "00";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -493,8 +493,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "011";
                             alu_control_signal.alu_src0 <= "000";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "00";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
@@ -515,8 +515,8 @@ begin
                                     jump_control_signal.pc_src <= "10";
                                     alu_control_signal.alu_op <= "ZZZ";
                                     alu_control_signal.alu_src0 <= "ZZZ";
-                                    alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                                    alu_control_signal.alu_src1 <= "00";
+                                    alu_control_signal.t_src <= '0';
                                     alu_src1_immi_chooser <= "ZZ";
                                     alu_immi_extend <= '1';
                                     reg_wb_init_control_signal.reg_wb_signal <= '0';
@@ -536,8 +536,8 @@ begin
                                     jump_control_signal.pc_src <= "00";
                                     alu_control_signal.alu_op <= "001";
                                     alu_control_signal.alu_src0 <= "100";
-                                    alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                                    alu_control_signal.alu_src1 <= "11";
+                                    alu_control_signal.t_src <= '0';
                                     alu_src1_immi_chooser <= "ZZ";
                                     alu_immi_extend <= 'Z';
                                     reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -546,20 +546,20 @@ begin
                                     reg_other_control_signal.sp_wb_signal <= '0';
                                     reg_other_control_signal.t_wb_signal <= '0';
                                     reg_other_control_signal.ih_wb_signal <= '0';
-									     when others =>
                                     mem_control_signal.wb_signal <= '0';
                                     mem_control_signal.wb_data_chooser <= 'Z';
                                     mem_control_signal.read_signal <= '0';
                                     jump_control_signal.JR_signal <= '0';
                                     jump_control_signal.B_signal <= "00";
                                     jump_control_signal.B_com_chooser <= "ZZ";
+							    when others =>
                             end case;
                         when "01101" =>  --OR
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "100";
                             alu_control_signal.alu_src0 <= "000";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "00";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -578,8 +578,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "011";
                             alu_control_signal.alu_src0 <= "010";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "00";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -598,8 +598,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "111";
                             alu_control_signal.alu_src0 <= "101";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "10";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -622,8 +622,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "001";
                             alu_control_signal.alu_src0 <= "011";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "11";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
@@ -642,8 +642,8 @@ begin
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "001";
                             alu_control_signal.alu_src0 <= "000";
-                            alu_control_signal.alu_src1 <= "..";
-                    alu_control_signal.t_src <= '0';
+                            alu_control_signal.alu_src1 <= "11";
+                            alu_control_signal.t_src <= '0';
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
