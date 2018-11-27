@@ -1,8 +1,8 @@
 --
 --	Package File Template
 --
---	Purpose: This package defines supplemental types, subtypes, 
---		 constants, and functions 
+--	Purpose: This package defines supplemental types, subtypes,
+--		 constants, and functions
 --
 --   To use any of the example code shown below, uncomment the lines and modify as necessary
 --
@@ -34,56 +34,56 @@ package utils is
 			reg_wb_chooser: std_logic_vector(1 downto 0);
 			reg_wb_data_chooser: std_logic;
 		end record;
-	
+
 	constant zero_reg_wb_init_control : reg_wb_init_control :=
 		(
 			reg_wb_signal => '0',
 			reg_wb_chooser => "00",
 			reg_wb_data_chooser => '0'
 		);
-	
+
 	type reg_wb_control is
 		record
 			reg_wb_signal: std_logic;
 			reg_wb_regs: std_logic_vector(2 downto 0);
 			reg_wb_data_chooser: std_logic;
 		end record;
-	
+
 	constant zero_reg_wb_control : reg_wb_control :=
 		(
 			reg_wb_signal => '0',
 			reg_wb_regs => (others=>'0'),
 			reg_wb_data_chooser => '0'
 		);
-	
+
 	type reg_other_control is
 		record
 			sp_wb_signal: std_logic;
 			t_wb_signal: std_logic;
 			ih_wb_signal: std_logic;
 		end record;
-	
+
 	constant zero_reg_other_control : reg_other_control :=
 		(
 			sp_wb_signal => '0',
 			t_wb_signal => '0',
 			ih_wb_signal => '0'
 		);
-	
+
 	type mem_control is
 		record
 			wb_signal: std_logic;
 			wb_data_chooser: std_logic;
 			read_signal: std_logic;
 		end record;
-	
-	constant zero_mem_control : mem_control := 
+
+	constant zero_mem_control : mem_control :=
 		(
 			wb_signal => '0',
 			wb_data_chooser => '0',
 			read_signal => '0'
 		);
-	
+
 	type alu_control is
 		record
 			alu_op: std_logic_vector(2 downto 0);
@@ -91,7 +91,7 @@ package utils is
 			alu_src1: std_logic_vector(1 downto 0);
 			t_src: std_logic;
 		end record;
-	
+
 	constant zero_alu_control : alu_control :=
 		(
 			alu_op => (others=>'0'),
@@ -99,21 +99,23 @@ package utils is
 			alu_src1 => (others=>'0'),
 			t_src => '0'
 		);
-	
+
 	type jump_control is
 		record
 			B_signal: std_logic_vector(1 downto 0);
 			B_com_chooser: std_logic_vector(1 downto 0);
 			JR_signal: std_logic;
+			pc_src: std_logic_vector(1 downto 0);
 		end record;
-	
+
 	constant zero_jump_control: jump_control :=
 		(
 			B_signal => "00",
 			B_com_chooser => "00",
 			JR_signal => '0'
+			pc_src: => "00";
 		);
-		
+
 end utils;
 
 package body utils is
@@ -123,7 +125,7 @@ package body utils is
 --    variable <variable_name>     : <type_declaration>;
 --  begin
 --    <variable_name> := <signal_name> xor <signal_name>;
---    return <variable_name>; 
+--    return <variable_name>;
 --  end <function_name>;
 
 ---- Example 2
@@ -139,9 +141,9 @@ package body utils is
 
 ---- Procedure Example
 --  procedure <procedure_name>  (<type_declaration> <constant_name>  : in <type_declaration>) is
---    
+--
 --  begin
---    
+--
 --  end <procedure_name>;
- 
+
 end utils;
