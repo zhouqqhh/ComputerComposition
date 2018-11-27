@@ -69,6 +69,22 @@ package utils is
 			wb_data_chooser => '0',
 			read_signal => '0'
 		);
+	
+	type alu_control is
+		record
+			alu_op: std_logic_vector(2 downto 0);
+			alu_src0: std_logic_vector(2 downto 0);
+			alu_src1: std_logic_vector(1 downto 0);
+			t_src: std_logic;
+		end record;
+	
+	constant zero_alu_control : alu_control :=
+		(
+			alu_op => (others=>'0'),
+			alu_src0 => (others=>'0'),
+			alu_src1 => (others=>'0'),
+			t_src => '0'
+		);
 		
 end utils;
 

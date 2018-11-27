@@ -38,40 +38,42 @@ entity alu is
 			alu_op: in std_logic_vector(2 downto 0);
 		--out
 			result: out std_logic_vector(15 downto 0);
-            t: out std_logic;
+         t0, t1: out std_logic
 	 );
 end alu;
 
 architecture Behavioral of alu is
+	signal result_tem: std_logic_vector(15 downto 0);
 begin
-    t <= ((src0(15) and src1(15) and result(15)) or ((not src0(15)) and src1(15)) or ((not src0(15)) and (not src1(15)) and result(15)));
-    process(alu_op, src0, src1)
+	t0 <= '0' when src0 = src1 else '1';
+   t1 <= ((src0(15) and src1(15) and result_tem(15)) or ((not src0(15)) and src1(15)) or ((not src0(15)) and (not src1(15)) and result_tem(15))); 
+	process(alu_op, src0, src1)
 	begin
 		case alu_op is
 			when "001" =>
-				result <= src0 + src1;
+				result_tem <= src0 + src1;
 			when "010" =>
-				result <= src0 and src1;
+				result_tem <= src0 and src1;
 			when "011" =>
-				result <= src0 - src1;
+				result_tem <= src0 - src1;
 			when "100" =>
-				result <= src0 or src1;
+				result_tem <= src0 or src1;
 			when "101" =>
 				if src1 = "0000000000000000" then
-					result <= to_stdlogicvector( to_bitvector(src0) SLL 8);
+					result_tem <= to_stdlogicvector( to_bitvector(src0) SLL 8);
 				else
-					result <= to_stdlogicvector( to_bitvector(src0) SLL to_integer(unsigned(src1)));
+					result_tem <= to_stdlogicvector( to_bitvector(src0) SLL to_integer(unsigned(src1)));
 				end if;
 			when "110" =>
 				if src1 = "0000000000000000" then
-					result <= to_stdlogicvector( to_bitvector(src0) SRA 8);
+					result_tem <= to_stdlogicvector( to_bitvector(src0) SRA 8);
 				else
-					result <= to_stdlogicvector( to_bitvector(src0) SRA to_integer(unsigned(src1)));
+					result_tem <= to_stdlogicvector( to_bitvector(src0) SRA to_integer(unsigned(src1)));
 				end if;
 			when "111" =>
-				result <= to_stdlogicvector( to_bitvector(src0) SRA to_integer(unsigned(src1)));
+				result_tem <= to_stdlogicvector( to_bitvector(src0) SRA to_integer(unsigned(src1)));
 			when others =>
-				result <= src0;
+				result_tem <= src0;
 		end case;
 	end process;
 end Behavioral;

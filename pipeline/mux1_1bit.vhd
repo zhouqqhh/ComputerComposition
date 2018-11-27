@@ -2,7 +2,7 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    16:37:51 11/26/2018 
+-- Create Date:    00:52:59 11/27/2018 
 -- Design Name: 
 -- Module Name:    mux1_1bit - Behavioral 
 -- Project Name: 
@@ -30,12 +30,20 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity mux1_1bit is
+	port (
+		input0: in std_logic;
+		input1: in std_logic;
+		sel: in std_logic;
+		output: out std_logic
+	);
 end mux1_1bit;
 
 architecture Behavioral of mux1_1bit is
 
 begin
-
-
+		with sel select output <= 
+			input0 when '0',
+			input1 when '1',
+			input0 when others;
 end Behavioral;
 

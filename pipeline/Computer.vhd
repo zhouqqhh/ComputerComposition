@@ -478,9 +478,7 @@ begin
 		port map(
 		--in
 			--alu
-			alu_op => ex_alu_op,
-			alu_src0 => ex_alu_src0,
-			alu_src1 => ex_alu_src1,
+			alu_control_signal <= ex_alu_control_signal,
 			
 			sp => ex_sp,
 			rx => ex_rx,
@@ -490,7 +488,8 @@ begin
 			pc => ex_pc,
 		
 		--out
-			alu_result=> ex_alu_result
+			alu_result=> ex_alu_result,
+			t_wb_data=> ex_t_wb_data
 		);
 		
 	led <= wb_alu_result;
@@ -506,6 +505,7 @@ begin
 			
 			reg_other_control_in=> ex_reg_other_control,
 			
+			t_wb_data_in=> ex_t_wb_data,
 			--alu
 			alu_result_in=> ex_alu_result,
 			
