@@ -116,15 +116,15 @@ package utils is
 			pc_src => "00"
 		);
 
-	type fowarding_control is
+	type forwarding_control is
 		record
 	        alu_forwarding_IDtoEXE_src0: std_logic;  --0:normal, 1: use forwarding
 	        alu_forwarding_EXEtoMEM_src0: std_logic;
 	        alu_forwarding_IDtoEXE_src1: std_logic;
-	        alu_forwarding_EXEtoMEM_src1: std_logic
+	        alu_forwarding_EXEtoMEM_src1: std_logic;
 		end record;
 
-	constant zero_fowarding_control: fowarding_control :=
+	constant zero_forwarding_control: forwarding_control :=
 		(
 	        alu_forwarding_IDtoEXE_src0 => '0',
 	        alu_forwarding_EXEtoMEM_src0 => '0',

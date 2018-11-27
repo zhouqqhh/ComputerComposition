@@ -14,7 +14,7 @@ entity forwarding is
 		EXEtoMEM_reg_wb_control_in: reg_wb_control;
 
     --out
-		forwarding_control_signal_out: out fowarding_control
+		forwarding_control_signal_out: out forwarding_control
 	);
 end forwarding;
 
