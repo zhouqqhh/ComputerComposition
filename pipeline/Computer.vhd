@@ -318,7 +318,7 @@ architecture Behavioral of Computer is
 begin
 	
 	pc_write_entity: PC_Write
-		port map{
+		port map(
 		--in
 			clk=>clk,
 			rst=>rst,
