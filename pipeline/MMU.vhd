@@ -16,6 +16,9 @@ entity MMU is
 
 		pc_in: in std_logic_vector(15 downto 0);
 
+		--serial
+		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
+
 	--out
 		mem_data: out std_logic_vector(15 downto 0);
 		instruction_out: out std_logic_vector(15 downto 0)；
@@ -45,7 +48,7 @@ architecture Behavioral of MMU is
 	signal memory : memdef;
 	signal reading_flash: std_logic;
 begin
-	reading_flash <= '1';  --TODO
+	reading_flash <= '0';  --TODO
 
 	--wb data chooser
 	data_source_chooser: mux_1bit
@@ -83,7 +86,7 @@ begin
 			ram1_control_signal <= zero_ram_control;
 			ram2_control_signal <= zero_ram_control;
 		elsif mem_control_signal.wb_signal then  --write
-			if mem_addr(15 downto 4) = x"BF0" then  --TODO write serial
+			if mem_addr(15 downto 4) = x"BF0" then  --write serial
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= clk;
 
@@ -91,7 +94,7 @@ begin
 
 				ram2_control_signal.oe <= zero_ram_control;
 
-				ram1_data <= (others => 'Z');
+				ram1_data <= input_data;
 				ram2_data <= (others => 'Z');
 			else  --write ram1
 				bus_control_signal.rdn <= '1';
@@ -107,8 +110,8 @@ begin
 				ram2_data <= (others => 'Z');
 			end if;
 		elsif mem_control_signal.read_signal then  --read
-			if mem_addr(15 downto 4) = x"BF0" then  --TODO read serial
-				bus_control_signal.rdn <= '0';
+			if mem_addr(15 downto 4) = x"BF0" then  --read serial
+				bus_control_signal.rdn <= not clk;
 				bus_control_signal.wrn <= '1';
 
 				ram1_control_signal.oe <= zero_ram_control;
@@ -142,6 +145,16 @@ begin
 
 			ram1_data <= (others => 'Z');
 			ram2_data <= (others => 'Z');
+		end if;
+	end process;
+
+	process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
+	begin
+		if reading_flash = '1' then  --TODO
+		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') or (mem_addr(15 downto 4) != x"BF0") then  --ram1
+			mem_data <= ram1_data;
+		else  --ram2
+			mem_data <= ram2_data;
 		end if;
 	end process;
 end Behavioral;
