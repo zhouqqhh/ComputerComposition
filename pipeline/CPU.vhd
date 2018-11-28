@@ -36,7 +36,7 @@ entity CPU is
 		rst: in std_logic;
 
 		led: out std_logic_vector(15 downto 0);
-		ram1_addr, ram2_addr: out std_logic_vector(15 downto 0);
+		ram1_addr, ram2_addr: out std_logic_vector(17 downto 0);
 		ram1_data, ram2_data: inout std_logic_vector(15 downto 0);
 		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 		rdn, wrn: out std_logic;

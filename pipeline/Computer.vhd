@@ -331,8 +331,7 @@ architecture Behavioral of Computer is
 		--out
 			mem_data: out std_logic_vector(15 downto 0);
 			instruction_out: out std_logic_vector(15 downto 0);
-			ram1_addr_out: out std_logic_vector(15 downto 0);
-			ram2_addr_out: out std_logic_vector(15 downto 0);
+			ram1_addr_out, ram2_addr_out: out std_logic_vector(17 downto 0);
 			bus_control_signal: out bus_control;
 			ram1_control_signal: out ram_control;
 			ram2_control_signal: out ram_control;
