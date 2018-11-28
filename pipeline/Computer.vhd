@@ -42,7 +42,8 @@ architecture Behavioral of Computer is
 			t: in std_logic;
 
 		--out
-			pc_out: out std_logic_vector(15 downto 0)
+			pc_out: out std_logic_vector(15 downto 0);
+			pc_one_out: out std_logic_vector(15 downto 0)
 		);
 	end component PC_write;
 
@@ -262,16 +263,18 @@ architecture Behavioral of Computer is
 
 	component forwarding is
 		port (
-	    --in
-	        --ID
-	        ID_reg0: in std_logic_vector(2 downto 0);
-	        ID_reg1: in std_logic_vector(2 downto 0);
-	        --ID to EXE
+		 --in
+			  --ID
+			  ID_reg0: in std_logic_vector(2 downto 0);
+			  ID_reg1: in std_logic_vector(2 downto 0);
+			  --ID to EXE
 			IDtoEXE_reg_wb_control_in: reg_wb_control;
-	        --EXE to MEM
+			IDtoEXE_reg_other_control_in: reg_other_control;
+			  --EXE to MEM
 			EXEtoMEM_reg_wb_control_in: reg_wb_control;
-
-	    --out
+			EXEtoMEM_reg_other_control_in: reg_other_control;
+			
+		 --out
 			forwarding_control_signal_out: out forwarding_control
 		);
 	end component forwarding;
@@ -281,14 +284,25 @@ architecture Behavioral of Computer is
 			--in
 			reg0_data_in: in std_logic_vector(15 downto 0);
 			reg1_data_in: in std_logic_vector(15 downto 0);
+			t_data_in: in std_logic;
+			sp_data_in: in std_logic_vector(15 downto 0);
+			ih_data_in: in std_logic_vector(15 downto 0);
+			
 			alu_result_EXE_in: in std_logic_vector(15 downto 0);
 			alu_result_MEM_in: in std_logic_vector(15 downto 0);
+			t_exe_in: in std_logic;
+			t_mem_in: in std_logic;
+			
 			mem_data_in: in std_logic_vector(15 downto 0);
 			forwarding_control_in: in forwarding_control;
 
+
 			--out
 			reg0_data_out: out std_logic_vector(15 downto 0);
-			reg1_data_out: out std_logic_vector(15 downto 0)
+			reg1_data_out: out std_logic_vector(15 downto 0);
+			t_data_out: out std_logic;
+			sp_data_out: out std_logic_vector(15 downto 0);
+			ih_data_out: out std_logic_vector(15 downto 0)
 		);
 	end component ID;
 	
@@ -329,14 +343,14 @@ architecture Behavioral of Computer is
 
 	--if
 	signal if_instruction: std_logic_vector(15 downto 0);
-	signal if_pc: std_logic_vector(15 downto 0);
+	signal if_pc,  if_pc_one: std_logic_vector(15 downto 0);
 
 	--id
 	signal id_instruction, id_pc: std_logic_vector(15 downto 0);
 
 	signal id_jump_control: jump_control;
-	signal id_rx, id_ry, id_sp, id_ih, id_immi_final, selected_rx, selected_ry: std_logic_vector(15 downto 0);
-	signal id_t: std_logic;
+	signal id_rx, id_ry, id_sp, id_ih, id_immi_final, selected_rx, selected_ry, selected_sp, selected_ih: std_logic_vector(15 downto 0);
+	signal id_t, selected_t: std_logic;
 
 	signal id_alu_control: alu_control;
 	signal id_reg_wb_init_control: reg_wb_init_control;
@@ -387,20 +401,21 @@ begin
 			jump_control_signal=>id_jump_control,
 
 			--data
-			last_pc=>if_pc,
+			last_pc=>if_pc_one,
 			id_pc=>id_pc,
 			immi=>id_immi_final,
 			rx=>selected_rx,
-			t=>id_t,
+			t=>selected_t,
 		--out
-			pc_out=>if_pc
+			pc_out=>if_pc,
+			pc_one_out=>if_pc_one
 		);
 
 	iftoid_entity: IFtoID
 		port map(
 		--in
 			instruction_in => if_instruction,
-			pc_in=> if_pc,
+			pc_in=> if_pc_one,
 			clk => clk,
 			rst => rst,
 			buble_maker_signal=>buble_maker,
@@ -482,8 +497,8 @@ begin
 
 			rx_in=> selected_rx,
 			ry_in=> selected_ry,
-			sp_in=> id_sp,
-			ih_in=> id_ih,
+			sp_in=> selected_sp,
+			ih_in=> selected_ih,
 			pc_in=> id_pc,
 
 			--immi
@@ -646,9 +661,10 @@ begin
 	        ID_reg1 => id_instruction(7 downto 5),
 	      --ID to EXE
 			IDtoEXE_reg_wb_control_in => ex_reg_wb_control,
+			IDtoEXE_reg_other_control_in=>ex_reg_other_control,
 	      --EXE to MEM
 			EXEtoMEM_reg_wb_control_in => mem_reg_wb_control,
-
+			EXEtoMEM_reg_other_control_in => mem_reg_other_control,
 	    --out
 			forwarding_control_signal_out => forwarding_control_signal
 	);
@@ -658,14 +674,24 @@ begin
 			--in
 			reg0_data_in => id_rx,
 			reg1_data_in => id_ry,
+			t_data_in => id_t,
+			sp_data_in=> id_sp,
+			ih_data_in=> id_ih,
+			
 			alu_result_EXE_in => ex_alu_result,
 			alu_result_MEM_in => mem_alu_result,
+			t_exe_in=>ex_t_wb_data,
+			t_mem_in=>mem_t_wb_data,
+			
 			mem_data_in=> mem_mem_data,
 			forwarding_control_in => forwarding_control_signal,
 
 			--out
 			reg0_data_out => selected_rx,
-			reg1_data_out => selected_ry
+			reg1_data_out => selected_ry,
+			t_data_out=>selected_t,
+			sp_data_out=>selected_sp,
+			ih_data_out=>selected_ih
 	);
 
 end Behavioral;

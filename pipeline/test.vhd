@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer:
 --
--- Create Date:   10:49:50 11/22/2018
+-- Create Date:   15:29:37 11/28/2018
 -- Design Name:   
--- Module Name:   /home/sunzhenbo/14.6/ISE_DS/ComputerComposition/pipeline/comtest.vhd
+-- Module Name:   /home/sunzhenbo/14.6/ISE_DS/ComputerComposition/pipeline/test.vhd
 -- Project Name:  pipeline
 -- Target Device:  
 -- Tool versions:  
@@ -32,14 +32,14 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
  
-ENTITY comtest IS
-END comtest;
+ENTITY test IS
+END test;
  
-ARCHITECTURE behavior OF comtest IS 
+ARCHITECTURE behavior OF test IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
-  
-    COMPONENT Computer
+ 
+    COMPONENT CPU
     PORT(
          clk : IN  std_logic;
          rst : IN  std_logic;
@@ -56,7 +56,7 @@ ARCHITECTURE behavior OF comtest IS
    signal led : std_logic_vector(15 downto 0);
 
    -- Clock period definitions
-   constant clk_period : time := 200 ns;
+   constant clk_period : time := 150 ns;
  
 BEGIN
  
