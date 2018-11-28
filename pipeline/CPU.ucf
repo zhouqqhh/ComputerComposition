@@ -97,4 +97,4 @@ NET "ram2_oe" LOC = R9;
 NET "ram2_we" LOC = M9;
 NET "ram2_en" LOC = N10;
 NET "rdn" LOC = C14;
-NET "wrn" LOC = D14;
+NET "wrn" LOC = U5;
