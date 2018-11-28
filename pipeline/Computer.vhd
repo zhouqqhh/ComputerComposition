@@ -20,6 +20,11 @@ entity Computer is
 
 		--led(Debug)
 		led: out std_logic_vector(15 downto 0)
+		ram1_addr, ram2_addr: out std_logic_vector(15 downto 0);
+		ram1_data, ram2_data: out std_logic_vector(15 downto 0);
+		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
+		rdn, wrn: out std_logic;
+		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic
 	);
 end Computer;
 
@@ -31,9 +36,9 @@ architecture Behavioral of Computer is
 		--in
 			clk: in std_logic;
 			rst: in std_logic;
-			
+
 			--hazard
-			buble_maker_signal: in std_logic;	
+			buble_maker_signal: in std_logic;
 			--control signal
 			jump_control_signal: in jump_control;
 
@@ -273,7 +278,7 @@ architecture Behavioral of Computer is
 			  --EXE to MEM
 			EXEtoMEM_reg_wb_control_in: reg_wb_control;
 			EXEtoMEM_reg_other_control_in: reg_other_control;
-			
+
 		 --out
 			forwarding_control_signal_out: out forwarding_control
 		);
@@ -287,12 +292,12 @@ architecture Behavioral of Computer is
 			t_data_in: in std_logic;
 			sp_data_in: in std_logic_vector(15 downto 0);
 			ih_data_in: in std_logic_vector(15 downto 0);
-			
+
 			alu_result_EXE_in: in std_logic_vector(15 downto 0);
 			alu_result_MEM_in: in std_logic_vector(15 downto 0);
 			t_exe_in: in std_logic;
 			t_mem_in: in std_logic;
-			
+
 			mem_data_in: in std_logic_vector(15 downto 0);
 			forwarding_control_in: in forwarding_control;
 
@@ -305,34 +310,46 @@ architecture Behavioral of Computer is
 			ih_data_out: out std_logic_vector(15 downto 0)
 		);
 	end component ID;
-	
+
 	component MMU is
 		port(
 		--in
 			clk, rst: in std_logic;
-			
+
 			--control signal
 			mem_control_signal: in mem_control;
-			
+
 			rx, ry: in std_logic_vector(15 downto 0);
-			
+
 			mem_addr: in std_logic_vector(15 downto 0);
-			
+
 			pc_in: in std_logic_vector(15 downto 0);
-			
+
+			--serial
+			serial_tbre, serial_tsre, serial_data_ready: in std_logic;
+
 		--out
 			mem_data: out std_logic_vector(15 downto 0);
-			instruction_out: out std_logic_vector(15 downto 0)
+			instruction_out: out std_logic_vector(15 downto 0)；
+			ram1_addr_out: out std_logic_vector(15 downto 0);
+			ram2_addr_out: out std_logic_vector(15 downto 0);
+			bus_control_signal: out bus_control;
+			ram1_control_signal: out ram_control;
+			ram2_control_signal: out ram_control;
+
+		--inout
+			ram1_data: inout std_logic_vector(15 downto 0);
+			ram2_data: inout std_logic_vector(15 downto 0)
 		);
 	end component MMU;
-	
+
 	--hazard
 	component Hazard is
 		port (
 		 --in
 			  mem_mem_control_signal: in mem_control;
 			  id_reg0, id_reg1: in std_logic_vector(2 downto 0);
-			  
+
 			  exe_mem_control_signal: in mem_control;
 			  exe_reg_wb_control_signal: in reg_wb_control;
 
@@ -382,7 +399,7 @@ architecture Behavioral of Computer is
 	signal wb_reg_other_control: reg_other_control;
 	signal wb_alu_result, wb_mem_data: std_logic_vector(15 downto 0);
 	signal wb_t_wb_data: std_logic;
-	
+
 	--hazard
 	signal buble_maker: std_logic;
 
@@ -393,10 +410,10 @@ begin
 		--in
 			clk=>clk,
 			rst=>rst,
-			
+
 			--hazard
 			buble_maker_signal=> buble_maker,
-			
+
 			--control signal
 			jump_control_signal=>id_jump_control,
 
@@ -593,20 +610,41 @@ begin
 	mmu_entity: MMU
 		port map(
 		--in
-			clk=>clk,
-			rst=>rst,
+			clk => clk,
+			rst => rst,
 
 			--control signal
 			mem_control_signal => mem_mem_control,
-			rx=>mem_rx,
-			ry=>mem_ry,
+
+			rx => mem_rx,
+			ry => mem_ry,
+
 			mem_addr => mem_alu_result,
-			
-			pc_in=> if_pc,
+
+			pc_in => if_pc,
+
+			--serial
+			serial_tbre => serial_tbre,
+			serial_tsre => serial_tsre,
+			serial_data_ready => serial_data_ready,
 
 		--out
 			mem_data => mem_mem_data,
-			instruction_out => if_instruction
+			instruction_out => if_instruction,
+			ram1_addr_out => ram1_addr,
+			ram2_addr_out => ram2_addr,
+			bus_control_signal.rdn => rdn,
+			bus_control_signal.wrn => wrn,
+			ram1_control_signal.oe => ram1_oe,
+			ram1_control_signal.we => ram1_we,
+			ram1_control_signal.en => ram1_en,
+			ram2_control_signal.oe => ram2_oe,
+			ram2_control_signal.we => ram2_we,
+			ram2_control_signal.en => ram2_en,
+
+		--inout
+			ram1_data => ram1_data,
+			ram2_data => ram2_data
 		);
 
 	memtowb_entity: MEMtoWB
@@ -637,18 +675,18 @@ begin
 			alu_result_out => wb_alu_result,
 			mem_data_out => wb_mem_data
 		);
-	
+
 	hazard_entity: Hazard
 		port map(
 		--in
 			mem_mem_control_signal=> mem_mem_control,
-			
+
 			id_reg0=> id_instruction(10 downto 8),
 			id_reg1=> id_instruction(7 downto 5),
-			
+
 			exe_mem_control_signal => ex_mem_control,
 			exe_reg_wb_control_signal=> ex_reg_wb_control,
-		
+
 		--out
 			buble_maker_signal=> buble_maker
 		);
@@ -677,12 +715,12 @@ begin
 			t_data_in => id_t,
 			sp_data_in=> id_sp,
 			ih_data_in=> id_ih,
-			
+
 			alu_result_EXE_in => ex_alu_result,
 			alu_result_MEM_in => mem_alu_result,
 			t_exe_in=>ex_t_wb_data,
 			t_mem_in=>mem_t_wb_data,
-			
+
 			mem_data_in=> mem_mem_data,
 			forwarding_control_in => forwarding_control_signal,
 
