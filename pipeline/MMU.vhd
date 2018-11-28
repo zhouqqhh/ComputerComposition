@@ -1,116 +1,77 @@
+<<<<<<< HEAD
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use utils.ALL;
 
 entity MMU is
-	port (
-    --in
-        clk: in std_logic;
-        rst: in std_logic;
-
-        --pc
-        pc_in: in std_logic_vector(15 downto 0);
-
-        --memory
-        mem_control_in: in mem_control;
-        mem_write_data_in: in std_logic_vector(15 downto 0);
-
-    --out
-        --pc
-        instruction_out: out std_logic_vector(15 downto 0);
-
-		--flash
-		FlashByte : out std_logic;
-		FlashVpen : out std_logic;
-		FlashCE : out std_logic;
-		FlashOE : out std_logic;
-		FlashWE : out std_logic;
-		FlashRP : out std_logic;
-        FlashAddr : out std_logic_vector(22 downto 0);
-        FlashData : inout std_logic_vector(15 downto 0);
-
-        --memory
-        mem_read_data_out: out std_logic_vector(15 downto 0)
+	port(
+	--in
+		clk, rst: in std_logic;
+		
+		--control signal
+		mem_control_signal: in mem_control;
+		
+		rx, ry: in std_logic_vector(15 downto 0);
+		
+		mem_addr: in std_logic_vector(15 downto 0);
+		
+		pc_in: in std_logic_vector(15 downto 0);
+		
+	--out
+		mem_data: out std_logic_vector(15 downto 0);
+		instruction_out: out std_logic_vector(15 downto 0)
 	);
 end MMU;
 
 architecture Behavioral of MMU is
-    component Flash
-        port(
-    	--in
-    		clk : in std_logic;
-    		rst : in std_logic;
-
-    		--address in
-    		addr_in : in std_logic_vector(22 downto 0);
-
-    		--control
-    		flash_read_signal : in std_logic;
-
-    	--out
-    		--data output
-    		data_out : out std_logic_vector(15 downto 0);
-
-    		--flash control
-    		FlashByte : out std_logic;
-    		FlashVpen : out std_logic;
-    		FlashCE : out std_logic;
-    		FlashOE : out std_logic;
-    		FlashWE : out std_logic;
-    		FlashRP : out std_logic;
-
-    		--address to flash
-    		FlashAddr : out std_logic_vector(22 downto 0);
-
-    	--inout
-    		FlashData : inout std_logic_vector(15 downto 0)
-        );
-    end component;
-
-    --flash
-    type flash_state is ();
-    MMU_flash_addr: std_logic_vector(22 downto 0);
-    MMU_flash_read: std_logic;
-    MMU_flash_data: std_logic_vector(15 downto 0);
+	component mux_1bit is
+		port (
+			input0: in std_logic_vector(15 downto 0);
+			input1: in std_logic_vector(15 downto 0);
+			sel: in std_logic;
+			output: out std_logic_vector(15 downto 0)
+		);
+	end component mux_1bit;
+	signal input_data: std_logic_vector(15 downto 0);
+	type memdef is array(15 downto 0) of std_logic_vector(15 downto 0);
+	signal memory : memdef;
 begin
-    flash_entity: Flash
-        port map (
-    	--in
-    		clk => clk,
-    		rst => rst,
+	--fake memory
+	data_source_chooser: mux_1bit
+		port map(
+			input0=>rx,
+			input1=>ry,
+			sel=>mem_control_signal.wb_data_chooser,
+			
+			output=>input_data
+		);
+	
+	memory_init: process(rst, clk)
+		begin
+			if rst = '0' then
+				memory(0) <= "0000100000000000"; --NOP
+				memory(1) <= "0100000100000001";
+				memory(2) <= "0100001000000010";
+				memory(3) <= "0100001100000011";
+				memory(4) <= "0100010000000100";
+				memory(5) <= "0100010100000101";
+				memory(6) <= "0100011000000110";
+			end if;
+		end process;			
+	
+	process(mem_control_signal, pc_in)
+	begin
+		if mem_control_signal.read_signal = '1' then
+			mem_data <= "0000000011111111";
+		elsif mem_control_signal.wb_signal = '1' then
+			mem_data <= (others=>'Z');
+		else
+			mem_data <= (others=>'Z');
+		end if;
+		if pc_in < "0000000000010000" then
+			instruction_out <= memory(conv_integer(pc_in));	
+		end if;
+	end process;
 
-    		--address in
-    		addr_in => MMU_flash_addr,
-
-    		--control
-    		flash_read_signal => MMU_flash_read,
-
-    	--out
-    		--data output
-    		data_out => MMU_flash_data,
-
-    		--flash control
-    		FlashByte => FlashByte,
-    		FlashVpen => FlashVpen,
-    		FlashCE => FlashCE,
-    		FlashOE => FlashOE,
-    		FlashWE => FlashWE,
-    		FlashRP => FlashRP,
-
-    		--address to flash
-    		FlashAddr => FlashAddr,
-
-    	--inout
-    		FlashData => FlashData
-        );
-
-    --flash state
-    process(clk, rst)
-    begin
-        if rst = '0' then
-        elsif rising_edge(clk) then
-            case state is
-            end case;
-        end if;
-    end process;
 end Behavioral;
+

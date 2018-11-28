@@ -19,7 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
+use work.utils.all;
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --use IEEE.NUMERIC_STD.ALL;
@@ -47,8 +47,7 @@ architecture Behavioral of Hazard is
 
 begin
 	buble_maker_signal <= '1' when (mem_mem_control_signal.wb_signal = '1') or (mem_mem_control_signal.read_signal = '1')
-											or (exe_mem_control_signal.read_signal = '1' and exe_reg_wb_control_signal.reg_wb_siingal = '1'
+											or (exe_mem_control_signal.read_signal = '1' and exe_reg_wb_control_signal.reg_wb_signal = '1'
 											and (exe_reg_wb_control_signal.reg_wb_regs = id_reg0 or exe_reg_wb_control_signal.reg_wb_regs = id_reg1)) else '0';
-
 end Behavioral;
 
