@@ -19,7 +19,7 @@ architecture Behavioral of IFtoID is
 	signal instruction, pc: std_logic_vector(15 downto 0);
 begin
 
-	instruction_out <= instruction when buble_maker_signal = '0' else "0000100000000000";
+	instruction_out <= instruction;
 	
 	pc_out <= pc;
 	
@@ -28,9 +28,9 @@ begin
 		if rst = '0' then
 			instruction <= (others => '0');
 			pc <= (others=>'0');
-		elsif rising_edge(clk) and buble_maker_signal = '0' then
-			instruction <= instruction_in;
-			pc <= pc_in;
+		elsif rising_edge(clk) and buble_maker_signal = '0'  then
+				instruction <= instruction_in;
+				pc <= pc_in;
 		end if;
 	end process;
 end Behavioral;

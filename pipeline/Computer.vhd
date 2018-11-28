@@ -106,7 +106,8 @@ architecture Behavioral of Computer is
 		--in
 			clk: in std_logic;
 			rst: in std_logic;
-
+			
+			buble_maker_signal: in std_logic;
 			--control signal
 			reg_wb_rx, reg_wb_ry, reg_wb_rz: in std_logic_vector(2 downto 0);
 			reg_wb_init_control_signal_in: in reg_wb_init_control;
@@ -480,7 +481,8 @@ begin
 		--in
 			clk=>clk,
 			rst=>rst,
-
+			
+			buble_maker_signal=> buble_maker,
 			--control signal
 			reg_wb_rx=> id_instruction(10 downto 8),
 			reg_wb_ry=> id_instruction(7 downto 5),

@@ -134,7 +134,7 @@ begin
 		if rst = '0' then
 			pc <= (others=>'0');
 		elsif rising_edge(clk) and buble_maker_signal = '0' then
-			pc <= pc_cand;
+				pc <= pc_cand;
 		end if;
 	end process;
 
