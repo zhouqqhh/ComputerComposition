@@ -19,9 +19,9 @@ entity Computer is
 		--data_mem_control:
 
 		--led(Debug)
-		led: out std_logic_vector(15 downto 0)
+		led: out std_logic_vector(15 downto 0);
 		ram1_addr, ram2_addr: out std_logic_vector(15 downto 0);
-		ram1_data, ram2_data: out std_logic_vector(15 downto 0);
+		ram1_data, ram2_data: inout std_logic_vector(15 downto 0);
 		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 		rdn, wrn: out std_logic;
 		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic
@@ -330,7 +330,7 @@ architecture Behavioral of Computer is
 
 		--out
 			mem_data: out std_logic_vector(15 downto 0);
-			instruction_out: out std_logic_vector(15 downto 0)；
+			instruction_out: out std_logic_vector(15 downto 0);
 			ram1_addr_out: out std_logic_vector(15 downto 0);
 			ram2_addr_out: out std_logic_vector(15 downto 0);
 			bus_control_signal: out bus_control;

@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use utils.ALL;
 
 entity MMU is
@@ -21,7 +22,7 @@ entity MMU is
 
 	--out
 		mem_data: out std_logic_vector(15 downto 0);
-		instruction_out: out std_logic_vector(15 downto 0)；
+		instruction_out: out std_logic_vector(15 downto 0);
 		ram1_addr_out: out std_logic_vector(15 downto 0);
 		ram2_addr_out: out std_logic_vector(15 downto 0);
 		bus_control_signal: out bus_control;
@@ -83,9 +84,9 @@ begin
 	end process;
 
 	--ram1: 0x8000 ~ 0xFFFF, ram2: 0x0000 ~ 0x7FFF
-	memory_address_chooser: process(pc_in, mem_addr, mem_control_signal)}
+	memory_address_chooser: process(pc_in, mem_addr, mem_control_signal)
 	begin
-		if reading_flash is '0' then
+		if reading_flash = '0' then
 			if (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then  --read instruction
 				ram1_addr_out <= mem_addr;
 				ram2_addr_out <= pc_in;
@@ -101,20 +102,20 @@ begin
 
 	memory_control: process(mem_addr, mem_control_signal, clk, rst)
 	begin
-		if reading_flash then --TODO read flash
+		if reading_flash = '1' then --TODO read flash
 			bus_control_signal.rdn <= '1';
 			bus_control_signal.wrn <= '1';
 
 			ram1_control_signal <= zero_ram_control;
 			ram2_control_signal <= zero_ram_control;
-		elsif mem_control_signal.wb_signal then  --write
+		elsif mem_control_signal.wb_signal = '1' then  --write
 			if mem_addr(15 downto 4) = x"BF0" then  --write serial
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= clk;
 
-				ram1_control_signal.oe <= zero_ram_control
+				ram1_control_signal <= zero_ram_control;
 
-				ram2_control_signal.oe <= zero_ram_control;
+				ram2_control_signal <= zero_ram_control;
 
 				ram1_data <= input_data;
 				ram2_data <= (others => 'Z');
@@ -126,19 +127,19 @@ begin
 				ram1_control_signal.we <= not clk;
 				ram1_control_signal.en <= '0';
 
-				ram2_control_signal.oe  <= zero_ram_control;
+				ram2_control_signal  <= zero_ram_control;
 
 				ram1_data <= input_data;
 				ram2_data <= (others => 'Z');
 			end if;
-		elsif mem_control_signal.read_signal then  --read
+		elsif mem_control_signal.read_signal = '1' then  --read
 			if mem_addr(15 downto 4) = x"BF0" then  --read serial
 				bus_control_signal.rdn <= not clk;
 				bus_control_signal.wrn <= '1';
 
-				ram1_control_signal.oe <= zero_ram_control;
+				ram1_control_signal <= zero_ram_control;
 
-				ram2_control_signal.oe <= zero_ram_control;
+				ram2_control_signal <= zero_ram_control;
 
 				ram1_data <= (others => 'Z');
 				ram2_data <= (others => 'Z');
@@ -150,7 +151,7 @@ begin
 				ram1_control_signal.we <= '1';
 				ram1_control_signal.en <= '0';
 
-				ram2_control_signal.oe <= zero_ram_control;
+				ram2_control_signal <= zero_ram_control;
 
 				ram1_data <= (others => 'Z');
 				ram2_data <= (others => 'Z');
@@ -159,7 +160,7 @@ begin
 			bus_control_signal.rdn <= '1';
 			bus_control_signal.wrn <= '1';
 
-			ram1_control_signal.oe <= zero_ram_control;
+			ram1_control_signal <= zero_ram_control;
 
 			ram2_control_signal.oe <= '0';
 			ram2_control_signal.we <= '1';
@@ -173,7 +174,7 @@ begin
 	process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
 	begin
 		if reading_flash = '1' then  --TODO
-		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') or (mem_addr(15 downto 4) != x"BF0") then  --ram1
+		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') or (not (mem_addr(15 downto 4) = x"BF0")) then  --ram1
 			mem_data <= ram1_data;
 		else  --ram2
 			mem_data <= ram2_data;
