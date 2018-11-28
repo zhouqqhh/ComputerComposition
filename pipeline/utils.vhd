@@ -122,6 +122,9 @@ package utils is
 	        alu_forwarding_EXEtoMEM_src0: std_logic;
 	        alu_forwarding_IDtoEXE_src1: std_logic;
 	        alu_forwarding_EXEtoMEM_src1: std_logic;
+			  alu_forwarding_t: std_logic_vector(1 downto 0);
+			  alu_forwarding_sp: std_logic_vector(1 downto 0);
+			  alu_forwarding_ih: std_logic_vector(1 downto 0);
 
 			  alu_forwarding_EXEtoMEM_sel: std_logic; 	--only used when is mem, 0:aliu_result, 1: mem_data
 		end record;
@@ -132,6 +135,9 @@ package utils is
 	        alu_forwarding_EXEtoMEM_src0 => '0',
 	        alu_forwarding_IDtoEXE_src1 => '0',
 	        alu_forwarding_EXEtoMEM_src1 => '0',
+			  alu_forwarding_t=> "00",
+			  alu_forwarding_sp=> "00",
+			  alu_forwarding_ih=> "00",
 
 			  alu_forwarding_EXEtoMEM_sel => '0'
 		);

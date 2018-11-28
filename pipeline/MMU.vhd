@@ -60,8 +60,30 @@ begin
 			output=>input_data
 		);
 
+	memory_init: process(rst, clk)
+		begin
+			if rst = '0' then
+				memory(0) <= "0110100100000001";
+				memory(1) <= "0100100100000010";
+				memory(2) <= "0100000101000010";
+				memory(3) <= "1110000101001101";
+				memory(4) <= "0011010000101000";
+				memory(5) <= "1110101000101100";
+				memory(6) <= "1110101100101010";
+				memory(7) <= "0110000111111111";
+				memory(8) <= "0000100000000000";
+			end if;
+		end process;
+
+	process(mem_control_signal, pc_in)
+	begin
+		if pc_in < "0000000000010000" then
+			instruction_out <= memory(conv_integer(pc_in));
+		end if;
+	end process;
+
 	--ram1: 0x8000 ~ 0xFFFF, ram2: 0x0000 ~ 0x7FFF
-	memory_address_chooser: process(pc_in, mem_addr, mem_control_signal)
+	memory_address_chooser: process(pc_in, mem_addr, mem_control_signal)}
 	begin
 		if reading_flash is '0' then
 			if (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then  --read instruction

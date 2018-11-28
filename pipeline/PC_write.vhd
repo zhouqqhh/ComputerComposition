@@ -20,7 +20,8 @@ entity PC_write is
 		t: in std_logic;
 
 	--out
-		pc_out: out std_logic_vector(15 downto 0)
+		pc_out: out std_logic_vector(15 downto 0);
+		pc_one_out: out std_logic_vector(15 downto 0)
 	);
 end PC_write;
 
@@ -69,15 +70,15 @@ architecture Behavioral of PC_write is
 	end component mux_3bit;
 
 	signal pc: std_logic_vector(15 downto 0);
-	signal pc_cand, pc_one, pc_immi, pc_b_result: std_logic_vector(15 downto 0);
+	signal pc_cand, pc_immi, pc_b_result: std_logic_vector(15 downto 0);
 	signal rx_zero, rx_not_zero, t_zero, t_not_zero, b_com_choose_result: std_logic;
 	signal b_signal_final: std_logic_vector(2 downto 0);
 begin
 	--out
 	pc_out <= pc;
+	pc_one_out <= pc + 1;
 
 	--internal calculate
-	pc_one <= last_pc + 1;
 	pc_immi <= id_pc + immi;
 
 	rx_zero_comparator: Compare
@@ -109,13 +110,13 @@ begin
 	
 	pc_b_result_chooser: mux_3bit
 		port map(
-			input0=>pc_one,
-			input1=>pc_one,
+			input0=>last_pc,
+			input1=>last_pc,
 			input2=>pc_immi,
 			input3=>pc_immi,
-			input4=>pc_one,
+			input4=>last_pc,
 			input5=>pc_immi,
-			input6=>pc_one,
+			input6=>last_pc,
 			input7=>pc_immi,
 			sel=>b_signal_final,
 			output=>pc_b_result
