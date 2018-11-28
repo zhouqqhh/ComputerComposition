@@ -17,5 +17,5 @@ package utils is
 		control_ALUSrc0, control_ALUSrc1: std_logic_vector(2 downto 0);
 		control_ALUOP: std_logic_vector(2 downto 0);
 		control_RegDst: std_logic_vector(1 downto 0);
-	end record contro_EXE_type;
+	end record control_EXE_type;
 end package utils;

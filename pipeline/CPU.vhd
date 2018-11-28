@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    16:22:17 11/19/2018 
--- Design Name: 
--- Module Name:    CPU - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    16:22:17 11/19/2018
+-- Design Name:
+-- Module Name:    CPU - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -34,8 +34,13 @@ entity CPU is
 		--clock
 		clk: in std_logic;
 		rst: in std_logic;
-		
-		led: out std_logic_vector(15 downto 0)
+
+		led: out std_logic_vector(15 downto 0);
+		ram1_addr, ram2_addr: out std_logic_vector(17 downto 0);
+		ram1_data, ram2_data: inout std_logic_vector(15 downto 0);
+		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
+		rdn, wrn: out std_logic;
+		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic
 	);
 end CPU;
 
@@ -45,19 +50,39 @@ architecture Behavioral of CPU is
 			--clock
 			clk: in std_logic;
 			rst: in std_logic;
-			
-			led: out std_logic_vector(15 downto 0)
+
+			--led(Debug)
+			led: out std_logic_vector(15 downto 0);
+			ram1_addr, ram2_addr: out std_logic_vector(17 downto 0);
+			ram1_data, ram2_data: inout std_logic_vector(15 downto 0);
+			serial_tbre, serial_tsre, serial_data_ready: in std_logic;
+			rdn, wrn: out std_logic;
+			ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic
 		);
 	end component Computer;
 begin
 	computer_entity: Computer
 		port map(
 			--clock
-			clk=>clk,
-			rst=>rst,
-			
-			led=>led
+			clk => clk,
+			rst => rst,
+
+			led => led,
+			ram1_addr => ram1_addr,
+			ram2_addr => ram2_addr,
+			ram1_data => ram1_data,
+			ram2_data => ram2_data,
+			serial_tbre => serial_tbre,
+			serial_tsre => serial_tsre,
+			serial_data_ready => serial_tsre,
+			rdn => rdn,
+			wrn => wrn,
+			ram1_oe => ram1_oe,
+			ram1_we => ram1_we,
+			ram1_en => ram1_en,
+			ram2_oe => ram2_oe,
+			ram2_we => ram2_we,
+			ram2_en => ram2_en
 		);
 
 end Behavioral;
-
