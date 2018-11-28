@@ -46,8 +46,8 @@ end Hazard;
 architecture Behavioral of Hazard is
 
 begin
-	buble_maker_signal <= '1' when (mem_mem_control_signal.wb_signal = '1') or (mem_mem_control_signal.read_signal = '1')
-											or (exe_mem_control_signal.read_signal = '1' and exe_reg_wb_control_signal.reg_wb_signal = '1'
-											and (exe_reg_wb_control_signal.reg_wb_regs = id_reg0 or exe_reg_wb_control_signal.reg_wb_regs = id_reg1)) else '0';
+	buble_maker_signal <= '1' when ((mem_mem_control_signal.wb_signal = '1') or (mem_mem_control_signal.read_signal = '1')
+  										or (exe_mem_control_signal.read_signal = '1' and exe_reg_wb_control_signal.reg_wb_signal = '1'
+											and (exe_reg_wb_control_signal.reg_wb_regs = id_reg0 or exe_reg_wb_control_signal.reg_wb_regs = id_reg1))) else '0';
 end Behavioral;
 

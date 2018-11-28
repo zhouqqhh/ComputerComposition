@@ -93,7 +93,7 @@ begin
                     alu_control_signal.alu_src0 <= "ZZZ";
                     alu_control_signal.alu_src1 <= "00";
                     alu_control_signal.t_src <= '0';
-                    alu_src1_immi_chooser <= "ZZ";
+                    alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '1';
                     reg_wb_init_control_signal.reg_wb_signal <= '0';
                     reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
@@ -113,7 +113,7 @@ begin
                     alu_control_signal.alu_src0 <= "ZZZ";
                     alu_control_signal.alu_src1 <= "00";
                     alu_control_signal.t_src <= '0';
-                    alu_src1_immi_chooser <= "ZZ";
+                    alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '1';
                     reg_wb_init_control_signal.reg_wb_signal <= '0';
                     reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
@@ -140,7 +140,7 @@ begin
                             alu_src1_immi_chooser <= "11";
                             alu_immi_extend <= '0';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "00";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -160,7 +160,7 @@ begin
                             alu_src1_immi_chooser <= "11";
                             alu_immi_extend <= '0';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "00";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -182,7 +182,7 @@ begin
                     alu_src1_immi_chooser <= "01";
                     alu_immi_extend <= '1';
                     reg_wb_init_control_signal.reg_wb_signal <= '1';
-                    reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                    reg_wb_init_control_signal.reg_wb_chooser <= "01";
                     reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                     reg_other_control_signal.sp_wb_signal <= '0';
                     reg_other_control_signal.t_wb_signal <= '0';
@@ -202,7 +202,7 @@ begin
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '1';
                     reg_wb_init_control_signal.reg_wb_signal <= '1';
-                    reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                    reg_wb_init_control_signal.reg_wb_chooser <= "00";
                     reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                     reg_other_control_signal.sp_wb_signal <= '0';
                     reg_other_control_signal.t_wb_signal <= '0';
@@ -281,7 +281,7 @@ begin
                             alu_control_signal.alu_src0 <= "ZZZ";
                             alu_control_signal.alu_src1 <= "00";
                             alu_control_signal.t_src <= '0';
-                            alu_src1_immi_chooser <= "ZZ";
+                            alu_src1_immi_chooser <= "00";
                             alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
                             reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
@@ -321,8 +321,8 @@ begin
                             alu_control_signal.alu_src0 <= "ZZZ";
                             alu_control_signal.alu_src1 <= "00";
                             alu_control_signal.t_src <= '0';
-                            alu_src1_immi_chooser <= "ZZ";
-                            alu_immi_extend <= 'Z';
+                            alu_src1_immi_chooser <= "00";
+                            alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
                             reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= 'Z';
@@ -346,7 +346,7 @@ begin
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '0';
                     reg_wb_init_control_signal.reg_wb_signal <= '1';
-                    reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                    reg_wb_init_control_signal.reg_wb_chooser <= "00";
                     reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                     reg_other_control_signal.sp_wb_signal <= '0';
                     reg_other_control_signal.t_wb_signal <= '0';
@@ -366,7 +366,7 @@ begin
                     alu_src1_immi_chooser <= "00";
                     alu_immi_extend <= '1';
                     reg_wb_init_control_signal.reg_wb_signal <= '1';
-                    reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                    reg_wb_init_control_signal.reg_wb_chooser <= "00";
                     reg_wb_init_control_signal.reg_wb_data_chooser <= '1';
                     reg_other_control_signal.sp_wb_signal <= '0';
                     reg_other_control_signal.t_wb_signal <= '0';
@@ -386,7 +386,7 @@ begin
                     alu_src1_immi_chooser <= "10";
                     alu_immi_extend <= 'Z';
                     reg_wb_init_control_signal.reg_wb_signal <= '1';
-                    reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                    reg_wb_init_control_signal.reg_wb_chooser <= "01";
                     reg_wb_init_control_signal.reg_wb_data_chooser <= '1';
                     reg_other_control_signal.sp_wb_signal <= '0';
                     reg_other_control_signal.t_wb_signal <= '0';
@@ -448,7 +448,7 @@ begin
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "10";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -468,7 +468,7 @@ begin
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "01";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -492,7 +492,7 @@ begin
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= '1';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "00";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -577,7 +577,7 @@ begin
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "00";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -597,7 +597,7 @@ begin
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "00";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -617,7 +617,7 @@ begin
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "01";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -641,7 +641,7 @@ begin
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '1';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "00";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
@@ -661,7 +661,7 @@ begin
                             alu_src1_immi_chooser <= "ZZ";
                             alu_immi_extend <= 'Z';
                             reg_wb_init_control_signal.reg_wb_signal <= '0';
-                            reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+                            reg_wb_init_control_signal.reg_wb_chooser <= "00";
                             reg_wb_init_control_signal.reg_wb_data_chooser <= '0';
                             reg_other_control_signal.sp_wb_signal <= '0';
                             reg_other_control_signal.t_wb_signal <= '0';
