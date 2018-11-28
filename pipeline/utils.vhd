@@ -122,7 +122,7 @@ package utils is
 	        alu_forwarding_EXEtoMEM_src0: std_logic;
 	        alu_forwarding_IDtoEXE_src1: std_logic;
 	        alu_forwarding_EXEtoMEM_src1: std_logic;
-			  
+
 			  alu_forwarding_EXEtoMEM_sel: std_logic; 	--only used when is mem, 0:aliu_result, 1: mem_data
 		end record;
 
@@ -132,8 +132,34 @@ package utils is
 	        alu_forwarding_EXEtoMEM_src0 => '0',
 	        alu_forwarding_IDtoEXE_src1 => '0',
 	        alu_forwarding_EXEtoMEM_src1 => '0',
-			  
+
 			  alu_forwarding_EXEtoMEM_sel => '0'
+		);
+
+	type bus_control is
+		record
+			rdn: std_logic;
+			wrn: std_logic;
+		end record;
+
+	constant zero_bus_control: bus_control :=
+		(
+			rdn => '1',
+			wrn => '1'
+		);
+
+	type ram_control is
+		record
+			oe: std_logic;
+			we: std_logic;
+			en: std_logic;
+		end record;
+
+	constant zero_ram_control: ram_control :=
+		(
+			oe => '1',
+			we => '1',
+			en => '1'
 		);
 
 end utils;
