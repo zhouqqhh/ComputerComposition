@@ -23,8 +23,7 @@ entity MMU is
 	--out
 		mem_data: out std_logic_vector(15 downto 0);
 		instruction_out: out std_logic_vector(15 downto 0);
-		ram1_addr_out: out std_logic_vector(15 downto 0);
-		ram2_addr_out: out std_logic_vector(15 downto 0);
+		ram1_addr_out, ram2_addr_out: out std_logic_vector(17 downto 0);
 		bus_control_signal: out bus_control;
 		ram1_control_signal: out ram_control;
 		ram2_control_signal: out ram_control;
@@ -88,15 +87,15 @@ begin
 	begin
 		if reading_flash = '0' then
 			if (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then  --read instruction
-				ram1_addr_out <= mem_addr;
-				ram2_addr_out <= pc_in;
+				ram1_addr_out <= "00" & mem_addr;
+				ram2_addr_out <= "00" & pc_in;
 			else  --read or write memory
-				ram1_addr_out <= mem_addr;
-				ram2_addr_out <= mem_addr;
+				ram1_addr_out <= "00" & mem_addr;
+				ram2_addr_out <= "00" & mem_addr;
 			end if;
 		else  --read flash
-			ram1_addr_out <= mem_addr;
-			ram2_addr_out <= mem_addr;
+			ram1_addr_out <= "00" & mem_addr;
+			ram2_addr_out <= "00" & mem_addr;
 		end if;
 	end process;
 
