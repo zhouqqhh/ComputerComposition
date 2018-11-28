@@ -9,6 +9,9 @@ entity PC_write is
 		clk: in std_logic;
 		rst: in std_logic;
 
+		--hazard
+		buble_maker_signal: in std_logic;
+		
 		--control signal
 		jump_control_signal: in jump_control;
 		
@@ -129,7 +132,7 @@ begin
 	begin
 		if rst = '0' then
 			pc <= (others=>'0');
-		elsif rising_edge(clk) then
+		elsif rising_edge(clk) and buble_maker_signal = '0' then
 			pc <= pc_cand;
 		end if;
 	end process;

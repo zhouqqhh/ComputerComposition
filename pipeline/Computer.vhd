@@ -25,26 +25,15 @@ end Computer;
 
 architecture Behavioral of Computer is
 
-	--IF
-	component InstructionFetch is
-		port (
-		--in
-			clk: in std_logic;
-			rst: in std_logic;
-
-			pc: in std_logic_vector(15 downto 0);
-		--out
-			instruction: out std_logic_vector(15 downto 0)
-		);
-	end component InstructionFetch;
-
 	--pc
 	component PC_write is
 		port (
 		--in
 			clk: in std_logic;
 			rst: in std_logic;
-
+			
+			--hazard
+			buble_maker_signal: in std_logic;	
 			--control signal
 			jump_control_signal: in jump_control;
 
@@ -65,6 +54,7 @@ architecture Behavioral of Computer is
 			pc_in: in std_logic_vector(15 downto 0);
 			clk: in std_logic;
 			rst: in std_logic;
+			buble_maker_signal: in std_logic;
 		--out
 			instruction_out: out std_logic_vector(15 downto 0);
 			pc_out: out std_logic_vector(15 downto 0)
@@ -209,23 +199,6 @@ architecture Behavioral of Computer is
 		);
 	end component EXEtoMEM;
 
-	component mem is
-		port(
-		--in
-			clk, rst: in std_logic;
-
-			--control signal
-			mem_control_signal: in mem_control;
-
-			rx, ry: in std_logic_vector(15 downto 0);
-
-			mem_addr: in std_logic_vector(15 downto 0);
-
-		--out
-			mem_data: out std_logic_vector(15 downto 0)
-		);
-	end component mem;
-
 	component MEMtoWB is
 		port (
 		--in
@@ -310,13 +283,49 @@ architecture Behavioral of Computer is
 			reg1_data_in: in std_logic_vector(15 downto 0);
 			alu_result_EXE_in: in std_logic_vector(15 downto 0);
 			alu_result_MEM_in: in std_logic_vector(15 downto 0);
+			mem_data_in: in std_logic_vector(15 downto 0);
 			forwarding_control_in: in forwarding_control;
 
 			--out
-			reg0_data_out: in std_logic_vector(15 downto 0);
-			reg1_data_out: in std_logic_vector(15 downto 0)
+			reg0_data_out: out std_logic_vector(15 downto 0);
+			reg1_data_out: out std_logic_vector(15 downto 0)
 		);
 	end component ID;
+	
+	component MMU is
+		port(
+		--in
+			clk, rst: in std_logic;
+			
+			--control signal
+			mem_control_signal: in mem_control;
+			
+			rx, ry: in std_logic_vector(15 downto 0);
+			
+			mem_addr: in std_logic_vector(15 downto 0);
+			
+			pc_in: in std_logic_vector(15 downto 0);
+			
+		--out
+			mem_data: out std_logic_vector(15 downto 0);
+			instruction_out: out std_logic_vector(15 downto 0)
+		);
+	end component MMU;
+	
+	--hazard
+	component Hazard is
+		port (
+		 --in
+			  mem_mem_control_signal: in mem_control;
+			  id_reg0, id_reg1: in std_logic_vector(2 downto 0);
+			  
+			  exe_mem_control_signal: in mem_control;
+			  exe_reg_wb_control_signal: in reg_wb_control;
+
+		 --out
+			  buble_maker_signal: out std_logic
+		);
+	end component Hazard;
 
 	--if
 	signal if_instruction: std_logic_vector(15 downto 0);
@@ -359,6 +368,9 @@ architecture Behavioral of Computer is
 	signal wb_reg_other_control: reg_other_control;
 	signal wb_alu_result, wb_mem_data: std_logic_vector(15 downto 0);
 	signal wb_t_wb_data: std_logic;
+	
+	--hazard
+	signal buble_maker: std_logic;
 
 begin
 
@@ -367,7 +379,10 @@ begin
 		--in
 			clk=>clk,
 			rst=>rst,
-
+			
+			--hazard
+			buble_maker_signal=> buble_maker,
+			
 			--control signal
 			jump_control_signal=>id_jump_control,
 
@@ -381,23 +396,15 @@ begin
 			pc_out=>if_pc
 		);
 
-	instruction_fetch_entity: InstructionFetch
-		port map(
-		--in
-			clk=>clk,
-			rst=>rst,
-
-			pc=>if_pc,
-		--out
-			instruction=> if_instruction
-		);
-
 	iftoid_entity: IFtoID
 		port map(
+		--in
 			instruction_in => if_instruction,
 			pc_in=> if_pc,
 			clk => clk,
 			rst => rst,
+			buble_maker_signal=>buble_maker,
+		--out
 			instruction_out => id_instruction,
 			pc_out => id_pc
 		);
@@ -568,7 +575,7 @@ begin
 			ry_out => mem_ry
 		);
 
-	mem_entity: MEM
+	mmu_entity: MMU
 		port map(
 		--in
 			clk=>clk,
@@ -576,13 +583,15 @@ begin
 
 			--control signal
 			mem_control_signal => mem_mem_control,
-
 			rx=>mem_rx,
 			ry=>mem_ry,
 			mem_addr => mem_alu_result,
+			
+			pc_in=> if_pc,
 
 		--out
-			mem_data => mem_mem_data
+			mem_data => mem_mem_data,
+			instruction_out => if_instruction
 		);
 
 	memtowb_entity: MEMtoWB
@@ -622,8 +631,8 @@ begin
 			id_reg0=> id_instruction(10 downto 8),
 			id_reg1=> id_instruction(7 downto 5),
 			
-			exe_mem_control_signal => exe_mem_control,
-			exe_reg_wb_control_signal=> exe_reg_wb_control,
+			exe_mem_control_signal => ex_mem_control,
+			exe_reg_wb_control_signal=> ex_reg_wb_control,
 		
 		--out
 			buble_maker_signal=> buble_maker
@@ -651,12 +660,12 @@ begin
 			reg1_data_in => id_ry,
 			alu_result_EXE_in => ex_alu_result,
 			alu_result_MEM_in => mem_alu_result,
+			mem_data_in=> mem_mem_data,
 			forwarding_control_in => forwarding_control_signal,
 
 			--out
 			reg0_data_out => selected_rx,
 			reg1_data_out => selected_ry
 	);
-
 
 end Behavioral;

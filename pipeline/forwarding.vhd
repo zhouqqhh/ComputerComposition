@@ -28,7 +28,7 @@ begin
     forwarding_control_signal_out.alu_forwarding_IDtoEXE_src1 <= IDtoEXE_reg_wb_control_in.reg_wb_signal and (not(ID_reg1(0) xor IDtoEXE_reg_wb_control_in.reg_wb_regs(0)))
 																	  and (not(ID_reg1(1) xor IDtoEXE_reg_wb_control_in.reg_wb_regs(1)))
 																	  and (not(ID_reg1(2) xor IDtoEXE_reg_wb_control_in.reg_wb_regs(2)));
-
+ 
     --ID use EXEtoMEM
     forwarding_control_signal_out.alu_forwarding_EXEtoMEM_src0 <= EXEtoMEM_reg_wb_control_in.reg_wb_signal and (not(ID_reg0(0) xor EXEtoMEM_reg_wb_control_in.reg_wb_regs(0)))
 																	  and (not(ID_reg0(1) xor EXEtoMEM_reg_wb_control_in.reg_wb_regs(1)))

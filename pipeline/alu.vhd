@@ -47,6 +47,7 @@ architecture Behavioral of alu is
 begin
 	t0 <= '0' when src0 = src1 else '1';
    t1 <= ((src0(15) and src1(15) and result_tem(15)) or ((not src0(15)) and src1(15)) or ((not src0(15)) and (not src1(15)) and result_tem(15))); 
+	result <= result_tem;
 	process(alu_op, src0, src1)
 	begin
 		case alu_op is

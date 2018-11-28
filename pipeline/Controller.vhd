@@ -672,7 +672,26 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
-                        when others =>
+                        when others => --NOP
+								     jump_control_signal.pc_src <= "00";
+									  alu_control_signal.alu_op <= "ZZZ";
+									  alu_control_signal.alu_src0 <= "ZZZ";
+									  alu_control_signal.alu_src1 <= "00";
+									  alu_control_signal.t_src <= '0';
+									  alu_src1_immi_chooser <= "ZZ";
+									  alu_immi_extend <= 'Z';
+									  reg_wb_init_control_signal.reg_wb_signal <= '0';
+									  reg_wb_init_control_signal.reg_wb_chooser <= "ZZ";
+									  reg_wb_init_control_signal.reg_wb_data_chooser <= 'Z';
+									  reg_other_control_signal.sp_wb_signal <= '0';
+									  reg_other_control_signal.t_wb_signal <= '0';
+									  reg_other_control_signal.ih_wb_signal <= '0';
+									  mem_control_signal.wb_signal <= '0';
+									  mem_control_signal.wb_data_chooser <= 'Z';
+									  mem_control_signal.read_signal <= '0';
+									  jump_control_signal.JR_signal <= '0';
+									  jump_control_signal.B_signal <= "00";
+									  jump_control_signal.B_com_chooser <= "ZZ";
                     end case;
                 when others =>
             end case;
