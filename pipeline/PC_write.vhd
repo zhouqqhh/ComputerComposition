@@ -110,13 +110,13 @@ begin
 	
 	pc_b_result_chooser: mux_3bit
 		port map(
-			input0=>id_pc,
-			input1=>id_pc,
+			input0=>last_pc,
+			input1=>last_pc,
 			input2=>pc_immi,
 			input3=>pc_immi,
-			input4=>id_pc,
+			input4=>last_pc,
 			input5=>pc_immi,
-			input6=>id_pc,
+			input6=>last_pc,
 			input7=>pc_immi,
 			sel=>b_signal_final,
 			output=>pc_b_result
