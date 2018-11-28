@@ -5,12 +5,21 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity Flash is
 	port (
+	--in
 		clk : in std_logic;
 		rst : in std_logic;
+
+		--address in
 		addr_in : in std_logic_vector(22 downto 0);
-		data_out : out std_logic_vector(15 downto 0);
+
+		--control
 		flash_read_signal : in std_logic;
 
+	--out
+		--data output
+		data_out : out std_logic_vector(15 downto 0);
+
+		--flash control
 		FlashByte : out std_logic;
 		FlashVpen : out std_logic;
 		FlashCE : out std_logic;
@@ -18,7 +27,10 @@ entity Flash is
 		FlashWE : out std_logic;
 		FlashRP : out std_logic;
 
+		--address to flash
 		FlashAddr : out std_logic_vector(22 downto 0);
+
+	--inout
 		FlashData : inout std_logic_vector(15 downto 0)
 	);
 end Flash;
