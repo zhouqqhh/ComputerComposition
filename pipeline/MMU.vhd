@@ -21,7 +21,6 @@ entity MMU is
 		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 
 	--out
-		led: out std_logic_vector(15 downto 0);
 		mem_data: out std_logic_vector(15 downto 0);
 		instruction_out: out std_logic_vector(15 downto 0);
 		ram1_addr_out, ram2_addr_out: out std_logic_vector(17 downto 0);
@@ -42,6 +41,9 @@ entity MMU is
 		ram1_data: inout std_logic_vector(15 downto 0);
 		ram2_data: inout std_logic_vector(15 downto 0);
 		FlashData: inout std_logic_vector(15 downto 0)
+		
+	--debug
+		--debug_output: out std_logic_vector(15 downto 0)
 	);
 end MMU;
 
@@ -91,6 +93,7 @@ architecture Behavioral of MMU is
 	signal flash_state: flash_state_t;
 	signal flash_read_counter: std_logic_vector(5 downto 0);
 begin
+			--debug_output <= pc_in;
 	--wb data chooser
 	data_source_chooser: mux_1bit
 		port map(
@@ -170,7 +173,7 @@ begin
 		elsif mem_control_signal.wb_signal = '1' then  --write
 			if mem_addr(15 downto 4) = x"BF0" then  --write serial
 				bus_control_signal.rdn <= '1';
-				bus_control_signal.wrn <= clk;
+				bus_control_signal.wrn <= not clk;
 
 				ram1_control_signal <= zero_ram_control;
 
@@ -238,16 +241,16 @@ begin
 			mem_data(15 downto 2) <= (others=>'0');
 			mem_data(1) <= serial_data_ready;
 			mem_data(0) <= serial_tsre and serial_tbre;
-		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then  --ram1
-			mem_data <= ram1_data;
-		else  --ram2
+		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then
 			mem_data <= ram2_data;
+			instruction_out <= ram2_data;
+		else  
+			mem_data <= ram1_data;
 		end if;
 	end process;
 	
 	cpu_bubble <= reading_flash;
 	flash_ctl_read <= '0' when flash_state = reading else '1';
-	led <= "000000000000000"&flash_ctl_read;
 	flash_control: process (clk, rst)
 	begin
 		if rst = '0' then

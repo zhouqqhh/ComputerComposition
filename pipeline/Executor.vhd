@@ -115,8 +115,8 @@ begin
 		port map(
 			input0 => ry,
 			input1 => alu_immi,
-			input2 => (others=>'0'),
-			input3 => rx,
+			input2 =>rx,
+			input3 =>  (others=>'0'),
 			sel => alu_control_signal.alu_src1,
 			
 			output => src1

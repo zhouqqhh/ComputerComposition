@@ -154,9 +154,9 @@ begin
 			output=> reg_wb_place_cand
 		);
 	
-	process(clk, rst)
+	process(clk, rst, buble_maker_signal)
 	begin
-		if rst = '0' and buble_maker_signal = '1' then
+		if rst = '0'  then
 			reg_wb_control_signal <= zero_reg_wb_control;
 			reg_other_control_signal <= zero_reg_other_control;
 			mem_control_signal <= zero_mem_control;
@@ -169,24 +169,37 @@ begin
 			ih <= (others=>'0');
 			alu_immi <= (others=>'0');
 		elsif rising_edge(clk) then
-			reg_wb_control_signal.reg_wb_signal <= reg_wb_init_control_signal_in.reg_wb_signal;
-			reg_wb_control_signal.reg_wb_data_chooser <= reg_wb_init_control_signal_in.reg_wb_data_chooser;
-			reg_wb_control_signal.reg_wb_regs <= reg_wb_place_cand;
-			
-			reg_other_control_signal <= reg_other_control_signal_in;
-			
-			alu_control_signal <= alu_control_signal_in;
-			
-			sp <= sp_in;
-			ih <= ih_in;
-			pc <= pc_in;
+			if buble_maker_signal = '0' then
+				reg_wb_control_signal.reg_wb_signal <= reg_wb_init_control_signal_in.reg_wb_signal;
+				reg_wb_control_signal.reg_wb_data_chooser <= reg_wb_init_control_signal_in.reg_wb_data_chooser;
+				reg_wb_control_signal.reg_wb_regs <= reg_wb_place_cand;
+				
+				reg_other_control_signal <= reg_other_control_signal_in;
+				
+				alu_control_signal <= alu_control_signal_in;
+				
+				sp <= sp_in;
+				ih <= ih_in;
+				pc <= pc_in;
 
-			mem_control_signal <= mem_control_signal_in;
-			
-			rx <= rx_in;
-			ry <= ry_in;
-			alu_immi <= alu_immi_cand;
-			
+				mem_control_signal <= mem_control_signal_in;
+				
+				rx <= rx_in;
+				ry <= ry_in;
+				alu_immi <= alu_immi_cand;	
+			else
+				reg_wb_control_signal <= zero_reg_wb_control;
+				reg_other_control_signal <= zero_reg_other_control;
+				mem_control_signal <= zero_mem_control;
+				alu_control_signal <= zero_alu_control;
+				
+				rx <= (others=>'0');
+				ry <= (others=>'0');
+				sp <= (others=>'0');
+				pc <= (others=>'0');
+				ih <= (others=>'0');
+				alu_immi <= (others=>'0');
+			end if;
 		end if;
 	end process;
 end Behavioral;
