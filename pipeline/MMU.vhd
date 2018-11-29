@@ -21,6 +21,7 @@ entity MMU is
 		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 
 	--out
+		led: out std_logic_vector(15 downto 0);
 		mem_data: out std_logic_vector(15 downto 0);
 		instruction_out: out std_logic_vector(15 downto 0);
 		ram1_addr_out, ram2_addr_out: out std_logic_vector(17 downto 0);
@@ -246,7 +247,6 @@ begin
 			flash_mem_addr <= (others => '0');
 			flash_state <= init;
 		elsif rising_edge(clk) then
-
 			case flash_state is
 				when init =>
 					reading_flash <= '1';
@@ -254,6 +254,7 @@ begin
 					flash_mem_addr <= (others => '0');
 					flash_read_counter <= (others => '0');
 					flash_state <= reading;
+					led <= (others => '0');
 				when reading =>
 					if flash_read_counter = "111111" then
 						flash_read_counter <= (others => '0');
@@ -262,8 +263,10 @@ begin
 						flash_read_counter <= flash_read_counter + 1;
 						flash_state <= reading;
 					end if;
+					led <= "1111111100000000";
 				when write_ram =>
 					flash_state <= update_addr;
+					led <= "1111111100000000";
 				when update_addr =>
 					flash_addr <= flash_addr + 2;
 					flash_mem_addr <= flash_mem_addr + 1;
@@ -272,10 +275,13 @@ begin
 					else
 						flash_state <= finished;
 					end if;
+					led <= "1111111100000000";
 				when finished =>
 					reading_flash <= '0';
+					led <= (others => '1');
 				when others =>
 					flash_state <= init;
+					led <= (others => '0');
 			end case;
 		end if;
 	end process;

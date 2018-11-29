@@ -344,6 +344,7 @@ architecture Behavioral of Computer is
 			bus_control_signal: out bus_control;
 			ram1_control_signal: out ram_control;
 			ram2_control_signal: out ram_control;
+			led: out std_logic_vector(15 downto 0);
 
 			--flash control
 			FlashByte, FlashVpen : out std_logic;
@@ -589,8 +590,6 @@ begin
 			t_wb_data=> ex_t_wb_data
 		);
 
-	led <= wb_alu_result;
-
 	exetomem_entity: EXEtoMEM
 		port map(
 		--in
@@ -670,6 +669,7 @@ begin
 			FlashWE => FlashWE,
 			FlashRP => FlashRP,
 			FlashAddr => FlashAddr,
+			led => led,
 
 			cpu_bubble => reading_flash,
 
