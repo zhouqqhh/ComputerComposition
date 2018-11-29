@@ -568,7 +568,7 @@ begin
 			t_wb_data=> ex_t_wb_data
 		);
 
-	led <= wb_alu_result;
+	led <= id_instruction;
 
 	exetomem_entity: EXEtoMEM
 		port map(
