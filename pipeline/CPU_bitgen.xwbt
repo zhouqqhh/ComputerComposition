@@ -1,8 +1,0 @@
-INTSTYLE=ise
-INFILE=C:\Users\zhouqh\Desktop\ComputerComposition\pipeline\CPU.ncd
-OUTFILE=C:\Users\zhouqh\Desktop\ComputerComposition\pipeline\CPU.bit
-FAMILY=Spartan3E
-PART=xc3s1200e-4fg320
-WORKINGDIR=C:\Users\zhouqh\Desktop\ComputerComposition\pipeline
-LICENSE=ISE
-USER_INFO=135256_15690819_173552794_661
