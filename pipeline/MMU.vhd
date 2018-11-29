@@ -28,9 +28,17 @@ entity MMU is
 		ram1_control_signal: out ram_control;
 		ram2_control_signal: out ram_control;
 
+		--flash control
+		FlashByte, FlashVpen : out std_logic;
+		FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
+
+		--address to flash
+		FlashAddr : out std_logic_vector(22 downto 0);
+
 	--inout
 		ram1_data: inout std_logic_vector(15 downto 0);
-		ram2_data: inout std_logic_vector(15 downto 0)
+		ram2_data: inout std_logic_vector(15 downto 0);
+		FlashData: inout std_logic_vector(15 downto 0)
 	);
 end MMU;
 
@@ -44,9 +52,39 @@ architecture Behavioral of MMU is
 		);
 	end component mux_1bit;
 	signal input_data: std_logic_vector(15 downto 0);
-	type memdef is array(15 downto 0) of std_logic_vector(15 downto 0);
-	signal memory : memdef;
-	signal reading_flash: std_logic;
+
+	component Flash is
+		port (
+		--in
+			clk : in std_logic;
+			rst : in std_logic;
+
+			--address in
+			addr_in : in std_logic_vector(22 downto 0);
+
+			--control
+			ctl_read : in std_logic;
+
+		--out
+			--data output
+			data_out : out std_logic_vector(15 downto 0);
+
+			--flash control
+			FlashByte, FlashVpen : out std_logic;
+			FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
+
+			--address to flash
+			FlashAddr : out std_logic_vector(22 downto 0);
+
+		--inout
+			FlashData : inout std_logic_vector(15 downto 0)
+		);
+	end component Flash;
+	signal reading_flash, flash_ctl_read: std_logic;
+	signal flash_addr: std_logic_vector(22 downto 0);
+	signal flash_data: std_logic_vector(15 downto 0);
+	type flash_state_t is (init, reading, write_ram, done);
+	signal flash_state: flash_state_t;
 begin
 	reading_flash <= '0';  --TODO
 
@@ -60,27 +98,36 @@ begin
 			output=>input_data
 		);
 
-	memory_init: process(rst, clk)
-		begin
-			if rst = '0' then
-				memory(0) <= "0100100001010110";
-				memory(1) <= "1101100100011000";
-				memory(2) <= "1110000000101011";
-				memory(4) <= "0011010000101000";
-				memory(5) <= "1001100101000101";
-				memory(6) <= "1110101000101100";
-				memory(7) <= "1110101100101010";
-				memory(8) <= "0110000111111111";
-				memory(9) <= "0000100000000000";
-			end if;
-		end process;
+	Flash_entity: Flash
+		port map(
+		--in
+			clk => clk,
+			rst => rst,
 
-	process(mem_control_signal, pc_in)
-	begin
-		if pc_in < "0000000000010000" then
-			instruction_out <= memory(conv_integer(pc_in));
-		end if;
-	end process;
+			--address in
+			addr_in => flash_addr,
+
+			--control
+			ctl_read => flash_ctl_read,
+
+		--out
+			--data output
+			data_out => flash_data,
+
+			--flash control
+			FlashByte => FlashByte,
+			FlashVpen => FlashVpen,
+			FlashCE => FlashCE,
+			FlashOE => FlashOE,
+			FlashWE => FlashWE,
+			FlashRP => FlashRP,
+
+			--address to flash
+			FlashAddr => FlashAddr,
+
+		--inout
+			FlashData => FlashData
+		);
 
 	--ram1: 0x8000 ~ 0xFFFF, ram2: 0x0000 ~ 0x7FFF
 	memory_address_chooser: process(pc_in, mem_addr, mem_control_signal)
@@ -170,7 +217,7 @@ begin
 		end if;
 	end process;
 
-	process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
+	select_output: process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
 	begin
 		if reading_flash = '1' then  --TODO
 		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') or (not (mem_addr(15 downto 4) = x"BF0")) then  --ram1
@@ -179,4 +226,6 @@ begin
 			mem_data <= ram2_data;
 		end if;
 	end process;
+
+	process ()
 end Behavioral;

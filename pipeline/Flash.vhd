@@ -13,19 +13,15 @@ entity Flash is
 		addr_in : in std_logic_vector(22 downto 0);
 
 		--control
-		flash_read_signal : in std_logic;
+		ctl_read : in std_logic;
 
 	--out
 		--data output
 		data_out : out std_logic_vector(15 downto 0);
 
 		--flash control
-		FlashByte : out std_logic;
-		FlashVpen : out std_logic;
-		FlashCE : out std_logic;
-		FlashOE : out std_logic;
-		FlashWE : out std_logic;
-		FlashRP : out std_logic;
+		FlashByte, FlashVpen : out std_logic;
+		FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
 
 		--address to flash
 		FlashAddr : out std_logic_vector(22 downto 0);
@@ -57,11 +53,11 @@ begin
 			FlashTimer <= (others => '0');
 			flash_read_contain <= '1';
 		elsif rising_edge(clk) then
-			flash_read_contain <= flash_read_signal;
+			flash_read_contain <= ctl_read;
 			case state is
 				when read0 =>
 					FlashTimer <= (others => '0');
-					if flash_read_contain /= flash_read_signal then
+					if flash_read_contain /= ctl_read then
 						state <= read1;
 						FlashWE <= '0';
 					else

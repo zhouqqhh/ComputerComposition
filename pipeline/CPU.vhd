@@ -40,7 +40,10 @@ entity CPU is
 		ram1_data, ram2_data: inout std_logic_vector(15 downto 0);
 		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 		rdn, wrn: out std_logic;
-		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic
+		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic;
+		FlashByte, FlashVpen, FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
+		FlashAddr : out std_logic_vector(22 downto 0);
+		FlashData: inout std_logic_vector(15 downto 0)
 	);
 end CPU;
 
@@ -82,7 +85,15 @@ begin
 			ram1_en => ram1_en,
 			ram2_oe => ram2_oe,
 			ram2_we => ram2_we,
-			ram2_en => ram2_en
+			ram2_en => ram2_en,
+			FlashByte => FlashByte,
+			FlashVpen => FlashVpen,
+			FlashCE => FlashCE,
+			FlashOE => FlashOE,
+			FlashWE => FlashWE,
+			FlashRP => FlashRP,
+			FlashAddr => FlashAddr,
+			FlashData => FlashData
 		);
 
 end Behavioral;
