@@ -155,7 +155,7 @@ begin
 			ram1_control_signal <= zero_ram_control;
 
 			ram2_control_signal.oe <= '1';
-			if state = reading then
+			if flash_state = reading then
 				ram2_control_signal.we <= not clk;
 			else
 				ram2_control_signal.we <= '1';
@@ -242,7 +242,7 @@ begin
 			reading_flash <= '1';
 			flash_addr <= (others => '0');
 			flash_data <= (others => '0');
-			state <= init;
+			flash_state <= init;
 		elsif rising_edge(clk) then
 
 			case flash_state is
@@ -251,29 +251,29 @@ begin
 					flash_addr <= (others => '0');
 					flash_data <= (others => '0');
 					flash_read_counter <= (others => '0');
-					state <= reading;
+					flash_state <= reading;
 				when reading =>
 					if flash_read_counter = "111111" then
 						flash_read_counter <= (others => '0');
-						state <= write_ram;
+						flash_state <= write_ram;
 					else
 						flash_read_counter <= flash_read_counter + 1;
-						state <= reading;
+						flash_state <= reading;
 					end if;
 				when write_ram =>
-					state <= update_addr;
+					flash_state <= update_addr;
 				when update_addr =>
 					flash_addr <= flash_addr + 2;
 					flash_mem_addr <= flash_mem_addr + 1;
 					if flash_addr < x"0FFF" then
-						state <= reading;
+						flash_state <= reading;
 					else
-						state <= finished;
+						flash_state <= finished;
 					end if;
 				when finished =>
 					reading_flash <= '0';
 				when others =>
-					state <= init;
+					flash_state <= init;
 			end case;
 		end if;
 	end process;

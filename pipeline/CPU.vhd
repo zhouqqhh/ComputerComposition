@@ -60,7 +60,10 @@ architecture Behavioral of CPU is
 			ram1_data, ram2_data: inout std_logic_vector(15 downto 0);
 			serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 			rdn, wrn: out std_logic;
-			ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic
+			ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic;
+			FlashByte, FlashVpen, FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
+			FlashAddr : out std_logic_vector(22 downto 0);
+			FlashData: inout std_logic_vector(15 downto 0)
 		);
 	end component Computer;
 begin
