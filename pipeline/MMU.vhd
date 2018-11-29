@@ -241,7 +241,7 @@ begin
 		if rst = '0' then
 			reading_flash <= '1';
 			flash_addr <= (others => '0');
-			flash_data <= (others => '0');
+			flash_mem_addr <= (others => '0');
 			flash_state <= init;
 		elsif rising_edge(clk) then
 
@@ -249,7 +249,7 @@ begin
 				when init =>
 					reading_flash <= '1';
 					flash_addr <= (others => '0');
-					flash_data <= (others => '0');
+					flash_mem_addr <= (others => '0');
 					flash_read_counter <= (others => '0');
 					flash_state <= reading;
 				when reading =>
