@@ -34,8 +34,8 @@ end Flash;
 architecture Behavioral of Flash is
 	type state_t is (read0, read1, read2, read3, read4);
 	signal state : state_t;
-	signal flash_read_contain : std_logic;
-	signal FlashTimer : STD_LOGIC_VECTOR(3 downto 0);
+	signal old_ctl : std_logic;
+	signal read_counter : STD_LOGIC_VECTOR(3 downto 0);
 begin
 
 	FlashByte <= '1';
@@ -50,49 +50,48 @@ begin
 			FlashWE <= '1';
 			FlashOE <= '1';
 			FlashData <= (others => 'Z');
-			FlashTimer <= (others => '0');
-			flash_read_contain <= '1';
+			read_counter <= (others => '0');
+			old_ctl <= '1';
 		elsif rising_edge(clk) then
-			flash_read_contain <= ctl_read;
 			case state is
 				when read0 =>
-					FlashTimer <= (others => '0');
-					if flash_read_contain /= ctl_read then
-						state <= read1;
+					read_counter <= (others => '0');
+					if not (old_ctl = ctl_read) then
 						FlashWE <= '0';
+						state <= read1;
 					else
 						state <= read0;
 					end if;
 				when read1 =>
-					state <= read2;
 					FlashData <= x"00FF";
+						state <= read2;
 				when read2 =>
-					state <= read3;
 					FlashWE <= '1';
+						state <= read3;
 				when read3 =>
-					state <= read4;
 					FlashOE <= '0';
 					FlashAddr <= addr_in;
 					FlashData <= (others => 'Z');
-
-					if FlashTimer = "1111" then
-						FlashTimer <= (others => '0');
+					state <= read4;
+					if read_counter = "1111" then
+						read_counter <= (others => '0');
 						state <= read4;
 					else
-						FlashTimer <= FlashTimer + 1;
+						read_counter <= read_counter + 1;
 						state <= read3;
 					end if;
 
 				when read4 =>
-					state <= read0;
 					data_out <= FlashData;
 					FlashOE <= '1';
+					state <= read0;
 				when others =>
 					FlashWE <= '1';
 					FlashOE <= '1';
 					FlashData <= (others => 'Z');
 					state <= read0;
 			end case;
+			old_ctl <= ctl_read;
 		end if;
 	end process;
 

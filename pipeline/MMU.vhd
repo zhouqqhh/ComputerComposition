@@ -82,12 +82,12 @@ architecture Behavioral of MMU is
 	end component Flash;
 	signal reading_flash, flash_ctl_read: std_logic;
 	signal flash_addr: std_logic_vector(22 downto 0);
+	signal flash_mem_addr: std_logic_vector(15 downto 0);
 	signal flash_data: std_logic_vector(15 downto 0);
-	type flash_state_t is (init, reading, write_ram, done);
+	type flash_state_t is (init, reading, write_ram, update_addr, finished);
 	signal flash_state: flash_state_t;
+	signal flash_read_counter: std_logic_vector(5 downto 0);
 begin
-	reading_flash <= '0';  --TODO
-
 	--wb data chooser
 	data_source_chooser: mux_1bit
 		port map(
@@ -142,7 +142,7 @@ begin
 			end if;
 		else  --read flash
 			ram1_addr_out <= "00" & mem_addr;
-			ram2_addr_out <= "00" & mem_addr;
+			ram2_addr_out <= "00" & flash_mem_addr;
 		end if;
 	end process;
 
@@ -153,7 +153,16 @@ begin
 			bus_control_signal.wrn <= '1';
 
 			ram1_control_signal <= zero_ram_control;
-			ram2_control_signal <= zero_ram_control;
+
+			ram2_control_signal.oe <= '1';
+			if state = reading then
+				ram2_control_signal.we <= not clk;
+			else
+				ram2_control_signal.we <= '1';
+			end if;
+
+			ram1_data <= (others => 'Z');
+			ram2_data <= flash_data;
 		elsif mem_control_signal.wb_signal = '1' then  --write
 			if mem_addr(15 downto 4) = x"BF0" then  --write serial
 				bus_control_signal.rdn <= '1';
@@ -227,5 +236,45 @@ begin
 		end if;
 	end process;
 
-	process ()
+	flash_control: process (clk, rst)
+	begin
+		if rst = '0' then
+			reading_flash <= '1';
+			flash_addr <= (others => '0');
+			flash_data <= (others => '0');
+			state <= init;
+		elsif rising_edge(clk) then
+
+			case flash_state is
+				when init =>
+					reading_flash <= '1';
+					flash_addr <= (others => '0');
+					flash_data <= (others => '0');
+					flash_read_counter <= (others => '0');
+					state <= reading;
+				when reading =>
+					if flash_read_counter = "111111" then
+						flash_read_counter <= (others => '0');
+						state <= write_ram;
+					else
+						flash_read_counter <= flash_read_counter + 1;
+						state <= reading;
+					end if;
+				when write_ram =>
+					state <= update_addr;
+				when update_addr =>
+					flash_addr <= flash_addr + 2;
+					flash_mem_addr <= flash_mem_addr + 1;
+					if flash_addr < x"0FFF" then
+						state <= reading;
+					else
+						state <= finished;
+					end if;
+				when finished =>
+					reading_flash <= '0';
+				when others =>
+					state <= init;
+			end case;
+		end if;
+	end process;
 end Behavioral;
