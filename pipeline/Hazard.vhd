@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    23:39:39 11/27/2018 
--- Design Name: 
--- Module Name:    Hazard - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    23:39:39 11/27/2018
+-- Design Name:
+-- Module Name:    Hazard - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -34,9 +34,10 @@ entity Hazard is
     --in
         mem_mem_control_signal: in mem_control;
         id_reg0, id_reg1: in std_logic_vector(2 downto 0);
-		  
+
 		  exe_mem_control_signal: in mem_control;
 		  exe_reg_wb_control_signal: in reg_wb_control;
+		  reading_flash: in std_logic;
 
     --out
 		  buble_maker_signal: out std_logic
@@ -46,8 +47,7 @@ end Hazard;
 architecture Behavioral of Hazard is
 
 begin
-	buble_maker_signal <= '1' when ((mem_mem_control_signal.wb_signal = '1') or (mem_mem_control_signal.read_signal = '1')
+	buble_maker_signal <= '1' when ((reading_flash = '1') or (mem_mem_control_signal.wb_signal = '1') or (mem_mem_control_signal.read_signal = '1')
   										or (exe_mem_control_signal.read_signal = '1' and exe_reg_wb_control_signal.reg_wb_signal = '1'
 											and (exe_reg_wb_control_signal.reg_wb_regs = id_reg0 or exe_reg_wb_control_signal.reg_wb_regs = id_reg1))) else '0';
 end Behavioral;
-

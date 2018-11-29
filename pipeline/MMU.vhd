@@ -35,6 +35,8 @@ entity MMU is
 		--address to flash
 		FlashAddr : out std_logic_vector(22 downto 0);
 
+		--cpu bubble
+		cpu_bubble: out std_logic;
 	--inout
 		ram1_data: inout std_logic_vector(15 downto 0);
 		ram2_data: inout std_logic_vector(15 downto 0);
