@@ -158,11 +158,12 @@ begin
 			ram1_control_signal <= zero_ram_control;
 
 			ram2_control_signal.oe <= '1';
-			if flash_state = reading then
+			if flash_state = write_ram then
 				ram2_control_signal.we <= not clk;
 			else
 				ram2_control_signal.we <= '1';
 			end if;
+			ram2_control_signal.en <= '0';
 
 			ram1_data <= (others => 'Z');
 			ram2_data <= flash_data;
@@ -238,7 +239,8 @@ begin
 			mem_data <= ram2_data;
 		end if;
 	end process;
-
+	flash_ctl_read <= '0' when flash_state = reading else '1';
+	led <= "000000000000000"&flash_ctl_read;
 	flash_control: process (clk, rst)
 	begin
 		if rst = '0' then
@@ -254,7 +256,7 @@ begin
 					flash_mem_addr <= (others => '0');
 					flash_read_counter <= (others => '0');
 					flash_state <= reading;
-					led <= (others => '0');
+					--led <= (others => '0');
 				when reading =>
 					if flash_read_counter = "111111" then
 						flash_read_counter <= (others => '0');
@@ -263,10 +265,10 @@ begin
 						flash_read_counter <= flash_read_counter + 1;
 						flash_state <= reading;
 					end if;
-					led <= "1111111100000000";
+					--led <= "0000000000001111";
 				when write_ram =>
 					flash_state <= update_addr;
-					led <= "1111111100000000";
+					--led <= "0000000011111111";
 				when update_addr =>
 					flash_addr <= flash_addr + 2;
 					flash_mem_addr <= flash_mem_addr + 1;
@@ -275,13 +277,13 @@ begin
 					else
 						flash_state <= finished;
 					end if;
-					led <= "1111111100000000";
+					--led <= "0000111111111111";
 				when finished =>
 					reading_flash <= '0';
-					led <= (others => '1');
+					--led <= (others => '1');
 				when others =>
 					flash_state <= init;
-					led <= (others => '0');
+					--led <= (others => '0');
 			end case;
 		end if;
 	end process;

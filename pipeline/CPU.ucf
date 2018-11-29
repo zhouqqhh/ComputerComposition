@@ -1,5 +1,4 @@
 
-# PlanAhead Generated physical constraints
 
 NET "led[15]" LOC = A14;
 NET "led[14]" LOC = E13;
@@ -85,7 +84,7 @@ NET "ram2_addr[3]" LOC = P16;
 NET "ram2_addr[2]" LOC = N18;
 NET "ram2_addr[1]" LOC = N15;
 NET "ram2_addr[0]" LOC = N14;
-NET "clk" LOC = U9;
+NET "clk" LOC = B8;
 NET "rst" LOC = U10;
 NET "serial_tbre" LOC = D14;
 NET "serial_tsre" LOC = N9;
