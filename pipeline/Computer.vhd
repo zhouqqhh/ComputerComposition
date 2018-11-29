@@ -354,7 +354,7 @@ architecture Behavioral of Computer is
 			FlashAddr : out std_logic_vector(22 downto 0);
 
 			--bubble
-			cpu_bubble: out std_logic;
+			flash_bubble: out std_logic;
 
 		--inout
 			ram1_data: inout std_logic_vector(15 downto 0);
@@ -671,7 +671,7 @@ begin
 			FlashAddr => FlashAddr,
 			led => led,
 
-			cpu_bubble => reading_flash,
+			flash_bubble => reading_flash,
 
 		--inout
 			ram1_data => ram1_data,
