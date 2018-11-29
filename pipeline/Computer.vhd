@@ -24,7 +24,15 @@ entity Computer is
 		ram1_data, ram2_data: inout std_logic_vector(15 downto 0);
 		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 		rdn, wrn: out std_logic;
-		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic
+		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic;
+
+		--flash control
+		FlashByte, FlashVpen : out std_logic;
+		FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
+
+		--address to flash
+		FlashAddr : out std_logic_vector(22 downto 0);
+		FlashData: inout std_logic_vector(15 downto 0)
 	);
 end Computer;
 
@@ -111,7 +119,7 @@ architecture Behavioral of Computer is
 		--in
 			clk: in std_logic;
 			rst: in std_logic;
-			
+
 			buble_maker_signal: in std_logic;
 			--control signal
 			reg_wb_rx, reg_wb_ry, reg_wb_rz: in std_logic_vector(2 downto 0);
@@ -336,10 +344,22 @@ architecture Behavioral of Computer is
 			bus_control_signal: out bus_control;
 			ram1_control_signal: out ram_control;
 			ram2_control_signal: out ram_control;
+			led: out std_logic_vector(15 downto 0);
+
+			--flash control
+			FlashByte, FlashVpen : out std_logic;
+			FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
+
+			--address to flash
+			FlashAddr : out std_logic_vector(22 downto 0);
+
+			--bubble
+			cpu_bubble: out std_logic;
 
 		--inout
 			ram1_data: inout std_logic_vector(15 downto 0);
-			ram2_data: inout std_logic_vector(15 downto 0)
+			ram2_data: inout std_logic_vector(15 downto 0);
+			FlashData: inout std_logic_vector(15 downto 0)
 		);
 	end component MMU;
 
@@ -349,6 +369,7 @@ architecture Behavioral of Computer is
 		 --in
 			  mem_mem_control_signal: in mem_control;
 			  id_reg0, id_reg1: in std_logic_vector(2 downto 0);
+			  reading_flash: in std_logic;
 
 			  exe_mem_control_signal: in mem_control;
 			  exe_reg_wb_control_signal: in reg_wb_control;
@@ -402,6 +423,7 @@ architecture Behavioral of Computer is
 
 	--hazard
 	signal buble_maker: std_logic;
+	signal reading_flash: std_logic;
 
 begin
 
@@ -497,7 +519,7 @@ begin
 		--in
 			clk=>clk,
 			rst=>rst,
-			
+
 			buble_maker_signal=> buble_maker,
 			--control signal
 			reg_wb_rx=> id_instruction(10 downto 8),
@@ -567,8 +589,6 @@ begin
 			alu_result=> ex_alu_result,
 			t_wb_data=> ex_t_wb_data
 		);
-
-	led <= id_instruction;
 
 	exetomem_entity: EXEtoMEM
 		port map(
@@ -642,10 +662,21 @@ begin
 			ram2_control_signal.oe => ram2_oe,
 			ram2_control_signal.we => ram2_we,
 			ram2_control_signal.en => ram2_en,
+			FlashByte => FlashByte,
+			FlashVpen => FlashVpen,
+			FlashCE => FlashCE,
+			FlashOE => FlashOE,
+			FlashWE => FlashWE,
+			FlashRP => FlashRP,
+			FlashAddr => FlashAddr,
+			led => led,
+
+			cpu_bubble => reading_flash,
 
 		--inout
 			ram1_data => ram1_data,
-			ram2_data => ram2_data
+			ram2_data => ram2_data,
+			FlashData => FlashData
 		);
 
 	memtowb_entity: MEMtoWB
@@ -687,6 +718,7 @@ begin
 
 			exe_mem_control_signal => ex_mem_control,
 			exe_reg_wb_control_signal=> ex_reg_wb_control,
+  		  	reading_flash => reading_flash,
 
 		--out
 			buble_maker_signal=> buble_maker
