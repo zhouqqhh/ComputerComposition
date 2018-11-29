@@ -233,13 +233,18 @@ begin
 	select_output: process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
 	begin
 		if reading_flash = '1' then  --TODO
-		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') or (not (mem_addr(15 downto 4) = x"BF0")) then  --ram1
+		elsif (mem_addr(15 downto 0) = x"BF01") then
+			mem_data(15 downto 0) <= (others => '0');
+			mem_data(1) <= serial_data_ready;
+			mem_data(0) <= serial_tbre and serial_tsre;
+		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then  --ram1
 			mem_data <= ram1_data;
 		else  --ram2
 			mem_data <= ram2_data;
 		end if;
 	end process;
 	flash_ctl_read <= '0' when flash_state = reading else '1';
+	cpu_bubble <= reading_flash;
 	led <= "000000000000000"&flash_ctl_read;
 	flash_control: process (clk, rst)
 	begin
