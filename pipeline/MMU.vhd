@@ -36,7 +36,7 @@ entity MMU is
 		FlashAddr : out std_logic_vector(22 downto 0);
 
 		--cpu bubble
-		cpu_bubble: out std_logic;
+		flash_bubble: out std_logic;
 	--inout
 		ram1_data: inout std_logic_vector(15 downto 0);
 		ram2_data: inout std_logic_vector(15 downto 0);
@@ -232,13 +232,14 @@ begin
 			ram2_data <= (others => 'Z');
 		end if;
 	end process;
-
+	
+	flash_bubble <= reading_flash;
+	
 	select_output: process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
 	begin
-		if reading_flash = '1' then  --TODO
-			mem_data <= (others=>'Z');
+		if reading_flash = '1' then 
+			mem_data <= (others=> 'Z');
 		elsif (mem_addr(15 downto 0) = x"BF01") then
-			mem_data(15 downto 2) <= (others=>'0');
 			mem_data(1) <= serial_data_ready;
 			mem_data(0) <= serial_tsre and serial_tbre;
 		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then
