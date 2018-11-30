@@ -24,6 +24,7 @@ entity Registers is
 			t_wb_data: in std_logic;
 			
 		--out
+			debug_output: out std_logic_vector(15 downto 0);
 			read_data1: out std_logic_vector(15 downto 0);
 			read_data2: out std_logic_vector(15 downto 0);
 			sp_out: out std_logic_vector(15 downto 0);
@@ -48,6 +49,7 @@ architecture Behavioral of Registers is
 	signal sp, ih: std_logic_vector(15 downto 0);
 	signal t: std_logic;
 begin
+	debug_output <= regs_data(7);
 	--read logic
 	read_data1 <= regs_data(conv_integer(unsigned(read_regs1)));
 	read_data2 <= regs_data(conv_integer(unsigned(read_regs2)));

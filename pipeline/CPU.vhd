@@ -34,6 +34,7 @@ entity CPU is
 		--clock
 		clk: in std_logic;
 		rst: in std_logic;
+		clk_debug: in std_logic;
 
 		led: out std_logic_vector(15 downto 0);
 		ram1_addr, ram2_addr: out std_logic_vector(17 downto 0);
@@ -53,6 +54,7 @@ architecture Behavioral of CPU is
 			--clock
 			clk: in std_logic;
 			rst: in std_logic;
+			clk_debug: in std_logic;
 
 			--led(Debug)
 			led: out std_logic_vector(15 downto 0);
@@ -70,8 +72,9 @@ begin
 	computer_entity: Computer
 		port map(
 			--clock
-			clk => clk,
+			clk => clk_debug,
 			rst => rst,
+			clk_debug => clk,
 
 			led => led,
 			ram1_addr => ram1_addr,
