@@ -17,6 +17,7 @@ entity PC_write is
 		
 		--data
 		last_pc, id_pc, immi, rx: in std_logic_vector(15 downto 0);
+		immi_b: in  std_logic_vector(10 downto 0);
 		t: in std_logic;
 
 	--out
@@ -73,14 +74,27 @@ architecture Behavioral of PC_write is
 	signal pc_cand, pc_immi, pc_b_result: std_logic_vector(15 downto 0);
 	signal rx_zero, rx_not_zero, t_zero, t_not_zero, b_com_choose_result: std_logic;
 	signal b_signal_final: std_logic_vector(2 downto 0);
+	signal immi_b_sign: std_logic_vector(15 downto 0);
+	signal pc_b: std_logic_vector(15  downto 0);
+	signal immi_final: std_logic_vector(15 downto 0);
 begin
 	--out
 	pc_out <= pc;
 	pc_one_out <= pc + 1;
 
 	--internal calculate
-	pc_immi <= id_pc + immi;
-
+	immi_b_sign(10 downto 0) <= immi_b;
+	immi_b_sign(15 downto 11) <= (others=>immi_b(10));
+	
+	immi_chooser: mux_1bit
+		port map(
+			input0=>immi,
+			input1=>immi_b_sign,
+			sel=> jump_control_signal.b_signal(0),
+			output=>immi_final
+		);
+		
+	pc_immi <= id_pc + immi_final;
 	rx_zero_comparator: Compare
 		port map(
 		--in

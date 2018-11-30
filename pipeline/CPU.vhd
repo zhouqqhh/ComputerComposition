@@ -83,7 +83,7 @@ begin
 			ram2_data => ram2_data,
 			serial_tbre => serial_tbre,
 			serial_tsre => serial_tsre,
-			serial_data_ready => serial_tsre,
+			serial_data_ready => serial_data_ready,
 			rdn => rdn,
 			wrn => wrn,
 			ram1_oe => ram1_oe,

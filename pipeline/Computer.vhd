@@ -54,7 +54,7 @@ architecture Behavioral of Computer is
 			--data
 			last_pc, id_pc, immi, rx: in std_logic_vector(15 downto 0);
 			t: in std_logic;
-
+			immi_b: in  std_logic_vector(10 downto 0);
 		--out
 			pc_out: out std_logic_vector(15 downto 0);
 			pc_one_out: out std_logic_vector(15 downto 0)
@@ -268,7 +268,7 @@ architecture Behavioral of Computer is
 			t_wb_data: in std_logic;
 
 		--out
-			--debug_output: out std_logic_vector(15 downto 0);
+			debug_output: out std_logic_vector(15 downto 0);
 			read_data1: out std_logic_vector(15 downto 0);
 			read_data2: out std_logic_vector(15 downto 0);
 			sp_out: out std_logic_vector(15 downto 0);
@@ -360,10 +360,10 @@ architecture Behavioral of Computer is
 		--inout
 			ram1_data: inout std_logic_vector(15 downto 0);
 			ram2_data: inout std_logic_vector(15 downto 0);
-			FlashData: inout std_logic_vector(15 downto 0);
+			FlashData: inout std_logic_vector(15 downto 0)
 		
 		--debug
-			debug_output: out std_logic_vector(15 downto 0)
+			--debug_output: out std_logic_vector(15 downto 0)
 		);
 	end component MMU;
 
@@ -449,6 +449,7 @@ begin
 			immi=>id_immi_final,
 			rx=>selected_rx,
 			t=>selected_t,
+			immi_b=>id_instruction(10 downto 0),
 		--out
 			pc_out=>if_pc,
 			pc_one_out=>if_pc_one
@@ -487,7 +488,7 @@ begin
 			t_wb_data => wb_t_wb_data,
 
 		--out
-			--debug_output=>led,
+			debug_output=>led,
 			read_data1 => id_rx,
 			read_data2 => id_ry,
 			sp_out => id_sp,
@@ -680,9 +681,9 @@ begin
 		--inout
 			ram1_data => ram1_data,
 			ram2_data => ram2_data,
-			FlashData => FlashData,
+			FlashData => FlashData
 		--debug
-			debug_output=>led
+			--debug_output=>led
 		);
 
 	memtowb_entity: MEMtoWB
