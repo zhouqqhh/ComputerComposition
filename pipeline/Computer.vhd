@@ -9,7 +9,7 @@ entity Computer is
 		--clock
 		clk: in std_logic;
 		rst: in std_logic;
-		clk_debug: in std_logic;
+		--clk_debug: in std_logic;
 
 		--Instrument Memory(SRAM2)
 		--instr_mem_data: inout std_logic_vector(15 downto 0);
@@ -268,7 +268,7 @@ architecture Behavioral of Computer is
 			t_wb_data: in std_logic;
 
 		--out
-			debug_output: out std_logic_vector(15 downto 0);
+			--debug_output: out std_logic_vector(15 downto 0);
 			read_data1: out std_logic_vector(15 downto 0);
 			read_data2: out std_logic_vector(15 downto 0);
 			sp_out: out std_logic_vector(15 downto 0);
@@ -360,10 +360,10 @@ architecture Behavioral of Computer is
 		--inout
 			ram1_data: inout std_logic_vector(15 downto 0);
 			ram2_data: inout std_logic_vector(15 downto 0);
-			FlashData: inout std_logic_vector(15 downto 0)
+			FlashData: inout std_logic_vector(15 downto 0);
 		
 		--debug
-			--debug_output: out std_logic_vector(15 downto 0)
+			debug_output: out std_logic_vector(15 downto 0)
 		);
 	end component MMU;
 
@@ -487,7 +487,7 @@ begin
 			t_wb_data => wb_t_wb_data,
 
 		--out
-			debug_output=>led,
+			--debug_output=>led,
 			read_data1 => id_rx,
 			read_data2 => id_ry,
 			sp_out => id_sp,
@@ -636,7 +636,7 @@ begin
 	mmu_entity: MMU
 		port map(
 		--in
-			clk => clk_debug,
+			clk => clk,
 			rst => rst,
 
 			--control signal
@@ -680,9 +680,9 @@ begin
 		--inout
 			ram1_data => ram1_data,
 			ram2_data => ram2_data,
-			FlashData => FlashData
+			FlashData => FlashData,
 		--debug
-			--debug_output=>led
+			debug_output=>led
 		);
 
 	memtowb_entity: MEMtoWB

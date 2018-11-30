@@ -40,10 +40,10 @@ entity MMU is
 	--inout
 		ram1_data: inout std_logic_vector(15 downto 0);
 		ram2_data: inout std_logic_vector(15 downto 0);
-		FlashData: inout std_logic_vector(15 downto 0)
+		FlashData: inout std_logic_vector(15 downto 0);
 		
 	--debug
-		--debug_output: out std_logic_vector(15 downto 0)
+		debug_output: out std_logic_vector(15 downto 0)
 	);
 end MMU;
 
@@ -93,7 +93,7 @@ architecture Behavioral of MMU is
 	signal flash_state: flash_state_t;
 	signal flash_read_counter: std_logic_vector(5 downto 0);
 begin
-			--debug_output <= pc_in;
+			debug_output <= pc_in;
 	--wb data chooser
 	data_source_chooser: mux_1bit
 		port map(
@@ -171,9 +171,9 @@ begin
 			ram1_data <= (others => 'Z');
 			ram2_data <= flash_data;
 		elsif mem_control_signal.wb_signal = '1' then  --write
-			if mem_addr(15 downto 4) = x"BF0" then  --write serial
+			if mem_addr(15 downto 0) = x"BF00" then  --write serial
 				bus_control_signal.rdn <= '1';
-				bus_control_signal.wrn <= not clk;
+				bus_control_signal.wrn <= clk;
 
 				ram1_control_signal <= zero_ram_control;
 
@@ -195,8 +195,8 @@ begin
 				ram2_data <= (others => 'Z');
 			end if;
 		elsif mem_control_signal.read_signal = '1' then  --read
-			if mem_addr(15 downto 4) = x"BF0" then  --read serial
-				bus_control_signal.rdn <= not clk;
+			if mem_addr(15 downto 0) = x"BF00" then  --read serial
+				bus_control_signal.rdn <= clk;
 				bus_control_signal.wrn <= '1';
 
 				ram1_control_signal <= zero_ram_control;
@@ -250,7 +250,6 @@ begin
 		end if;
 	end process;
 	
-	cpu_bubble <= reading_flash;
 	flash_ctl_read <= '0' when flash_state = reading else '1';
 	flash_control: process (clk, rst)
 	begin
