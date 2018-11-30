@@ -36,7 +36,7 @@ entity MMU is
 		FlashAddr : out std_logic_vector(22 downto 0);
 
 		--cpu bubble
-		flash_bubble: out std_logic;
+		cpu_bubble: out std_logic;
 	--inout
 		ram1_data: inout std_logic_vector(15 downto 0);
 		ram2_data: inout std_logic_vector(15 downto 0);
@@ -233,27 +233,14 @@ begin
 		end if;
 	end process;
 	
-	flash_bubble <= reading_flash;
-	
 	select_output: process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
 	begin
-<<<<<<< HEAD
-		if reading_flash = '1' then  --TODO
-		elsif (mem_addr(15 downto 0) = x"BF01") then
-			mem_data(15 downto 0) <= (others => '0');
-			mem_data(1) <= serial_data_ready;
-			mem_data(0) <= serial_tbre and serial_tsre;
-		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then  --ram1
-			mem_data <= ram1_data;
-		else  --ram2
-=======
 		if reading_flash = '1' then 
 			mem_data <= (others=> 'Z');
 		elsif (mem_addr(15 downto 0) = x"BF01") then
 			mem_data(1) <= serial_data_ready;
 			mem_data(0) <= serial_tsre and serial_tbre;
 		elsif (mem_control_signal.wb_signal = '0' and mem_control_signal.read_signal = '0') then
->>>>>>> master
 			mem_data <= ram2_data;
 			instruction_out <= ram2_data;
 		else  
@@ -263,11 +250,6 @@ begin
 	
 	cpu_bubble <= reading_flash;
 	flash_ctl_read <= '0' when flash_state = reading else '1';
-<<<<<<< HEAD
-	cpu_bubble <= reading_flash;
-	led <= "000000000000000"&flash_ctl_read;
-=======
->>>>>>> master
 	flash_control: process (clk, rst)
 	begin
 		if rst = '0' then
