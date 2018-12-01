@@ -20,6 +20,10 @@ entity MMU is
 		--serial
 		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 
+		--ps2
+		keyboard_update_in: in std_logic;
+		ascii_in: in std_logic_vector(15 downto 0);
+
 	--out
 		mem_data: out std_logic_vector(15 downto 0);
 		instruction_out: out std_logic_vector(15 downto 0);
@@ -41,7 +45,7 @@ entity MMU is
 		ram1_data: inout std_logic_vector(15 downto 0);
 		ram2_data: inout std_logic_vector(15 downto 0);
 		FlashData: inout std_logic_vector(15 downto 0)
-		
+
 	--debug
 		--debug_output: out std_logic_vector(15 downto 0)
 	);
@@ -197,12 +201,12 @@ begin
 				bus_control_signal.wrn <= '1';
 
 				ram1_control_signal  <= zero_ram_control;
-				
+
 				ram2_control_signal.oe <= '1';
 				ram2_control_signal.we <= not clk;
 				ram2_control_signal.en <= '0';
-				
-				ram1_data <= (others => 'Z');		
+
+				ram1_data <= (others => 'Z');
 				ram2_data <= input_data;
 			end if;
 		elsif mem_control_signal.read_signal = '1' then  --read
@@ -231,15 +235,15 @@ begin
 			else --ram2
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= '1';
-				
+
 				ram1_control_signal <= zero_ram_control;
-				
+
 				ram2_control_signal.oe <= '0';
 				ram2_control_signal.we <= '1';
 				ram2_control_signal.en <= '0';
 
-				ram1_data <= (others => 'Z');		
-				ram2_data <= (others => 'Z');		
+				ram1_data <= (others => 'Z');
+				ram2_data <= (others => 'Z');
 			end if;
 		else  --read instruction
 			bus_control_signal.rdn <= '1';
@@ -255,16 +259,20 @@ begin
 			ram2_data <= (others => 'Z');
 		end if;
 	end process;
-	
+
 	flash_bubble <= reading_flash;
-	
+
 	select_output: process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
 	begin
-		if reading_flash = '1' then 
+		if reading_flash = '1' then
 			mem_data <= (others=> 'Z');
 		else
 			if  (mem_control_signal.read_signal = '1') then
-				if  (mem_addr(15 downto 0) = x"BF01") then
+				if (mem_addr(15 downto 0) = x"BF03") then
+					mem_data(0) <= keyboard_update_in;
+				elsif (mem_addr(15 downto 0) = x"BF02") then
+					mem_data <= ascii_in;
+				elsif (mem_addr(15 downto 0) = x"BF01") then
 					mem_data(1) <= serial_data_ready;
 					mem_data(0) <= serial_tsre and serial_tbre;
 				elsif (mem_addr(15 downto 0) = x"BF00") then
@@ -282,7 +290,7 @@ begin
 		   end if;
 		end if;
 	end process;
-	
+
 	flash_ctl_read <= '0' when flash_state = reading else '1';
 	flash_control: process (clk, rst)
 	begin
