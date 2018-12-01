@@ -207,7 +207,7 @@ begin
 			end if;
 		elsif mem_control_signal.read_signal = '1' then  --read
 			if mem_addr(15 downto 0) = x"BF00" then  --read serial
-				bus_control_signal.rdn <= clk;
+				bus_control_signal.rdn <= '0';
 				bus_control_signal.wrn <= '1';
 
 				ram1_control_signal <= zero_ram_control;

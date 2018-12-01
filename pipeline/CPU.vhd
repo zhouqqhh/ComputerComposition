@@ -68,6 +68,17 @@ architecture Behavioral of CPU is
 			FlashData: inout std_logic_vector(15 downto 0)
 		);
 	end component Computer;
+	--component DCM is
+		--port (
+			--CLKIN_IN        : in    std_logic; 
+			--RST_IN          : in    std_logic; 
+         --CLKDV_OUT       : out   std_logic; 
+         --CLKIN_IBUFG_OUT : out   std_logic; 
+         --CLK0_OUT        : out   std_logic; 
+         --LOCKED_OUT      : out   std_logic
+			--);
+	--end component DCM;
+	signal new_clk: std_logic;
 begin
 	computer_entity: Computer
 		port map(
@@ -101,5 +112,10 @@ begin
 			FlashAddr => FlashAddr,
 			FlashData => FlashData
 		);
-
+	--DCM_entity: DCM
+		--port map(
+			--CLKIN_IN => clk,
+			--RST_IN  => not rst,
+         --CLKDV_OUT => new_clk
+		--);
 end Behavioral;
