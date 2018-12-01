@@ -35,6 +35,8 @@ entity CPU is
 		clk: in std_logic;
 		rst: in std_logic;
 		--clk_debug: in std_logic;
+		r, g, b : out std_logic_vector(2 downto 0);
+		hs, vs : out std_logic;
 
 		led: out std_logic_vector(15 downto 0);
 		ram1_addr, ram2_addr: out std_logic_vector(17 downto 0);
@@ -55,6 +57,8 @@ architecture Behavioral of CPU is
 			clk: in std_logic;
 			rst: in std_logic;
 			--clk_debug: in std_logic;
+			vga_r, vga_g, vga_b: out std_logic_vector(2 downto 0);
+			vga_hs, vga_vs : out std_logic;
 
 			--led(Debug)
 			led: out std_logic_vector(15 downto 0);
@@ -99,7 +103,12 @@ begin
 			FlashWE => FlashWE,
 			FlashRP => FlashRP,
 			FlashAddr => FlashAddr,
-			FlashData => FlashData
+			FlashData => FlashData,
+			vga_r => r,
+			vga_g => g,
+			vga_b => b,
+			vga_hs => hs,
+			vga_vs => vs
 		);
 
 end Behavioral;
