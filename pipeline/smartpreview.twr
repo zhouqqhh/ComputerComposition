@@ -1,0 +1,531 @@
+1 logic loop found and disabled.
+
+  ----------------------------------------------------------------------
+ ! Warning: The following connections close logic loops, and some paths !
+ !          through these connections may not be analyzed. To better    !
+ !          understand the logic associated with these loops, run a     !
+ !          Analyze Against User-Defined End-Point Analysis inside      !
+ !          Timing Analyzer (timingan) with the listed signal as a      !
+ !          source NET (*signal_name). The Timing Report will display   !
+ !          all the paths associated with this signal and the logic     !
+ !          loop will be reported.                                      !
+ !                                                                      !
+ ! Signal                            Driver            Load             !
+ ! --------------------------------  ----------------  ---------------- !
+ ! _entity/exe_entity/alu_entity/N4  SLICEL.Y          SLICEL.F3        !
+  ---------------------------------------------------------------------- 
+
+
+================================================================================
+Timing constraint: Autotimespec constraint for clock net clk_IBUF
+For more information, see Period Analysis in the Timing Closure User Guide (UG612).
+
+ 1123454 paths analyzed, 1525 endpoints analyzed, 10 failing endpoints
+ 10 timing errors detected. (10 setup errors, 0 hold errors, 0 component switching limit errors)
+ Minimum period is  21.698ns.
+--------------------------------------------------------------------------------
+Slack:                  -0.226 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_5_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_12 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.819 (Levels of Logic = 7)
+  Clock Path Skew:      -0.031ns (0.268 - 0.299)
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_5_10 to computer_entity/pc_write_entity/pc_12
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X88Y65.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_5_11
+                                                       computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.G3      net (fanout=2)        0.657   computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.F5      Tif5                  0.875   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_5
+                                                       computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.FXINA   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X78Y29.G4      net (fanout=16)       0.512   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X78Y29.CLK     Tgck                  0.892   computer_entity/pc_write_entity/pc<13>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<12>59
+                                                       computer_entity/pc_write_entity/pc_12
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.213 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_5_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_15 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.837 (Levels of Logic = 7)
+  Clock Path Skew:      0.000ns
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_5_10 to computer_entity/pc_write_entity/pc_15
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X88Y65.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_5_11
+                                                       computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.G3      net (fanout=2)        0.657   computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.F5      Tif5                  0.875   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_5
+                                                       computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.FXINA   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X79Y26.F1      net (fanout=16)       0.585   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X79Y26.CLK     Tfck                  0.837   computer_entity/pc_write_entity/pc<15>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<15>59
+                                                       computer_entity/pc_write_entity/pc_15
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.180 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_5_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_11 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.804 (Levels of Logic = 7)
+  Clock Path Skew:      0.000ns
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_5_10 to computer_entity/pc_write_entity/pc_11
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X88Y65.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_5_11
+                                                       computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.G3      net (fanout=2)        0.657   computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.F5      Tif5                  0.875   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_5
+                                                       computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.FXINA   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X79Y27.F2      net (fanout=16)       0.552   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X79Y27.CLK     Tfck                  0.837   computer_entity/pc_write_entity/pc<11>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<11>59
+                                                       computer_entity/pc_write_entity/pc_11
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.180 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_0_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_12 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.768 (Levels of Logic = 7)
+  Clock Path Skew:      -0.036ns (0.268 - 0.304)
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_0_10 to computer_entity/pc_write_entity/pc_12
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X90Y63.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_0_11
+                                                       computer_entity/registers_entity/regs_data_0_10
+    SLICE_X91Y69.G4      net (fanout=2)        0.606   computer_entity/registers_entity/regs_data_0_10
+    SLICE_X91Y69.F5      Tif5                  0.875   computer_entity/registers_entity/mux1_4_f5
+                                                       computer_entity/registers_entity/mux1_6
+                                                       computer_entity/registers_entity/mux1_4_f5
+    SLICE_X91Y68.FXINB   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_4_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X78Y29.G4      net (fanout=16)       0.512   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X78Y29.CLK     Tgck                  0.892   computer_entity/pc_write_entity/pc<13>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<12>59
+                                                       computer_entity/pc_write_entity/pc_12
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.177 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_3_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_12 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.766 (Levels of Logic = 7)
+  Clock Path Skew:      -0.035ns (0.268 - 0.303)
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_3_10 to computer_entity/pc_write_entity/pc_12
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X90Y65.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_3_11
+                                                       computer_entity/registers_entity/regs_data_3_10
+    SLICE_X91Y69.F4      net (fanout=2)        0.604   computer_entity/registers_entity/regs_data_3_10
+    SLICE_X91Y69.F5      Tif5                  0.875   computer_entity/registers_entity/mux1_4_f5
+                                                       computer_entity/registers_entity/mux1_51
+                                                       computer_entity/registers_entity/mux1_4_f5
+    SLICE_X91Y68.FXINB   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_4_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X78Y29.G4      net (fanout=16)       0.512   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X78Y29.CLK     Tgck                  0.892   computer_entity/pc_write_entity/pc<13>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<12>59
+                                                       computer_entity/pc_write_entity/pc_12
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.162 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_0_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_15 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.786 (Levels of Logic = 7)
+  Clock Path Skew:      0.000ns
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_0_10 to computer_entity/pc_write_entity/pc_15
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X90Y63.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_0_11
+                                                       computer_entity/registers_entity/regs_data_0_10
+    SLICE_X91Y69.G4      net (fanout=2)        0.606   computer_entity/registers_entity/regs_data_0_10
+    SLICE_X91Y69.F5      Tif5                  0.875   computer_entity/registers_entity/mux1_4_f5
+                                                       computer_entity/registers_entity/mux1_6
+                                                       computer_entity/registers_entity/mux1_4_f5
+    SLICE_X91Y68.FXINB   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_4_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X79Y26.F1      net (fanout=16)       0.585   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X79Y26.CLK     Tfck                  0.837   computer_entity/pc_write_entity/pc<15>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<15>59
+                                                       computer_entity/pc_write_entity/pc_15
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.161 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_5_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_13 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.754 (Levels of Logic = 7)
+  Clock Path Skew:      -0.031ns (0.268 - 0.299)
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_5_10 to computer_entity/pc_write_entity/pc_13
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X88Y65.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_5_11
+                                                       computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.G3      net (fanout=2)        0.657   computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.F5      Tif5                  0.875   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_5
+                                                       computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.FXINA   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X78Y29.F4      net (fanout=16)       0.447   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X78Y29.CLK     Tfck                  0.892   computer_entity/pc_write_entity/pc<13>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<13>59
+                                                       computer_entity/pc_write_entity/pc_13
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.160 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_3_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_15 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.784 (Levels of Logic = 7)
+  Clock Path Skew:      0.000ns
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_3_10 to computer_entity/pc_write_entity/pc_15
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X90Y65.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_3_11
+                                                       computer_entity/registers_entity/regs_data_3_10
+    SLICE_X91Y69.F4      net (fanout=2)        0.604   computer_entity/registers_entity/regs_data_3_10
+    SLICE_X91Y69.F5      Tif5                  0.875   computer_entity/registers_entity/mux1_4_f5
+                                                       computer_entity/registers_entity/mux1_51
+                                                       computer_entity/registers_entity/mux1_4_f5
+    SLICE_X91Y68.FXINB   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_4_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X79Y26.F1      net (fanout=16)       0.585   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X79Y26.CLK     Tfck                  0.837   computer_entity/pc_write_entity/pc<15>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<15>59
+                                                       computer_entity/pc_write_entity/pc_15
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.157 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_5_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_1 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.781 (Levels of Logic = 7)
+  Clock Path Skew:      0.000ns
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_5_10 to computer_entity/pc_write_entity/pc_1
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X88Y65.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_5_11
+                                                       computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.G3      net (fanout=2)        0.657   computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.F5      Tif5                  0.875   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_5
+                                                       computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.FXINA   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X78Y26.F3      net (fanout=16)       0.474   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X78Y26.CLK     Tfck                  0.892   computer_entity/pc_write_entity/pc<1>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<1>59
+                                                       computer_entity/pc_write_entity/pc_1
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.157 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/registers_entity/regs_data_5_10 (FF)
+  Destination:          computer_entity/pc_write_entity/pc_0 (FF)
+  Requirement:          10.624
+  Data Path Delay:      10.781 (Levels of Logic = 7)
+  Clock Path Skew:      0.000ns
+  Source Clock:         clk_IBUF falling at 10.623ns
+  Destination Clock:    clk_IBUF rising at 21.247ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/registers_entity/regs_data_5_10 to computer_entity/pc_write_entity/pc_0
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X88Y65.YQ      Tcko                  0.652   computer_entity/registers_entity/regs_data_5_11
+                                                       computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.G3      net (fanout=2)        0.657   computer_entity/registers_entity/regs_data_5_10
+    SLICE_X91Y68.F5      Tif5                  0.875   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_5
+                                                       computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.FXINA   net (fanout=1)        0.000   computer_entity/registers_entity/mux1_3_f5
+    SLICE_X91Y68.Y       Tif6y                 0.521   computer_entity/id_rx<10>
+                                                       computer_entity/registers_entity/mux1_2_f6
+    SLICE_X90Y80.F2      net (fanout=1)        0.687   computer_entity/id_rx<10>
+    SLICE_X90Y80.X       Tilo                  0.759   computer_entity/selected_rx<10>
+                                                       computer_entity/ID_entity/reg0_data_out<10>36
+    SLICE_X79Y73.F3      net (fanout=4)        1.167   computer_entity/selected_rx<10>
+    SLICE_X79Y73.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.F1      net (fanout=1)        0.787   computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000049
+    SLICE_X79Y57.X       Tilo                  0.704   computer_entity/pc_write_entity/rx_zero
+                                                       computer_entity/pc_write_entity/rx_zero_comparator/output_cmp_eq000076
+    SLICE_X78Y31.BX      net (fanout=1)        1.096   computer_entity/pc_write_entity/rx_zero
+    SLICE_X78Y31.X       Tbxx                  0.806   computer_entity/pc_write_entity/b_com_choose_result
+                                                       computer_entity/pc_write_entity/comparator_result_chooser/Mmux_output_2_f5
+    SLICE_X78Y26.G3      net (fanout=16)       0.474   computer_entity/pc_write_entity/b_com_choose_result
+    SLICE_X78Y26.CLK     Tgck                  0.892   computer_entity/pc_write_entity/pc<1>
+                                                       computer_entity/pc_write_entity/jr_chooser/output<0>59
+                                                       computer_entity/pc_write_entity/pc_0
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+
+================================================================================
+Timing constraint: Autotimespec constraint for clock net 
+computer_entity/mmu_entity/reading_flash
+For more information, see Period Analysis in the Timing Closure User Guide (UG612).
+
+ 16 paths analyzed, 16 endpoints analyzed, 3 failing endpoints
+ 3 timing errors detected. (3 setup errors, 0 hold errors, 0 component switching limit errors)
+ Minimum period is   2.162ns.
+--------------------------------------------------------------------------------
+Slack:                  -0.066 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/mmu_entity/instruction_out_0 (LATCH)
+  Destination:          computer_entity/mmu_entity/instruction_out_0 (LATCH)
+  Requirement:          2.096
+  Data Path Delay:      2.162 (Levels of Logic = 1)
+  Clock Path Skew:      0.000ns
+  Source Clock:         computer_entity/mmu_entity/reading_flash rising at 0.000ns
+  Destination Clock:    computer_entity/mmu_entity/reading_flash rising at 2.096ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/mmu_entity/instruction_out_0 to computer_entity/mmu_entity/instruction_out_0
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X74Y30.YQ      Tcklo                 0.742   computer_entity/mmu_entity/instruction_out<1>
+                                                       computer_entity/mmu_entity/instruction_out_0
+    SLICE_X74Y30.G2      net (fanout=2)        0.528   computer_entity/mmu_entity/instruction_out<0>
+    SLICE_X74Y30.CLK     Tgck                  0.892   computer_entity/mmu_entity/instruction_out<1>
+                                                       computer_entity/mmu_entity/instruction_out_mux0002<0>1
+                                                       computer_entity/mmu_entity/instruction_out_0
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.066 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/mmu_entity/instruction_out_14 (LATCH)
+  Destination:          computer_entity/mmu_entity/instruction_out_14 (LATCH)
+  Requirement:          2.096
+  Data Path Delay:      2.162 (Levels of Logic = 1)
+  Clock Path Skew:      0.000ns
+  Source Clock:         computer_entity/mmu_entity/reading_flash rising at 0.000ns
+  Destination Clock:    computer_entity/mmu_entity/reading_flash rising at 2.096ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/mmu_entity/instruction_out_14 to computer_entity/mmu_entity/instruction_out_14
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X58Y31.YQ      Tcklo                 0.742   computer_entity/mmu_entity/instruction_out<15>
+                                                       computer_entity/mmu_entity/instruction_out_14
+    SLICE_X58Y31.G2      net (fanout=2)        0.528   computer_entity/mmu_entity/instruction_out<14>
+    SLICE_X58Y31.CLK     Tgck                  0.892   computer_entity/mmu_entity/instruction_out<15>
+                                                       computer_entity/mmu_entity/instruction_out_mux0002<14>1
+                                                       computer_entity/mmu_entity/instruction_out_14
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+Slack:                  -0.066 (requirement - (data path - clock path skew + uncertainty))
+  Source:               computer_entity/mmu_entity/instruction_out_10 (LATCH)
+  Destination:          computer_entity/mmu_entity/instruction_out_10 (LATCH)
+  Requirement:          2.096
+  Data Path Delay:      2.162 (Levels of Logic = 1)
+  Clock Path Skew:      0.000ns
+  Source Clock:         computer_entity/mmu_entity/reading_flash rising at 0.000ns
+  Destination Clock:    computer_entity/mmu_entity/reading_flash rising at 2.096ns
+  Clock Uncertainty:    0.000
+
+  Maximum Data Path: computer_entity/mmu_entity/instruction_out_10 to computer_entity/mmu_entity/instruction_out_10
+    Location             Delay type         Delay(ns)  Physical Resource
+                                                       Logical Resource(s)
+    -------------------------------------------------  -------------------
+    SLICE_X66Y36.YQ      Tcklo                 0.742   computer_entity/mmu_entity/instruction_out<11>
+                                                       computer_entity/mmu_entity/instruction_out_10
+    SLICE_X66Y36.G2      net (fanout=2)        0.528   computer_entity/mmu_entity/instruction_out<10>
+    SLICE_X66Y36.CLK     Tgck                  0.892   computer_entity/mmu_entity/instruction_out<11>
+                                                       computer_entity/mmu_entity/instruction_out_mux0002<10>1
+                                                       computer_entity/mmu_entity/instruction_out_10
+    -------------------------------------------------  ---------------------------
+
+--------------------------------------------------------------------------------
+
+
+2 constraints not met.
+
+
+
