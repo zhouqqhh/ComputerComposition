@@ -6,28 +6,28 @@ use		ieee.std_logic_arith.all;
 entity vga640480 is
 	 port(
 			reset       :         in  STD_LOGIC;
-			clk_0       :         in  STD_LOGIC; --50M时钟输入
-			hs,vs       :         out STD_LOGIC; --行同步、场同步信号
-			vector_x_out   :   out std_LOGIC_VECTOR(9 downto 0);  --扫描位置的横坐标
-			vector_y_out :     out std_LOGIC_vector(8 downto 0);  --扫描位置的纵坐标
-			clk25 : out std_logic;  --25M时钟输出
+			clk_0       :         in  STD_LOGIC; --50M时
+			hs,vs       :         out STD_LOGIC; --同同藕
+			vector_x_out   :   out std_LOGIC_VECTOR(9 downto 0);  --扫位玫暮
+			vector_y_out :     out std_LOGIC_vector(8 downto 0);  --扫位玫
+			clk25 : out std_logic;  --25M时
 			q : in std_logic_vector(9 downto 0);
 			r,g,b : out std_logic_vector(2 downto 0)
 	  );
 end vga640480;
 
 architecture behavior of vga640480 is
-						
+					
 	signal hs1,vs1    : std_logic;
 	signal r1, g1, b1 : std_LOGIC_vector(2 downto 0);	
-	signal vector_x : std_logic_vector(9 downto 0);		--X坐标
-	signal vector_y : std_logic_vector(8 downto 0);		--Y坐标
-	signal clk : std_logic;  --25M时钟
+	signal vector_x : std_logic_vector(9 downto 0);		--X
+	signal vector_y : std_logic_vector(8 downto 0);		--Y
+	signal clk : std_logic;  --25M时
 begin
 
 	clk25 <= clk;
  -----------------------------------------------------------------------
-	process(clk_0)	--对50M输入信号2分频
+	process(clk_0)	--50M藕2频
    begin
         if(clk_0'event and clk_0='1') then 
              clk <= not clk;
@@ -35,7 +35,7 @@ begin
  	end process;
 
  -----------------------------------------------------------------------
-	 process(clk,reset)	--行区间像素数（含消隐区）
+	 process(clk,reset)	--
 	 begin
 	  	if reset='0' then
 	   		vector_x <= (others=>'0');
@@ -49,7 +49,7 @@ begin
 	 end process;
 
   -----------------------------------------------------------------------
-	 process(clk,reset)	--场区间行数（含消隐区）
+	 process(clk,reset)	--
 	 begin
 	  	if reset='0' then
 	   		vector_y <= (others=>'0');
@@ -65,7 +65,7 @@ begin
 	 end process;
  
   -----------------------------------------------------------------------
-	 process(clk,reset) --行同步信号产生（同步宽度96，前沿16）
+	 process(clk,reset) --同藕挪同96前16
 	 begin
 		  if reset='0' then
 		   hs1 <= '1';
@@ -79,7 +79,7 @@ begin
 	 end process;
  
  -----------------------------------------------------------------------
-	 process(clk,reset) --场同步信号产生（同步宽度2，前沿10）
+	 process(clk,reset) --同藕挪同2前10
 	 begin
 	  	if reset='0' then
 	   		vs1 <= '1';
@@ -92,7 +92,7 @@ begin
 	  	end if;
 	 end process;
  -----------------------------------------------------------------------
-	 process(clk,reset) --行同步信号输出
+	 process(clk,reset) --同藕
 	 begin
 	  	if reset='0' then
 	   		hs <= '0';
@@ -102,7 +102,7 @@ begin
 	 end process;
 
  -----------------------------------------------------------------------
-	 process(clk,reset) --场同步信号输出
+	 process(clk,reset) --同藕
 	 begin
 	  	if reset='0' then
 	   		vs <= '0';
@@ -111,7 +111,7 @@ begin
 	  	end if;
 	 end process;
  ----------------------------------------------------------------------- 
-	process(hs1, vs1, r1, g1, b1)  --色彩输出
+	process(hs1, vs1, r1, g1, b1)  --色
 	begin
 		if hs1 = '1' and vs1 = '1' then
 			r <= r1;

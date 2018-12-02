@@ -32,6 +32,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity CPU is
 	port(
 		--clock
+		clk_50: in std_logic;
 		clk: in std_logic;
 		rst: in std_logic;
 		--clk_debug: in std_logic;
@@ -56,6 +57,7 @@ architecture Behavioral of CPU is
 	component Computer is
 		port(
 			--clock
+			clk_50: in std_logic;
 			clk: in std_logic;
 			rst: in std_logic;
 			--clk_debug: in std_logic;
@@ -93,7 +95,8 @@ begin
 	computer_entity: Computer
 		port map(
 			--clock
-			clk => clk,
+			clk_50 => clk_50,
+			clk=>clk,
 			rst => rst,
 			--clk_debug => clk_debug,
 

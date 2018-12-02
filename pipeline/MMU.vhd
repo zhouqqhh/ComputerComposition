@@ -7,6 +7,7 @@ entity MMU is
 	port(
 	--in
 		clk, rst: in std_logic;
+		clk_50: in std_logic;
 
 		--control signal
 		mem_control_signal: in mem_control;
@@ -159,7 +160,7 @@ begin
 	vga_calc_entity: vga_calc
 		port map(
 			rst => rst,
-			clk_50 => clk,
+			clk_50 => clk_50,
 			vga_control_signal => vga_control_signal,
 			data_in => vga_data,  -- TODO change this.
 			h_sync => hs,
@@ -195,6 +196,8 @@ begin
 			ram1_control_signal <= zero_ram_control;
 
 			ram2_control_signal.oe <= '1';
+			vga_control_signal.vga_write <= '0';
+			
 			if flash_state = write_ram then
 				ram2_control_signal.we <= not clk;
 			else
@@ -226,6 +229,7 @@ begin
 				ram2_control_signal  <= zero_ram_control;
 
 				if ascii_in /= x"0000" then
+					vga_control_signal.vga_write <= '1';
 					vga_data <= ascii_in;
 				end if;
 

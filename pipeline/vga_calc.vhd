@@ -20,7 +20,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_unsigned.all;
---use ieee.std_logic_arith.all;
+use ieee.std_logic_arith.all;
 use ieee.numeric_std.all;
 
 -- Uncomment the following library declaration if using
@@ -47,11 +47,11 @@ architecture Behavioral of vga_calc is
 	component vga640480 is
 		port(
 			reset       :         in  STD_LOGIC;
-			clk_0       :         in  STD_LOGIC; --50M时钟输入
-			hs,vs       :         out STD_LOGIC; --行同步、场同步信号
-			vector_x_out   :   out std_LOGIC_VECTOR(9 downto 0);  --扫描位置的横坐标
-			vector_y_out :     out std_LOGIC_vector(8 downto 0);  --扫描位置的纵坐标
-			clk25 : out std_logic;  --25M时钟输出
+			clk_0       :         in  STD_LOGIC; --50M时
+			hs,vs       :         out STD_LOGIC; --同同藕
+			vector_x_out   :   out std_LOGIC_VECTOR(9 downto 0);  --扫位玫暮
+			vector_y_out :     out std_LOGIC_vector(8 downto 0);  --扫位玫
+			clk25 : out std_logic;  --25M时
 			q : in std_logic_vector(9 downto 0);
 			r,g,b : out std_logic_vector(2 downto 0)
 		);
@@ -68,6 +68,18 @@ architecture Behavioral of vga_calc is
 		);
 	end component checkout_pixel;
 	
+	-- synthesis translate_on
+	component vga_ram is
+	  port (
+		 clka : IN STD_LOGIC;
+		 rsta : IN STD_LOGIC;
+		 wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+		 addra : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+		 dina : IN STD_LOGIC_VECTOR(6 DOWNTO 0);
+		 douta : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)
+	  );
+	end component vga_ram;
+	
 	signal s_x: std_logic_vector(9 downto 0);
 	signal s_y: std_logic_vector(8 downto 0);
 	signal clk_25:std_logic;
@@ -81,7 +93,7 @@ architecture Behavioral of vga_calc is
 	constant FONT_WIDTH: integer:=8;
 	constant FONT_HEIGHT: integer:=16;
 	 
-	signal HpOk: std_logic;		--TODO delete this test
+	--signal HpOk: std_logic;		--TODO delete this test
 	
 	signal disp_data: std_logic_vector(6 downto 0);
 	signal left_up_point: point:=(0, 0);
@@ -89,17 +101,25 @@ architecture Behavioral of vga_calc is
 	signal is_on: std_logic:='0';
 	
 	signal vga_r, vga_g, vga_b: std_logic_vector(2 downto 0);
-
-	subtype ascii_vec is std_logic_vector(6 downto 0);
-	type ascii_vec_array is array(integer range<>) of ascii_vec;
-	subtype ascii_col is ascii_vec_array(0 to 79);
-	type ascii_col_array is array(integer range<>) of ascii_col;
-	subtype ascii_matrix is ascii_col_array(0 to 29);
 	
-	signal mem: ascii_matrix := (others => (others => (others => '0')));
-	
-	shared variable cursor_row, cursor_col : integer := 0;
+	signal vga_ram_datain, vga_ram_dataout:  std_logic_vector(6 downto 0);
+	signal vga_ram_we: std_logic_vector(0 downto 0);
+	signal vga_ram_write_addr: std_logic_vector(11 downto 0);
+	signal vga_ram_read_addr: std_logic_vector(11 downto 0);
+	signal vga_ram_final_addr: std_logic_vector(11 downto 0);
 begin
+	vga_ram_entity: vga_ram
+		port map(
+			clka=>clk_50,
+			rsta=>rst,
+			wea=>vga_ram_we,
+			addra=>vga_ram_final_addr,
+			dina=>vga_ram_datain,
+			douta=> vga_ram_dataout
+		);
+		
+	vga_ram_final_addr <= vga_ram_write_addr when vga_ram_we = "1" else vga_ram_read_addr;
+
 	vga_640480: vga640480
 	port map(
 		reset => rst,
@@ -129,46 +149,59 @@ begin
 	process(clk_50, s_x, s_y)  --calc pixel col and row
 	begin
 		if rising_edge(clk_50) then
-			pixel_col <= to_integer(unsigned(s_x));
-			pixel_row <= to_integer(unsigned(s_y));
+			pixel_col <= conv_integer(unsigned(s_x));
+			pixel_row <= conv_integer(unsigned(s_y));
 		end if;
 	end process;
 	
 	process(clk_50)
+		variable cursor_row: integer range 0 to 29 := 0;
+		variable cursor_col: integer range 0 to 79 := 0;
 	begin
+		vga_ram_write_addr <= conv_std_logic_vector(cursor_row * 80 + cursor_col, 12);
 		if rst = '1' then
 			cursor_row := 1;
 			cursor_col := 0;
-			mem <= (others => (others => (others => '0')));
-			mem(0)(0) <= std_logic_vector(to_unsigned(character'pos('F'), 7));
-			mem(0)(1) <= std_logic_vector(to_unsigned(character'pos('U'), 7));
-			mem(0)(2) <= std_logic_vector(to_unsigned(character'pos('C'), 7));
-			mem(0)(3) <= std_logic_vector(to_unsigned(character'pos('K'), 7));
-		elsif rising_edge(clk_50) then
+			vga_ram_we <= "0";
+		elsif rising_edge(clk_50)  and vga_control_signal.vga_write= '1' then
+			vga_ram_we <= "0";
 			case data_in(6 downto 0) is
 				when "0001101" => -- Enter
 					 cursor_row := cursor_row + 1;
 					 cursor_col := 0;
 				when "0001000" => -- Backspace
-					 mem(cursor_row)(cursor_col) <= (others => '0');
-					 cursor_col := cursor_col - 1;
+					 vga_ram_datain <= (others => '0');
+					 vga_ram_we <= "1";
+					 if  cursor_col = 0 then 
+						cursor_col := 79;
+						cursor_row := cursor_row - 1;
+					else
+						cursor_col := cursor_col - 1;
+					end if;
 				when others =>
-					 mem(cursor_row)(cursor_col) <= data_in(6 downto 0);
-					 cursor_col := cursor_col + 1;
-					 if cursor_col = 80 then
+					vga_ram_datain <= data_in(6 downto 0);
+					vga_ram_we <= "1";
+					 if cursor_col = 79 then
 						  cursor_row := cursor_row + 1;
 						  cursor_col := 0;
-					 end if;
+					 else
+						cursor_col := cursor_col + 1;
+					end if;
 			end case;
 		end if;
 	end process;
 	
+	vga_ram_read_addr <= conv_std_logic_vector((pixel_col / FONT_WIDTH) + 80 * (pixel_row / FONT_HEIGHT), 12);
 	process(clk_50)
 	begin
 		if rising_edge(clk_50) then
 			left_up_point <= (((pixel_col / FONT_WIDTH) * FONT_WIDTH), ((pixel_row / FONT_HEIGHT) * FONT_HEIGHT));
 			if 0 <= pixel_row and pixel_row < 30 * FONT_HEIGHT and 0 <= pixel_col and pixel_col < 80 * FONT_WIDTH then
-				disp_data <= mem(pixel_row / FONT_HEIGHT)(pixel_col / FONT_WIDTH);
+				if vga_ram_we = "1" then 
+					disp_data <= vga_ram_dataout;
+				else 
+					disp_data <= "0000000";
+				end if;
 			else
 				disp_data <= "0000000";
 			end if;
@@ -200,7 +233,7 @@ begin
 --	process(clk_50)		--TODO delete this 
 --	begin
 --		if(s_x >= hpStart_x and s_x <= hpEnd_x and s_y >= hpStart_y and s_y <= hpEnd_y) then
---        if(CONV_INTEGER(s_x - hpStart_x) * 100 <= 100 * 50) then  --长条形状
+--        if(CONV_INTEGER(s_x - hpStart_x) * 100 <= 100 * 50) then  --状
 --            HpOK <= '1';
 --        else
 --            HpOK <= '0';

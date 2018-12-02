@@ -7,6 +7,7 @@ use work.utils.all;
 entity Computer is
 	port(
 		--clock
+		clk_50: in std_logic;
 		clk: in std_logic;
 		rst: in std_logic;
 		--clk_debug: in std_logic;
@@ -333,6 +334,7 @@ architecture Behavioral of Computer is
 		port(
 		--in
 			clk, rst: in std_logic;
+			clk_50: in std_logic;
 
 			--control signal
 			mem_control_signal: in mem_control;
@@ -692,6 +694,7 @@ begin
 		port map(
 		--in
 			clk => clk,
+			clk_50=>clk_50,
 			rst => rst,
 
 			--control signal
