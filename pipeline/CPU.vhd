@@ -125,7 +125,7 @@ begin
 			vga_g => g,
 			vga_b => b,
 			vga_hs => hs,
-			vga_vs => vs
+			vga_vs => vs,
 			ps2_clk => ps2_clk,
 			ps2_data => ps2_data
 		);

@@ -114,6 +114,7 @@ begin
 		row => pixel_row,
 		is_on => is_on
 	);
+	
 	-------------------------------------------------------------------------
 	process(clk_50, s_x, s_y)  --calc pixel col and row
 	begin

@@ -217,7 +217,7 @@ begin
 				
 				vga_control_signal <= vga_control_zero;
 				
-			elsif mem_addr(15 downto 0) = x"BF02" then
+			elsif mem_addr(15 downto 0) = x"BF04" then
 				vga_control_signal.vga_write <= clk;
 				
 				ram1_control_signal <= zero_ram_control;
