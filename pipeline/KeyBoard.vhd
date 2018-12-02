@@ -2,6 +2,7 @@ library ieee;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use work.utils.ALL;
 
 entity Keyboard is
 port (
@@ -23,7 +24,7 @@ signal state:state_type;
 signal ps2_scan_code, pre_ps2_scan_code: std_logic_vector(7 downto 0);
 signal ascii: std_logic_vector(15 downto 0);
 signal shift_pressing,left_shift_pressing,right_shift_pressing,caps_pressed,is_upper_class: std_logic;
-
+signal keyboard_update: std_logic;
 begin
 	ascii_out <= ascii;
 	shift_pressing <= left_shift_pressing or right_shift_pressing;

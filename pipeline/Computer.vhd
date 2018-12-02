@@ -419,7 +419,7 @@ architecture Behavioral of Computer is
 			mem_control_signal: in mem_control;
 		--out
 			ascii_out: out std_logic_vector(15 downto 0);
-			keyboard_update: out std_logic
+			keyboard_update_out: out std_logic
 		);
 	end component Keyboard ;
 
@@ -848,7 +848,7 @@ begin
 			mem_control_signal => mem_mem_control,
 		--out
 			ascii_out => ascii,
-			keyboard_update => keyboard_update
+			keyboard_update_out => keyboard_update
 	);
 
 end Behavioral;
