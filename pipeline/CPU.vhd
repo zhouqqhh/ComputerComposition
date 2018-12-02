@@ -44,7 +44,9 @@ entity CPU is
 		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic;
 		FlashByte, FlashVpen, FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
 		FlashAddr : out std_logic_vector(22 downto 0);
-		FlashData: inout std_logic_vector(15 downto 0)
+		FlashData: inout std_logic_vector(15 downto 0);
+		ps2_clk : in std_logic;
+		ps2_data : in std_logic
 	);
 end CPU;
 
@@ -65,7 +67,11 @@ architecture Behavioral of CPU is
 			ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic;
 			FlashByte, FlashVpen, FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
 			FlashAddr : out std_logic_vector(22 downto 0);
-			FlashData: inout std_logic_vector(15 downto 0)
+			FlashData: inout std_logic_vector(15 downto 0);
+
+			--ps2
+			ps2_clk : in std_logic;
+			ps2_data : in std_logic
 		);
 	end component Computer;
 	--component DCM is
@@ -110,7 +116,9 @@ begin
 			FlashWE => FlashWE,
 			FlashRP => FlashRP,
 			FlashAddr => FlashAddr,
-			FlashData => FlashData
+			FlashData => FlashData,
+			ps2_clk => ps2_clk,
+			ps2_data => ps2_data
 		);
 	--DCM_entity: DCM
 		--port map(
