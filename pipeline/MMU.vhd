@@ -225,7 +225,7 @@ begin
 
 				ram2_control_signal  <= zero_ram_control;
 
-				vga_data <= ascii_in;
+				vga_data <= ascii_in when ascii /= x"0000";
 
 			elsif mem_addr(15) = '1' then  --write ram1
 				bus_control_signal.rdn <= '1';
