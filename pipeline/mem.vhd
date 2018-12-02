@@ -56,6 +56,7 @@ architecture Behavioral of mem is
 			output: out std_logic_vector(15 downto 0)
 		);
 	end component mux_1bit;
+	
 	signal input_data: std_logic_vector(15 downto 0);
 begin
 	--fake memory

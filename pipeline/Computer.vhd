@@ -26,6 +26,10 @@ entity Computer is
 		serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 		rdn, wrn: out std_logic;
 		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic;
+		
+		--vga
+		vga_r, vga_g, vga_b : out std_logic_vector(2 downto 0);
+		vga_hs, vga_vs : out std_logic;
 
 		--flash control
 		FlashByte, FlashVpen : out std_logic;
@@ -42,7 +46,6 @@ entity Computer is
 end Computer;
 
 architecture Behavioral of Computer is
-
 	--pc
 	component PC_write is
 		port (
@@ -354,6 +357,10 @@ architecture Behavioral of Computer is
 			bus_control_signal: out bus_control;
 			ram1_control_signal: out ram_control;
 			ram2_control_signal: out ram_control;
+			
+			--vga
+			r, g, b: out std_logic_vector(2 downto 0);
+			hs, vs : out std_logic;
 
 			--flash control
 			FlashByte, FlashVpen : out std_logic;
@@ -468,6 +475,8 @@ architecture Behavioral of Computer is
 	--hazard
 	signal buble_maker: std_logic;
 	signal reading_flash: std_logic;
+	
+	--vga
 
 	--ps2
 	signal ps2_scan_data: std_logic_vector(7 downto 0);
@@ -724,6 +733,11 @@ begin
 			FlashWE => FlashWE,
 			FlashRP => FlashRP,
 			FlashAddr => FlashAddr,
+			r => vga_r,
+			g => vga_g,
+			b => vga_b,
+			hs => vga_hs,
+			vs => vga_vs,
 
 			flash_bubble => reading_flash,
 

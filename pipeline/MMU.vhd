@@ -31,6 +31,10 @@ entity MMU is
 		bus_control_signal: out bus_control;
 		ram1_control_signal: out ram_control;
 		ram2_control_signal: out ram_control;
+		
+		--vga
+		r, g, b : out std_logic_vector(2 downto 0);
+		hs, vs: out std_logic;
 
 		--flash control
 		FlashByte, FlashVpen : out std_logic;
@@ -89,6 +93,17 @@ architecture Behavioral of MMU is
 			FlashData : inout std_logic_vector(15 downto 0)
 		);
 	end component Flash;
+	
+	component vga_calc is
+		port(
+			clk_50, rst: IN STD_LOGIC;
+			vga_control_signal: in vga_control;
+			data_in: in std_logic_vector(15 downto 0);
+			h_sync, v_sync: OUT STD_LOGIC;  --horiztonal, vertical sync pulse
+			r, g, b: out STD_LOGIC_VECTOR(2 downto 0)
+		);		
+	end component vga_calc;
+	
 	signal reading_flash, flash_ctl_read: std_logic;
 	signal flash_addr: std_logic_vector(22 downto 0);
 	signal flash_mem_addr: std_logic_vector(15 downto 0);
@@ -96,6 +111,7 @@ architecture Behavioral of MMU is
 	type flash_state_t is (init, reading, write_ram, update_addr, finished);
 	signal flash_state: flash_state_t;
 	signal flash_read_counter: std_logic_vector(5 downto 0);
+	signal vga_control_signal: vga_control;
 begin
 	--debug_output <= ascii_in;
 	--wb data chooser
@@ -137,6 +153,19 @@ begin
 
 		--inout
 			FlashData => FlashData
+		);
+		
+	vga_calc_entity: vga_calc
+		port map(
+			rst => rst,
+			clk_50 => clk,
+			vga_control_signal => vga_control_signal,
+			data_in => "1111000011110000",  -- TODO change this.
+			h_sync => hs,
+			v_sync => vs,
+			r => r,
+			g => g,
+			b => b
 		);
 
 	--ram1: 0x8000 ~ 0xFFFF, ram2: 0x0000 ~ 0x7FFF
@@ -185,6 +214,18 @@ begin
 
 				ram1_data <= input_data;
 				ram2_data <= (others => 'Z');
+				
+				vga_control_signal <= vga_control_zero;
+				
+			elsif mem_addr(15 downto 0) = x"BF04" then
+				vga_control_signal.vga_write <= clk;
+				
+				ram1_control_signal <= zero_ram_control;
+				ram2_control_signal <= zero_ram_control;
+				bus_control_signal <= zero_bus_control;
+				ram1_data <= input_data;
+				ram2_data <= (others=>'Z');
+				
 			elsif mem_addr(15) = '1' then  --write ram1
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= '1';
@@ -197,6 +238,7 @@ begin
 
 				ram1_data <= input_data;
 				ram2_data <= (others => 'Z');
+				vga_control_signal <= vga_control_zero;
 			else --ram2
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= '1';
@@ -209,6 +251,7 @@ begin
 
 				ram1_data <= (others => 'Z');
 				ram2_data <= input_data;
+				vga_control_signal <= vga_control_zero;
 			end if;
 		elsif mem_control_signal.read_signal = '1' then  --read
 			if mem_addr(15 downto 0) = x"BF00" then  --read serial

@@ -167,6 +167,20 @@ package utils is
 			we => '1',
 			en => '1'
 		);
+		
+	type vga_control is
+		record
+			vga_write: std_logic;
+		end record;
+	constant vga_control_zero: vga_control:= (
+		vga_write => '1'
+	);
+	
+	type point is
+	record
+		x: integer;
+		y: integer;
+	end record;
 
 end utils;
 
