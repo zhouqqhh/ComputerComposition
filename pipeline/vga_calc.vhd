@@ -36,6 +36,7 @@ use work.utils.all;
 entity vga_calc is
 	PORT (
         clk_50, rst: IN STD_LOGIC;
+		  clk: in std_logic;
         vga_control_signal: in vga_control;
         data_in: in std_logic_vector(15 downto 0);
         h_sync, v_sync: OUT STD_LOGIC;  --horiztonal, vertical sync pulse
@@ -107,10 +108,13 @@ architecture Behavioral of vga_calc is
 	signal vga_ram_write_addr: std_logic_vector(11 downto 0);
 	signal vga_ram_read_addr: std_logic_vector(11 downto 0);
 	signal vga_ram_final_addr: std_logic_vector(11 downto 0);
+	
+	shared variable cursor_row: integer range 0 to 29 := 0;
+	shared variable cursor_col: integer range 0 to 79 := 0;
 begin
 	vga_ram_entity: vga_ram
 		port map(
-			clka=>clk_50,
+			clka=>clk,
 			rsta=>rst,
 			wea=>vga_ram_we,
 			addra=>vga_ram_final_addr,
@@ -153,17 +157,15 @@ begin
 			pixel_row <= conv_integer(unsigned(s_y));
 		end if;
 	end process;
-	
-	process(clk_50)
-		variable cursor_row: integer range 0 to 29 := 0;
-		variable cursor_col: integer range 0 to 79 := 0;
+
+	vga_ram_write_addr <= conv_std_logic_vector(cursor_row * 80 + cursor_col, 12);
+	process(clk)
 	begin
-		vga_ram_write_addr <= conv_std_logic_vector(cursor_row * 80 + cursor_col, 12);
 		if rst = '1' then
 			cursor_row := 1;
 			cursor_col := 0;
 			vga_ram_we <= "0";
-		elsif rising_edge(clk_50)  and vga_control_signal.vga_write= '1' then
+		elsif rising_edge(clk)  and vga_control_signal.vga_write= '1' then
 			vga_ram_we <= "0";
 			case data_in(6 downto 0) is
 				when "0001101" => -- Enter
@@ -197,11 +199,7 @@ begin
 		if rising_edge(clk_50) then
 			left_up_point <= (((pixel_col / FONT_WIDTH) * FONT_WIDTH), ((pixel_row / FONT_HEIGHT) * FONT_HEIGHT));
 			if 0 <= pixel_row and pixel_row < 30 * FONT_HEIGHT and 0 <= pixel_col and pixel_col < 80 * FONT_WIDTH then
-				if vga_ram_we = "1" then 
 					disp_data <= vga_ram_dataout;
-				else 
-					disp_data <= "0000000";
-				end if;
 			else
 				disp_data <= "0000000";
 			end if;
@@ -215,7 +213,7 @@ begin
 			if is_on = '1' then
 				q_vga <= "0111111111";
 			else
-				q_vga <= "0000000000";
+				q_vga <= "0111000000";
 			end if;
 		end if;
 	end process;

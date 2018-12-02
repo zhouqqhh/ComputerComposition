@@ -98,6 +98,7 @@ architecture Behavioral of MMU is
 	component vga_calc is
 		port(
 			clk_50, rst: IN STD_LOGIC;
+			clk: in std_logic;
 			vga_control_signal: in vga_control;
 			data_in: in std_logic_vector(15 downto 0);
 			h_sync, v_sync: OUT STD_LOGIC;  --horiztonal, vertical sync pulse
@@ -161,6 +162,7 @@ begin
 		port map(
 			rst => rst,
 			clk_50 => clk_50,
+			clk=>clk,
 			vga_control_signal => vga_control_signal,
 			data_in => vga_data,  -- TODO change this.
 			h_sync => hs,
@@ -228,10 +230,10 @@ begin
 
 				ram2_control_signal  <= zero_ram_control;
 
-				if ascii_in /= x"0000" then
+				--if input_data /= x"0000" then
 					vga_control_signal.vga_write <= '1';
-					vga_data <= ascii_in;
-				end if;
+					vga_data <= input_data;
+				--end if;
 
 			elsif mem_addr(15) = '1' then  --write ram1
 				bus_control_signal.rdn <= '1';
