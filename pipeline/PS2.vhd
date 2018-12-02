@@ -40,8 +40,7 @@ begin
         if rst = '0' then
             state <= init;
 			scan_code <= (others => '0');
-			scan_code_out <= (others => '0');
-            scan_code_update <= '0';
+         scan_code_update <= '0';
         elsif rising_edge(clk) then
             scan_code_update <= '0';
             have_data <= '0';

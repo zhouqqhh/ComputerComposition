@@ -816,7 +816,7 @@ begin
 			ih_data_out=>selected_ih
 	);
 
-	ps2_entity: PS2 is
+	ps2_entity: PS2
 		port map(
 	    --in
 	        clk => clk,
@@ -830,7 +830,7 @@ begin
 	        have_data => ps2_have_data
 	);
 
-	keyboard_entity: Keyboard is
+	keyboard_entity: Keyboard
 		port map(
 		--in
 			clk => clk,
