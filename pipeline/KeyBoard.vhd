@@ -76,6 +76,7 @@ begin
 						end case;
 					end if;
 				when release_to_continue =>
+					keyboard_update <= '0';
 					if ps2_have_data = '1' then
 						if (ps2_scan_code_in = x"12") then
 							left_shift_pressing <= '0';
@@ -85,8 +86,8 @@ begin
 						if (ps2_scan_code_in = pre_ps2_scan_code) then
 							pre_ps2_scan_code <= (others => '0');
 						end if;
-						ascii <= x"0000";
-						keyboard_update <= '1';
+						--ascii <= x"0000";
+						--keyboard_update <= '1';
 						state <= waiting;
 					end if;
 				when done =>
