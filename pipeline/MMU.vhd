@@ -270,16 +270,22 @@ begin
 			mem_data <= (others=> 'Z');
 		else
 			if (mem_control_signal.read_signal = '1') then
-				if (mem_addr(15 downto 0) = x"BF03") then
-					mem_data(0) <= keyboard_has_data;
-				elsif (mem_addr(15 downto 0) = x"BF02") then
-					mem_data <= ascii_in;
-				elsif (mem_addr(15 downto 0) = x"BF01") then
-					mem_data(1) <= serial_data_ready;
-					mem_data(0) <= serial_tsre and serial_tbre;
-				elsif (mem_addr(15 downto 0) = x"BF00") then
-					mem_data <= ram1_data;
-				elsif (mem_addr(15)  = '1') then
+				if (mem_addr(15 downto 4) = x"BF0") then
+					if mem_addr(1) = '0' then
+						if mem_addr(0) = '0' then --BF00
+							mem_data <= ram1_data;
+						else --BF01
+							mem_data(1) <= serial_data_ready;
+							mem_data(0) <= serial_tsre and serial_tbre;
+						end if;
+					else
+						if mem_addr(0) = '0' then --BF02
+							mem_data <= ascii_in;
+						else --BF03
+							mem_data(0) <= keyboard_has_data;
+						end if;
+					end if;
+				elsif (mem_addr(15) = '1') then
 					mem_data <= ram1_data;
 				else
 					mem_data <= ram2_data;
