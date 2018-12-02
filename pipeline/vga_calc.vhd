@@ -89,6 +89,16 @@ architecture Behavioral of vga_calc is
 	signal is_on: std_logic:='0';
 	
 	signal vga_r, vga_g, vga_b: std_logic_vector(2 downto 0);
+
+	subtype ascii_vec is std_logic_vector(6 downto 0);
+	type ascii_vec_array is array(integer range<>) of ascii_vec;
+	subtype ascii_col is ascii_vec_array(0 to 79);
+	type ascii_col_array is array(integer range<>) of ascii_col;
+	subtype ascii_matrix is ascii_col_array(0 to 29);
+	
+	signal mem: ascii_matrix := (others => (others => (others => '0')));
+	
+	shared variable cursor_row, cursor_col : integer := 0;
 begin
 	vga_640480: vga640480
 	port map(
@@ -126,22 +136,39 @@ begin
 	
 	process(clk_50)
 	begin
+		if rst = '1' then
+			cursor_row := 1;
+			cursor_col := 0;
+			mem <= (others => (others => (others => '0')));
+			mem(0)(0) <= std_logic_vector(to_unsigned(character'pos('F'), 7));
+			mem(0)(1) <= std_logic_vector(to_unsigned(character'pos('U'), 7));
+			mem(0)(2) <= std_logic_vector(to_unsigned(character'pos('C'), 7));
+			mem(0)(3) <= std_logic_vector(to_unsigned(character'pos('K'), 7));
+		elsif rising_edge(clk_50) then
+			case data_in(6 downto 0) is
+				when "0001101" => -- Enter
+					 cursor_row := cursor_row + 1;
+					 cursor_col := 0;
+				when "0001000" => -- Backspace
+					 mem(cursor_row)(cursor_col) <= (others => '0');
+					 cursor_col := cursor_col - 1;
+				when others =>
+					 mem(cursor_row)(cursor_col) <= data_in(6 downto 0);
+					 cursor_col := cursor_col + 1;
+					 if cursor_col = 80 then
+						  cursor_row := cursor_row + 1;
+						  cursor_col := 0;
+					 end if;
+			end case;
+		end if;
+	end process;
+	
+	process(clk_50)
+	begin
 		if rising_edge(clk_50) then
-			--left_up_point <= (((pixel_col / FONT_WIDTH) * FONT_WIDTH), (pixel_row / FONT_HEIGHT) * FONT_HEIGHT));
 			left_up_point <= (((pixel_col / FONT_WIDTH) * FONT_WIDTH), ((pixel_row / FONT_HEIGHT) * FONT_HEIGHT));
-			if 0 <= pixel_row and pixel_row < 4 * FONT_HEIGHT and 0 <= pixel_col and pixel_col < 80 * FONT_WIDTH then
-				--disp_data <= video_memory(pixel_row / FONT_HEIGHT)(pixel_column / FONT_WIDTH);
-				if pixel_row / FONT_HEIGHT = 1 then
-					if pixel_col / FONT_WIDTH = 1 then
-						disp_data <= std_logic_vector(to_unsigned(character'pos('F'), 7));
-					elsif pixel_col / FONT_WIDTH = 2 then
-						disp_data <= std_logic_vector(to_unsigned(character'pos('U'), 7));
-					elsif pixel_col / FONT_WIDTH = 3 then
-						disp_data <= std_logic_vector(to_unsigned(character'pos('C'), 7));
-					elsif pixel_col / FONT_WIDTH = 4 then
-						disp_data <= std_logic_vector(to_unsigned(character'pos('K'), 7));
-					end if;
-				end if;
+			if 0 <= pixel_row and pixel_row < 30 * FONT_HEIGHT and 0 <= pixel_col and pixel_col < 80 * FONT_WIDTH then
+				disp_data <= mem(pixel_row / FONT_HEIGHT)(pixel_col / FONT_WIDTH);
 			else
 				disp_data <= "0000000";
 			end if;
