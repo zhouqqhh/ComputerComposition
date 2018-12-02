@@ -9,9 +9,11 @@ port (
 		clk, rst: in std_logic;
 		ps2_scan_code_in: in std_logic_vector(7 downto 0);
 		ps2_have_data: in std_logic;
+		mem_addr: in std_logic_vector(15 downto 0);
+		mem_control_signal: in mem_control;
 	--out
 		ascii_out: out std_logic_vector(15 downto 0);
-		keyboard_update: out std_logic
+		keyboard_update_out: out std_logic
 	);
 end Keyboard ;
 
@@ -26,6 +28,16 @@ begin
 	ascii_out <= ascii;
 	shift_pressing <= left_shift_pressing or right_shift_pressing;
 	is_upper_class <= shift_pressing xor caps_pressed;
+
+
+	keyboard_update_control: process(keyboard_update, mem_control_signal.read_signal)
+	begin
+		if mem_addr = x"BF02" and mem_control_signal.read_signal = '1' then
+			keyboard_update_out <= '0';
+		elsif rising_edge(keyboard_update) then
+			keyboard_update_out <= '1';
+		end if;
+	end process;
 
 	process(rst,ps2_have_data,clk,ps2_scan_code_in, shift_pressing, pre_ps2_scan_code, ps2_scan_code)
 	begin

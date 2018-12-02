@@ -403,7 +403,7 @@ architecture Behavioral of Computer is
 	    --out
 	        scan_code_out: out std_logic_vector(7 downto 0);
 	        have_data: out std_logic;
-			  
+
 		--debug
 			debug_output: out std_logic_vector(15 downto 0)
 		);
@@ -415,6 +415,8 @@ architecture Behavioral of Computer is
 			clk, rst: in std_logic;
 			ps2_scan_code_in: in std_logic_vector(7 downto 0);
 			ps2_have_data: in std_logic;
+			mem_addr: in std_logic_vector(15 downto 0);
+			mem_control_signal: in mem_control;
 		--out
 			ascii_out: out std_logic_vector(15 downto 0);
 			keyboard_update: out std_logic
@@ -831,7 +833,7 @@ begin
 	    --out
 	        scan_code_out => ps2_scan_data,
 	        have_data => ps2_have_data,
-			  
+
 			  debug_output => led
 	);
 
@@ -842,6 +844,8 @@ begin
 			rst => rst,
 			ps2_scan_code_in => ps2_scan_data,
 			ps2_have_data => ps2_have_data,
+			mem_addr => mem_alu_result,
+			mem_control_signal => mem_mem_control,
 		--out
 			ascii_out => ascii,
 			keyboard_update => keyboard_update
