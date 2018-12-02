@@ -94,14 +94,16 @@ begin
                 when data7 =>
                     if reshaped_clk = '1' then
                         scan_code(7) <= ps2data_in;
-                        state <= finished;
+                        state <= check;
                     end if;
                 when check =>
-                    if ps2data_in = odd then
-                        state <= init;
-                    else
-                        state <= finished;
-                    end if;
+                    if reshaped_clk = '1' then
+                        if ps2data_in = odd then
+                            state <= init;
+                        else
+                            state <= finished;
+                        end if;
+                end if;
                 when finished =>
 					if reshaped_clk = '1' then
 						if ps2data_in = '1' then

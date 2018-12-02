@@ -96,6 +96,7 @@ begin
 						state <= waiting;
 					else
 						pre_ps2_scan_code <= ps2_scan_code;
+						keyboard_update <= '1';
 						case ps2_scan_code is
 							when x"1c" =>
 								if (is_upper_class = '1') then
@@ -438,9 +439,11 @@ begin
 							when x"12" =>
 								left_shift_pressing <= '1';
 								state <= waiting;  --left shift
+								keyboard_update <= '0';
 							when x"59" =>
 								right_shift_pressing <= '1';
 								state <= waiting;  --right shift
+								keyboard_update <= '0';
 							when x"58" =>
 								caps_pressed <= not(caps_pressed);
 								state <= waiting;  --caps lock
@@ -469,7 +472,6 @@ begin
 								ascii <= x"0000";
 								state <= waiting;
 						end case;
-						keyboard_update <= '1';
 					end if;
 				when others =>
 					state <= waiting;
