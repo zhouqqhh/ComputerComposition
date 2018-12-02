@@ -96,6 +96,7 @@ architecture Behavioral of MMU is
 	type flash_state_t is (init, reading, write_ram, update_addr, finished);
 	signal flash_state: flash_state_t;
 	signal flash_read_counter: std_logic_vector(5 downto 0);
+	signal keyboard_has_data: std_logic;
 begin
 	--wb data chooser
 	data_source_chooser: mux_1bit
@@ -269,7 +270,7 @@ begin
 		else
 			if  (mem_control_signal.read_signal = '1') then
 				if (mem_addr(15 downto 0) = x"BF03") then
-					mem_data(0) <= keyboard_update_in;
+					mem_data(0) <= keyboard_has_data;
 				elsif (mem_addr(15 downto 0) = x"BF02") then
 					mem_data <= ascii_in;
 				elsif (mem_addr(15 downto 0) = x"BF01") then
@@ -336,6 +337,15 @@ begin
 					flash_state <= init;
 					--led <= (others => '0');
 			end case;
+		end if;
+	end process;
+
+	keyboard_update_control: process(keyboard_update_in, mem_control_signal.read_signal)
+	begin
+		if mem_addr = x"BF02" and mem_control_signal.read_signal = '1' then
+			keyboard_has_data <= '0';
+		elsif rising_edge(keyboard_update_in) then
+			keyboard_has_data <= '1';
 		end if;
 	end process;
 end Behavioral;
