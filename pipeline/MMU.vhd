@@ -226,7 +226,7 @@ begin
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= '1';
 
-				ram1_control_signal.oe <= clk;
+				ram1_control_signal.oe <= '0';
 				ram1_control_signal.we <= '1';
 				ram1_control_signal.en <= '0';
 
@@ -240,7 +240,7 @@ begin
 
 				ram1_control_signal <= zero_ram_control;
 
-				ram2_control_signal.oe <= clk;
+				ram2_control_signal.oe <= '0';
 				ram2_control_signal.we <= '1';
 				ram2_control_signal.en <= '0';
 
@@ -264,27 +264,21 @@ begin
 
 	flash_bubble <= reading_flash;
 
-	select_output: process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal, reading_flash)
+	select_output: process (serial_tbre, serial_tsre, serial_data_ready, ram1_data, ram2_data, mem_control_signal.read_signal, mem_control_signal.wb_signal, reading_flash)
 	begin
 		if reading_flash = '1' then
 			mem_data <= (others=> 'Z');
 		else
 			if (mem_control_signal.read_signal = '1') then
-				if (mem_addr(15 downto 4) = x"BF0") then
-					if mem_addr(1) = '0' then
-						if mem_addr(0) = '0' then --BF00
-							mem_data <= ram1_data;
-						else --BF01
-							mem_data(1) <= serial_data_ready;
-							mem_data(0) <= serial_tsre and serial_tbre;
-						end if;
-					else
-						if mem_addr(0) = '0' then --BF02
-							mem_data <= ascii_in;
-						else --BF03
-							mem_data(0) <= keyboard_has_data;
-						end if;
-					end if;
+				--if (mem_addr(15 downto 0) = x"BF03") then
+					--mem_data(0) <= keyboard_has_data;
+				--elsif (mem_addr(15 downto 0) = x"BF02") then
+					--mem_data <= ascii_in;
+				if (mem_addr(15 downto 0) = x"BF01") then
+					mem_data(1) <= serial_data_ready;
+					mem_data(0) <= serial_tsre and serial_tbre;
+				elsif (mem_addr(15 downto 0) = x"BF00") then
+					mem_data <= ram1_data;
 				elsif (mem_addr(15) = '1') then
 					mem_data <= ram1_data;
 				else
@@ -347,12 +341,13 @@ begin
 		end if;
 	end process;
 
-	keyboard_update_control: process(keyboard_update_in, mem_control_signal.read_signal)
-	begin
-		if mem_addr = x"BF02" and mem_control_signal.read_signal = '1' then
-			keyboard_has_data <= '0';
-		elsif rising_edge(keyboard_update_in) then
-			keyboard_has_data <= '1';
-		end if;
-	end process;
+	keyboard_has_data <= '0';
+	--keyboard_update_control: process(keyboard_update_in, mem_control_signal.read_signal)
+	--begin
+		--if mem_addr = x"BF02" and mem_control_signal.read_signal = '1' then
+			--keyboard_has_data <= '0';
+		--elsif rising_edge(keyboard_update_in) then
+			--keyboard_has_data <= '1';
+		--end if;
+	--end process;
 end Behavioral;
