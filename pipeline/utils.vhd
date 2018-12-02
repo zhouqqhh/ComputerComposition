@@ -175,6 +175,12 @@ package utils is
 	constant vga_control_zero: vga_control:= (
 		vga_write => '1'
 	);
+	
+	type point is
+	record
+		x: integer;
+		y: integer;
+	end record;
 
 end utils;
 
