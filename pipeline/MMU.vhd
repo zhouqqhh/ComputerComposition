@@ -98,6 +98,7 @@ architecture Behavioral of MMU is
 	signal flash_read_counter: std_logic_vector(5 downto 0);
 	signal keyboard_has_data: std_logic;
 begin
+	--debug_output <= ascii_in;
 	--wb data chooser
 	data_source_chooser: mux_1bit
 		port map(
@@ -268,7 +269,7 @@ begin
 		if reading_flash = '1' then
 			mem_data <= (others=> 'Z');
 		else
-			if  (mem_control_signal.read_signal = '1') then
+			if (mem_control_signal.read_signal = '1') then
 				if (mem_addr(15 downto 0) = x"BF03") then
 					mem_data(0) <= keyboard_has_data;
 				elsif (mem_addr(15 downto 0) = x"BF02") then
@@ -282,7 +283,7 @@ begin
 					mem_data <= ram1_data;
 				else
 					mem_data <= ram2_data;
-				end  if;
+				end if;
 			elsif (mem_control_signal.wb_signal = '0') then
 				mem_data <= ram2_data;
 				instruction_out <= ram2_data;

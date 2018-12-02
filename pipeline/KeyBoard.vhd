@@ -91,7 +91,7 @@ begin
 						state <= waiting;
 					end if;
 				when done =>
-					if not (ps2_scan_code = pre_ps2_scan_code) then
+					if ps2_scan_code = pre_ps2_scan_code then
 						ascii <= x"0000";
 						keyboard_update <= '0';
 						state <= waiting;

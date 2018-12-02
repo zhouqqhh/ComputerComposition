@@ -91,7 +91,7 @@ begin
 			--clock
 			clk => clk,
 			rst => rst,
-			--clk_debug => clk,
+			--clk_debug => clk_debug,
 
 			led => led,
 			ram1_addr => ram1_addr,

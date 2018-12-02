@@ -272,7 +272,7 @@ architecture Behavioral of Computer is
 			t_wb_data: in std_logic;
 
 		--out
-			debug_output: out std_logic_vector(15 downto 0);
+			--debug_output: out std_logic_vector(15 downto 0);
 			read_data1: out std_logic_vector(15 downto 0);
 			read_data2: out std_logic_vector(15 downto 0);
 			sp_out: out std_logic_vector(15 downto 0);
@@ -402,7 +402,10 @@ architecture Behavioral of Computer is
 
 	    --out
 	        scan_code_out: out std_logic_vector(7 downto 0);
-	        have_data: out std_logic
+	        have_data: out std_logic;
+			  
+		--debug
+			debug_output: out std_logic_vector(15 downto 0)
 		);
 	end component PS2;
 
@@ -528,7 +531,7 @@ begin
 			t_wb_data => wb_t_wb_data,
 
 		--out
-			debug_output=>led,
+			--debug_output=>led,
 			read_data1 => id_rx,
 			read_data2 => id_ry,
 			sp_out => id_sp,
@@ -827,7 +830,9 @@ begin
 
 	    --out
 	        scan_code_out => ps2_scan_data,
-	        have_data => ps2_have_data
+	        have_data => ps2_have_data,
+			  
+			  debug_output => led
 	);
 
 	keyboard_entity: Keyboard
