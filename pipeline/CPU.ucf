@@ -153,3 +153,5 @@ NET "b[1]" LOC = A6;
 NET "b[2]" LOC = B6;
 NET "hs" LOC = D6;
 NET "vs" LOC = E6;
+NET "ps2_clk" LOC = U6;
+NET "ps2_data" LOC = V6;

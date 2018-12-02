@@ -37,7 +37,11 @@ entity Computer is
 
 		--address to flash
 		FlashAddr : out std_logic_vector(22 downto 0);
-		FlashData: inout std_logic_vector(15 downto 0)
+		FlashData: inout std_logic_vector(15 downto 0);
+
+		--ps2
+		ps2_clk : in std_logic;
+		ps2_data : in std_logic
 	);
 end Computer;
 
@@ -271,7 +275,7 @@ architecture Behavioral of Computer is
 			t_wb_data: in std_logic;
 
 		--out
-			debug_output: out std_logic_vector(15 downto 0);
+			--debug_output: out std_logic_vector(15 downto 0);
 			read_data1: out std_logic_vector(15 downto 0);
 			read_data2: out std_logic_vector(15 downto 0);
 			sp_out: out std_logic_vector(15 downto 0);
@@ -342,6 +346,10 @@ architecture Behavioral of Computer is
 			--serial
 			serial_tbre, serial_tsre, serial_data_ready: in std_logic;
 
+			--ps2
+			keyboard_update_in: in std_logic;
+			ascii_in: in std_logic_vector(15 downto 0);
+
 		--out
 			mem_data: out std_logic_vector(15 downto 0);
 			instruction_out: out std_logic_vector(15 downto 0);
@@ -368,7 +376,7 @@ architecture Behavioral of Computer is
 			ram1_data: inout std_logic_vector(15 downto 0);
 			ram2_data: inout std_logic_vector(15 downto 0);
 			FlashData: inout std_logic_vector(15 downto 0)
-		
+
 		--debug
 			--debug_output: out std_logic_vector(15 downto 0)
 		);
@@ -389,6 +397,38 @@ architecture Behavioral of Computer is
 			  buble_maker_signal: out std_logic
 		);
 	end component Hazard;
+
+	component PS2 is
+		port (
+	    --in
+	        clk: in std_logic;
+	        rst: in std_logic;
+
+	        ps2clk_in: in std_logic;
+	        ps2data_in: in std_logic;
+
+	    --out
+	        scan_code_out: out std_logic_vector(7 downto 0);
+	        have_data: out std_logic;
+
+		--debug
+			debug_output: out std_logic_vector(15 downto 0)
+		);
+	end component PS2;
+
+	component Keyboard is
+	port (
+		--in
+			clk, rst: in std_logic;
+			ps2_scan_code_in: in std_logic_vector(7 downto 0);
+			ps2_have_data: in std_logic;
+			mem_addr: in std_logic_vector(15 downto 0);
+			mem_control_signal: in mem_control;
+		--out
+			ascii_out: out std_logic_vector(15 downto 0);
+			keyboard_update_out: out std_logic
+		);
+	end component Keyboard ;
 
 	--if
 	signal if_instruction: std_logic_vector(15 downto 0);
@@ -438,6 +478,11 @@ architecture Behavioral of Computer is
 	
 	--vga
 
+	--ps2
+	signal ps2_scan_data: std_logic_vector(7 downto 0);
+	signal ps2_have_data: std_logic;
+	signal keyboard_update: std_logic;
+	signal ascii: std_logic_vector(15 downto 0);
 begin
 
 	pc_write_entity: PC_Write
@@ -497,7 +542,7 @@ begin
 			t_wb_data => wb_t_wb_data,
 
 		--out
-			debug_output=>led,
+			--debug_output=>led,
 			read_data1 => id_rx,
 			read_data2 => id_ry,
 			sp_out => id_sp,
@@ -664,6 +709,10 @@ begin
 			serial_tsre => serial_tsre,
 			serial_data_ready => serial_data_ready,
 
+			--ps2
+			keyboard_update_in => keyboard_update,
+			ascii_in => ascii,
+
 		--out
 			mem_data => mem_mem_data,
 			instruction_out => if_instruction,
@@ -784,6 +833,36 @@ begin
 			t_data_out=>selected_t,
 			sp_data_out=>selected_sp,
 			ih_data_out=>selected_ih
+	);
+
+	ps2_entity: PS2
+		port map(
+	    --in
+	        clk => clk,
+	        rst => rst,
+
+	        ps2clk_in => ps2_clk,
+	        ps2data_in => ps2_data,
+
+	    --out
+	        scan_code_out => ps2_scan_data,
+	        have_data => ps2_have_data,
+
+			  debug_output => led
+	);
+
+	keyboard_entity: Keyboard
+		port map(
+		--in
+			clk => clk,
+			rst => rst,
+			ps2_scan_code_in => ps2_scan_data,
+			ps2_have_data => ps2_have_data,
+			mem_addr => mem_alu_result,
+			mem_control_signal => mem_mem_control,
+		--out
+			ascii_out => ascii,
+			keyboard_update_out => keyboard_update
 	);
 
 end Behavioral;

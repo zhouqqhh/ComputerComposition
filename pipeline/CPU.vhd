@@ -46,7 +46,9 @@ entity CPU is
 		ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic;
 		FlashByte, FlashVpen, FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
 		FlashAddr : out std_logic_vector(22 downto 0);
-		FlashData: inout std_logic_vector(15 downto 0)
+		FlashData: inout std_logic_vector(15 downto 0);
+		ps2_clk : in std_logic;
+		ps2_data : in std_logic
 	);
 end CPU;
 
@@ -69,16 +71,31 @@ architecture Behavioral of CPU is
 			ram1_oe, ram1_we, ram1_en, ram2_oe, ram2_we, ram2_en: out std_logic;
 			FlashByte, FlashVpen, FlashCE, FlashOE, FlashWE, FlashRP : out std_logic;
 			FlashAddr : out std_logic_vector(22 downto 0);
-			FlashData: inout std_logic_vector(15 downto 0)
+			FlashData: inout std_logic_vector(15 downto 0);
+
+			--ps2
+			ps2_clk : in std_logic;
+			ps2_data : in std_logic
 		);
 	end component Computer;
+	--component DCM is
+		--port (
+			--CLKIN_IN        : in    std_logic; 
+			--RST_IN          : in    std_logic; 
+         --CLKDV_OUT       : out   std_logic; 
+         --CLKIN_IBUFG_OUT : out   std_logic; 
+         --CLK0_OUT        : out   std_logic; 
+         --LOCKED_OUT      : out   std_logic
+			--);
+	--end component DCM;
+	signal new_clk: std_logic;
 begin
 	computer_entity: Computer
 		port map(
 			--clock
 			clk => clk,
 			rst => rst,
-			--clk_debug => clk,
+			--clk_debug => clk_debug,
 
 			led => led,
 			ram1_addr => ram1_addr,
@@ -109,6 +126,13 @@ begin
 			vga_b => b,
 			vga_hs => hs,
 			vga_vs => vs
+			ps2_clk => ps2_clk,
+			ps2_data => ps2_data
 		);
-
+	--DCM_entity: DCM
+		--port map(
+			--CLKIN_IN => clk,
+			--RST_IN  => not rst,
+         --CLKDV_OUT => new_clk
+		--);
 end Behavioral;
