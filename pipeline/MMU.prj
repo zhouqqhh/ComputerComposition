@@ -1,4 +1,0 @@
-vhdl work "utils.vhd"
-vhdl work "mux_1bit.vhd"
-vhdl work "Flash.vhd"
-vhdl work "MMU.vhd"

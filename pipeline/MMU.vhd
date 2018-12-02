@@ -226,7 +226,7 @@ begin
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= '1';
 
-				ram1_control_signal.oe <= clk;
+				ram1_control_signal.oe <= '0';
 				ram1_control_signal.we <= '1';
 				ram1_control_signal.en <= '0';
 
@@ -240,7 +240,7 @@ begin
 
 				ram1_control_signal <= zero_ram_control;
 
-				ram2_control_signal.oe <= clk;
+				ram2_control_signal.oe <= '0';
 				ram2_control_signal.we <= '1';
 				ram2_control_signal.en <= '0';
 
