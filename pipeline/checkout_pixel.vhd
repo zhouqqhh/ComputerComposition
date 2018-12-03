@@ -46,7 +46,6 @@ architecture Behavioral of checkout_pixel is
 	signal font_addr: integer;
 	signal font: std_logic_vector(7 downto 0) := (others=>'0');
 	signal char_code: integer:=0;
-	signal char_col: integer:=0;
 	signal pixel_col: integer:=0;
 	shared variable in_x: std_logic := '0';
 	shared variable in_y: std_logic := '0';
@@ -60,7 +59,6 @@ architecture Behavioral of checkout_pixel is
 		);
 	end component ascii2signal;
 begin
-	char_col <= (col - left_up_point.x) / 8 + 1;
 	pixel_col <= (col - left_up_point.x) mod 8;
 	char_code <= to_integer(unsigned(disp_data));
 	font_addr <= char_code * 16 + row - left_up_point.y;

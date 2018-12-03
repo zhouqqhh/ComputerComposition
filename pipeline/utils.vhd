@@ -173,7 +173,7 @@ package utils is
 			vga_write: std_logic;
 		end record;
 	constant vga_control_zero: vga_control:= (
-		vga_write => '1'
+		vga_write => '0'
 	);
 	
 	type point is

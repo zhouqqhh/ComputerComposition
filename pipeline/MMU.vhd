@@ -115,9 +115,10 @@ architecture Behavioral of MMU is
 	signal flash_state: flash_state_t;
 	signal flash_read_counter: std_logic_vector(5 downto 0);
 	signal vga_control_signal: vga_control;
-	signal vga_data: std_logic_vector(15 downto 0);
-	
+	--signal vga_data: std_logic_vector(15 downto 0);
 	signal mem_addr_in: std_logic_vector(15 downto 0);
+	--signal vga_mem_addr_in: std_logic_vector(15 downto 0);
+	
 begin
 	--debug_output <= ascii_in;
 	--wb data chooser
@@ -167,13 +168,13 @@ begin
 			clk_50 => clk_50,
 			clk=>clk,
 			vga_control_signal => vga_control_signal,
-			data_in => vga_data,  -- TODO change this.
+			data_in => input_data,  -- TODO change this.
 			h_sync => hs,
 			v_sync => vs,
 			r => r,
 			g => g,
 			b => b,
-			mem_addr_in => mem_addr_in
+			mem_addr_in => mem_addr
 		);
 
 	--ram1: 0x8000 ~ 0xFFFF, ram2: 0x0000 ~ 0x7FFF
@@ -225,7 +226,7 @@ begin
 				ram1_data <= input_data;
 				ram2_data <= (others => 'Z');
 				vga_control_signal <= vga_control_zero;
-			elsif mem_addr(15 downto 0) = x"BF04" then
+			elsif mem_addr(15 downto 12) = x"C" then
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= '1';
 
@@ -234,8 +235,7 @@ begin
 				ram2_control_signal  <= zero_ram_control;
 
 				--if input_data /= x"0000" then
-					vga_control_signal.vga_write <= '1';
-					vga_data <= input_data;
+				vga_control_signal.vga_write <= '1';
 				--end if;
 
 			elsif mem_addr(15) = '1' then  --write ram1

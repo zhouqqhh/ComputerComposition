@@ -88,15 +88,8 @@ architecture Behavioral of vga_calc is
 	signal clk_25:std_logic;
 	signal q_vga: std_logic_vector(9 downto 0);
 	
-	constant hpStart_x:std_LOGIC_vector(9 downto 0) := "1000111010";
-   constant hpEnd_x:std_LOGIC_vector(9 downto 0) := "1001101100";
-   constant hpStart_y:std_LOGIC_vector(8 downto 0) := "000010100";
-   constant hpEnd_y:std_logic_vector(8 downto 0) := "000011110";
-	
 	constant FONT_WIDTH: integer:=8;
 	constant FONT_HEIGHT: integer:=16;
-	 
-	--signal HpOk: std_logic;		--TODO delete this test
 	
 	signal disp_data: std_logic_vector(6 downto 0);
 	signal left_up_point: point:=(0, 0);
@@ -162,13 +155,7 @@ begin
 
 	--vga_ram_write_addr <= conv_std_logic_vector(10 * 80 + 40, 12);
 	vga_ram_datain <= data_in(6 downto 0);
-	
-	process(clk_50, mem_addr_in)
-	begin
-		if rising_edge(clk_50) then
-			vga_ram_write_addr <= mem_addr_in(11 downto 0);
-		end if;
-	end process;
+	vga_ram_write_addr <= mem_addr_in(11 downto 0);
 --	process(clk)
 --	begin
 --		if rst = '0' then
