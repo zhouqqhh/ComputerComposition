@@ -70,16 +70,17 @@ architecture Behavioral of vga_calc is
 	end component checkout_pixel;
 	
 	-- synthesis translate_on
-	component vga_ram is
-	  port (
+	component vga_ram IS
+	  PORT (
 		 clka : IN STD_LOGIC;
-		 rsta : IN STD_LOGIC;
 		 wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
 		 addra : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
 		 dina : IN STD_LOGIC_VECTOR(6 DOWNTO 0);
-		 douta : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)
+		 clkb : IN STD_LOGIC;
+		 addrb : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+		 doutb : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)
 	  );
-	end component vga_ram;
+	END component vga_ram;
 	
 	signal s_x: std_logic_vector(9 downto 0);
 	signal s_y: std_logic_vector(8 downto 0);
@@ -107,7 +108,6 @@ architecture Behavioral of vga_calc is
 	signal vga_ram_we: std_logic_vector(0 downto 0);
 	signal vga_ram_write_addr: std_logic_vector(11 downto 0);
 	signal vga_ram_read_addr: std_logic_vector(11 downto 0);
-	signal vga_ram_final_addr: std_logic_vector(11 downto 0);
 	
 	shared variable cursor_row: integer range 0 to 29 := 0;
 	shared variable cursor_col: integer range 0 to 79 := 0;
@@ -115,14 +115,15 @@ begin
 	vga_ram_entity: vga_ram
 		port map(
 			clka=>clk,
-			rsta=>rst,
 			wea=>vga_ram_we,
-			addra=>vga_ram_final_addr,
+			addra=> vga_ram_write_addr,
 			dina=>vga_ram_datain,
-			douta=> vga_ram_dataout
+			clkb=>clk_50,
+			addrb=>vga_ram_read_addr,
+			doutb=> vga_ram_dataout
 		);
-		
-	vga_ram_final_addr <= vga_ram_write_addr when vga_ram_we = "1" else vga_ram_read_addr;
+	
+	vga_ram_we(0) <= vga_control_signal.vga_write;
 
 	vga_640480: vga640480
 	port map(
@@ -158,40 +159,41 @@ begin
 		end if;
 	end process;
 
-	vga_ram_write_addr <= conv_std_logic_vector(cursor_row * 80 + cursor_col, 12);
-	process(clk)
-	begin
-		if rst = '1' then
-			cursor_row := 1;
-			cursor_col := 0;
-			vga_ram_we <= "0";
-		elsif rising_edge(clk)  and vga_control_signal.vga_write= '1' then
-			vga_ram_we <= "0";
-			case data_in(6 downto 0) is
-				when "0001101" => -- Enter
-					 cursor_row := cursor_row + 1;
-					 cursor_col := 0;
-				when "0001000" => -- Backspace
-					 vga_ram_datain <= (others => '0');
-					 vga_ram_we <= "1";
-					 if  cursor_col = 0 then 
-						cursor_col := 79;
-						cursor_row := cursor_row - 1;
-					else
-						cursor_col := cursor_col - 1;
-					end if;
-				when others =>
-					vga_ram_datain <= data_in(6 downto 0);
-					vga_ram_we <= "1";
-					 if cursor_col = 79 then
-						  cursor_row := cursor_row + 1;
-						  cursor_col := 0;
-					 else
-						cursor_col := cursor_col + 1;
-					end if;
-			end case;
-		end if;
-	end process;
+	vga_ram_write_addr <= conv_std_logic_vector(10 * 80 + 40, 12);
+	vga_ram_datain <= data_in(6 downto 0);
+--	process(clk)
+--	begin
+--		if rst = '0' then
+--			cursor_row := 1;
+--			cursor_col := 0;
+--			vga_ram_we <= "0";
+--		elsif rising_edge(clk)  and vga_control_signal.vga_write= '1' then
+--			vga_ram_we <= "0";
+--			case data_in(6 downto 0) is
+--				when "0001101" => -- Enter
+--					 cursor_row := cursor_row + 1;
+--					 cursor_col := 0;
+--				when "0001000" => -- Backspace
+--					 vga_ram_datain <= (others => '0');
+--					 vga_ram_we <= "1";
+--					 if  cursor_col = 0 then 
+--						cursor_col := 79;
+--						cursor_row := cursor_row - 1;
+--					else
+--						cursor_col := cursor_col - 1;
+--					end if;
+--				when others =>
+--					vga_ram_datain <= data_in(6 downto 0);
+--					vga_ram_we <= "1";
+--					 if cursor_col = 79 then
+--						  cursor_row := cursor_row + 1;
+--						  cursor_col := 0;
+--					 else
+--						cursor_col := cursor_col + 1;
+--					end if;
+--			end case;
+--		end if;
+--	end process;
 	
 	vga_ram_read_addr <= conv_std_logic_vector((pixel_col / FONT_WIDTH) + 80 * (pixel_row / FONT_HEIGHT), 12);
 	process(clk_50)
@@ -213,7 +215,7 @@ begin
 			if is_on = '1' then
 				q_vga <= "0111111111";
 			else
-				q_vga <= "0111000000";
+				q_vga <= "0000000000";
 			end if;
 		end if;
 	end process;

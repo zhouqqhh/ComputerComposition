@@ -81,7 +81,7 @@
 --    C_AXI_TYPE                  :  1 
 --    C_AXI_SLAVE_TYPE            :  0 
 --    C_AXI_ID_WIDTH              :  4 
---    C_MEM_TYPE                  :  0 
+--    C_MEM_TYPE                  :  1 
 --    C_BYTE_SIZE                 :  9 
 --    C_ALGORITHM                 :  1 
 --    C_PRIM_TYPE                 :  1 
@@ -90,10 +90,10 @@
 --    C_USE_DEFAULT_DATA          :  0 
 --    C_DEFAULT_DATA              :  0 
 --    C_RST_TYPE                  :  SYNC 
---    C_HAS_RSTA                  :  1 
+--    C_HAS_RSTA                  :  0 
 --    C_RST_PRIORITY_A            :  CE 
 --    C_RSTRAM_A                  :  0 
---    C_INITA_VAL                 :  61 
+--    C_INITA_VAL                 :  0 
 --    C_HAS_ENA                   :  0 
 --    C_HAS_REGCEA                :  0 
 --    C_USE_BYTE_WEA              :  0 
@@ -107,7 +107,7 @@
 --    C_HAS_RSTB                  :  0 
 --    C_RST_PRIORITY_B            :  CE 
 --    C_RSTRAM_B                  :  0 
---    C_INITB_VAL                 :  0 
+--    C_INITB_VAL                 :  61 
 --    C_HAS_ENB                   :  0 
 --    C_HAS_REGCEB                :  0 
 --    C_USE_BYTE_WEB              :  0 
@@ -231,17 +231,20 @@ ARCHITECTURE xilinx OF vga_ram_prod IS
   COMPONENT vga_ram_exdes IS
   PORT (
       --Port A
-    RSTA           : IN STD_LOGIC;  --opt port
   
     WEA            : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
     ADDRA          : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
   
     DINA           : IN STD_LOGIC_VECTOR(6 DOWNTO 0);
+
   
-    DOUTA          : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
+    CLKA       : IN STD_LOGIC;
 
-    CLKA       : IN STD_LOGIC
-
+  
+      --Port B
+    ADDRB          : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    DOUTB          : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
+    CLKB           : IN STD_LOGIC
 
 
 
@@ -253,16 +256,18 @@ BEGIN
   bmg0 : vga_ram_exdes
     PORT MAP (
       --Port A
-      RSTA       => RSTA,
   
       WEA        => WEA,
       ADDRA      => ADDRA,
   
       DINA       => DINA,
-  
-      DOUTA      => DOUTA,
 
-      CLKA       => CLKA
+      CLKA       => CLKA,
+  
+      --Port B
+      ADDRB      => ADDRB,
+      DOUTB      => DOUTB,
+      CLKB       => CLKB
 
 
 

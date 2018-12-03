@@ -43,11 +43,12 @@ LIBRARY XilinxCoreLib;
 ENTITY vga_ram IS
   PORT (
     clka : IN STD_LOGIC;
-    rsta : IN STD_LOGIC;
     wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
     addra : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
     dina : IN STD_LOGIC_VECTOR(6 DOWNTO 0);
-    douta : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)
+    clkb : IN STD_LOGIC;
+    addrb : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    doutb : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)
   );
 END vga_ram;
 
@@ -56,11 +57,12 @@ ARCHITECTURE vga_ram_a OF vga_ram IS
 COMPONENT wrapped_vga_ram
   PORT (
     clka : IN STD_LOGIC;
-    rsta : IN STD_LOGIC;
     wea : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
     addra : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
     dina : IN STD_LOGIC_VECTOR(6 DOWNTO 0);
-    douta : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)
+    clkb : IN STD_LOGIC;
+    addrb : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    doutb : OUT STD_LOGIC_VECTOR(6 DOWNTO 0)
   );
 END COMPONENT;
 
@@ -90,17 +92,17 @@ END COMPONENT;
       c_has_mux_output_regs_b => 0,
       c_has_regcea => 0,
       c_has_regceb => 0,
-      c_has_rsta => 1,
+      c_has_rsta => 0,
       c_has_rstb => 0,
       c_has_softecc_input_regs_a => 0,
       c_has_softecc_output_regs_b => 0,
       c_init_file => "BlankString",
       c_init_file_name => "no_coe_file_loaded",
-      c_inita_val => "61",
-      c_initb_val => "0",
+      c_inita_val => "0",
+      c_initb_val => "61",
       c_interface_type => 0,
       c_load_init_file => 0,
-      c_mem_type => 0,
+      c_mem_type => 1,
       c_mux_pipeline_stages => 0,
       c_prim_type => 1,
       c_read_depth_a => 2400,
@@ -135,11 +137,12 @@ BEGIN
 U0 : wrapped_vga_ram
   PORT MAP (
     clka => clka,
-    rsta => rsta,
     wea => wea,
     addra => addra,
     dina => dina,
-    douta => douta
+    clkb => clkb,
+    addrb => addrb,
+    doutb => doutb
   );
 -- synthesis translate_on
 
