@@ -40,7 +40,8 @@ entity vga_calc is
         vga_control_signal: in vga_control;
         data_in: in std_logic_vector(15 downto 0);
         h_sync, v_sync: OUT STD_LOGIC;  --horiztonal, vertical sync pulse
-	    r, g, b: out STD_LOGIC_VECTOR(2 downto 0)
+	    r, g, b: out STD_LOGIC_VECTOR(2 downto 0);
+		 mem_addr_in: in std_logic_vector(15 downto 0)
 	);
 end vga_calc;
 
@@ -159,8 +160,15 @@ begin
 		end if;
 	end process;
 
-	vga_ram_write_addr <= conv_std_logic_vector(10 * 80 + 40, 12);
+	--vga_ram_write_addr <= conv_std_logic_vector(10 * 80 + 40, 12);
 	vga_ram_datain <= data_in(6 downto 0);
+	
+	process(clk_50, mem_addr_in)
+	begin
+		if rising_edge(clk_50) then
+			vga_ram_write_addr <= mem_addr_in(11 downto 0);
+		end if;
+	end process;
 --	process(clk)
 --	begin
 --		if rst = '0' then
