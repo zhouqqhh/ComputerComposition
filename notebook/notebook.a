@@ -1,0 +1,89 @@
+init: ;r4光标row,r5光标col
+	li r4 0x00
+	li r5 0x00
+askkeyboard: ;轮询键盘
+	li r1 0xbf
+	sll r1 r1 0x0000
+	addiu r1 0x03
+	lw r1 r0 0x0000 ;r1 bf03
+	li r2 0x01
+	and r0 r2
+	beqz r0 askkeyboard
+	nop
+	addiu r1 0xff ;r1 bf02
+	lw r1 r0 0x0000 ;r0获取键盘按键
+	li r1 0x11
+	subu r0 r1 r2
+	beqz r2 cursorup
+	nop
+	li r1 0x01
+	subu r2 r1 r2
+	beqz r2 cursorleft
+	nop
+	subu r2 r1 r2
+	beqz r2 cursordown
+	nop
+	subu r2 r1 r2
+	beqz r2 cursorright
+	nop
+
+checkchar:
+	li r1 0x21
+	slt r0 r1
+	btnez askkeyboard
+	nop
+	li r1 0x7f
+	subu r0 r1 r1
+	beqz r1 quit
+	nop
+
+	addiu3 r4 r3 0x00 ;r3循环计数器
+	addiu3 r5 r2 0x00 ;r2存地址
+caladdr:
+	beqz r3 writedata
+	nop
+	addiu r2 0x50
+	addiu r3 0xff
+	b caladdr
+	nop
+	
+	;r2=0x50*r4+r5
+writedata:
+	li r1 0xc0
+	sll r1 r1 0x00
+	addu r1 r2 r1
+	sw r1 r0 0x00
+	b askkeyboard
+	nop
+
+cursorup:
+	beqz r4 askkeyboard
+	nop
+	addiu r4 0xff
+	b askkeyboard
+	nop
+cursorleft:
+	beqz r5 askkeyboard
+	nop
+	addiu r5 0xff
+	b askkeyboard
+	nop
+cursordown:
+	li r0 0x1c
+	cmp r0 r4
+	bteqz askkeyboard
+	nop
+	addiu r4 0x01
+	b askkeyboard
+	nop
+cursorright:
+	li r0 0x4f
+	cmp r0 r5
+	bteqz askkeyboard
+	nop
+	addiu r5 0x01
+	b askkeyboard
+	nop
+quit:
+	jr r7
+	nop
