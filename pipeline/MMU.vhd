@@ -102,7 +102,8 @@ architecture Behavioral of MMU is
 			vga_control_signal: in vga_control;
 			data_in: in std_logic_vector(15 downto 0);
 			h_sync, v_sync: OUT STD_LOGIC;  --horiztonal, vertical sync pulse
-			r, g, b: out STD_LOGIC_VECTOR(2 downto 0)
+			r, g, b: out STD_LOGIC_VECTOR(2 downto 0);
+			mem_addr_in: in std_logic_vector(15 downto 0)
 		);
 	end component vga_calc;
 
@@ -115,6 +116,8 @@ architecture Behavioral of MMU is
 	signal flash_read_counter: std_logic_vector(5 downto 0);
 	signal vga_control_signal: vga_control;
 	signal vga_data: std_logic_vector(15 downto 0);
+	
+	signal mem_addr_in: std_logic_vector(15 downto 0);
 begin
 	--debug_output <= ascii_in;
 	--wb data chooser
@@ -169,7 +172,8 @@ begin
 			v_sync => vs,
 			r => r,
 			g => g,
-			b => b
+			b => b,
+			mem_addr_in => mem_addr_in
 		);
 
 	--ram1: 0x8000 ~ 0xFFFF, ram2: 0x0000 ~ 0x7FFF
