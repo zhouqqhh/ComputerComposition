@@ -1,89 +1,190 @@
-init: ;r4光标row,r5光标col
-	li r4 0x00
-	li r5 0x00
-askkeyboard: ;轮询键盘
-	li r1 0xbf
-	sll r1 r1 0x0000
-	addiu r1 0x03
-	lw r1 r0 0x0000 ;r1 bf03
-	li r2 0x01
-	and r0 r2
-	beqz r0 askkeyboard
-	nop
-	addiu r1 0xff ;r1 bf02
-	lw r1 r0 0x0000 ;r0获取键盘按键
-	li r1 0x11
-	subu r0 r1 r2
-	beqz r2 cursorup
-	nop
-	li r1 0x01
-	subu r2 r1 r2
-	beqz r2 cursorleft
-	nop
-	subu r2 r1 r2
-	beqz r2 cursordown
-	nop
-	subu r2 r1 r2
-	beqz r2 cursorright
-	nop
+INITMEM: ;以R0为循环计数器
+	LI R0 0x0F
+	SLL R0 R0 0x00
+	LI R4 0x00
+	LI R3 0xF0
+	SLL R3 R3 0x00
+	LI R2 0x00
+INITDATA:
+	;此时R2是地址偏移量
+	ADDU R3 R2 R3
+	SW R3 R4 0x00 ;内存清零
+	LI R2 0x01
+	ADDIU R0 0xFF
+	BNEZ R0 INITDATA
+	NOP
 
-checkchar:
-	li r1 0x21
-	slt r0 r1
-	btnez askkeyboard
-	nop
-	li r1 0x7f
-	subu r0 r1 r1
-	beqz r1 quit
-	nop
+INITOTHERS:
+	LI R0 0xBF ;初始化栈
+	SLL R0 R0 0x00
+	ADDIU R0 0x10
+	MTSP R0 ;SP=0xBF10
+	LI R4 0x01 ;R4光标ROW,R5光标COL
+	LI R5 0x00
+READMEM: ;以R0为列,R1为行把内存中的数据读取到显存中
+	LI R0 0x00
+	LI R1 0x01
+	SW_SP R4 0x0000 ;先把光标位置放到栈里
+	SW_SP R5 0x0001
+READMEMLOOP:
+	ADDIU3 R1 R3 0x00 ;R3循环计数器
+	ADDIU3 R0 R2 0x00 ;R2存地址
+ADDRLOOP: ;R2=0x50*R1+R0
+	BEQZ R3 COPYDATA
+	NOP
+	ADDIU R2 0x50
+	ADDIU R3 0xFF
+	B ADDRLOOP
+	NOP
 
-	addiu3 r4 r3 0x00 ;r3循环计数器
-	addiu3 r5 r2 0x00 ;r2存地址
-caladdr:
-	beqz r3 writedata
-	nop
-	addiu r2 0x50
-	addiu r3 0xff
-	b caladdr
-	nop
-	
-	;r2=0x50*r4+r5
-writedata:
-	li r1 0xc0
-	sll r1 r1 0x00
-	addu r1 r2 r1
-	sw r1 r0 0x00
-	b askkeyboard
-	nop
+COPYDATA:
+	;此时R2是地址偏移量
+	LI R3 0xF0
+	SLL R3 R3 0x00
+	ADDU R3 R2 R3
+	LW R3 R4 0x00 ;把对应的字符读到R4
+	LI R3 0xC0
+	SLL R3 R3 0x00
+	ADDU R3 R2 R3
+	SW R3 R4 0x00
 
-cursorup:
-	beqz r4 askkeyboard
-	nop
-	addiu r4 0xff
-	b askkeyboard
-	nop
-cursorleft:
-	beqz r5 askkeyboard
-	nop
-	addiu r5 0xff
-	b askkeyboard
-	nop
-cursordown:
-	li r0 0x1c
-	cmp r0 r4
-	bteqz askkeyboard
-	nop
-	addiu r4 0x01
-	b askkeyboard
-	nop
-cursorright:
-	li r0 0x4f
-	cmp r0 r5
-	bteqz askkeyboard
-	nop
-	addiu r5 0x01
-	b askkeyboard
-	nop
-quit:
-	jr r7
-	nop
+COLPLUS: ;行++
+	ADDIU R0 0x01
+	LI R3 0x50
+	CMP R3 R0 ;R3=R4时,T=0
+	BTNEZ READMEMLOOP
+	NOP
+ROWPLUS: ;列++
+	LI R0 0x00
+	ADDIU R1 0x01
+	LI R3 0x1C
+	CMP R3 R1
+	BTNEZ READMEMLOOP
+	NOP
+
+	LW_SP R4 0x0000
+	LW_SP R5 0x0001
+DISPLAYCURSOR: ;显示光标
+	ADDIU3 R4 R3 0x00 ;R3循环计数器
+	ADDIU3 R5 R2 0x00 ;R2存地址
+CURSORADDRLOOP:
+	BEQZ R3 WRITECURSOR
+	NOP
+	ADDIU R2 0x50
+	ADDIU R3 0xFF
+	B CURSORADDRLOOP
+	NOP
+WRITECURSOR:
+	LI R0 0x08 ;R2=0x50*R4+R5
+	LI R3 0xC0
+	SLL R3 R3 0x00
+	ADDU R3 R2 R3
+	SW R3 R0 0x00
+
+ASKKEYBOARD: ;轮询键盘
+	LI R1 0xBF
+	SLL R1 R1 0x0000
+	ADDIU R1 0x03
+	LW R1 R0 0x0000 ;R1 BF03
+	LI R2 0x01
+	AND R0 R2
+	BEQZ R0 ASKKEYBOARD
+	NOP
+	ADDIU R1 0xFF ;R1 BF02
+	LW R1 R0 0x0000 ;R0获取键盘按键
+	LI R1 0x11
+	SUBU R0 R1 R2
+	BEQZ R2 CURSORUP
+	NOP
+	LI R1 0x01
+	SUBU R2 R1 R2
+	BEQZ R2 CURSORLEFT
+	NOP
+	SUBU R2 R1 R2
+	BEQZ R2 CURSORDOWN
+	NOP
+	SUBU R2 R1 R2
+	BEQZ R2 CURSORRIGHT
+	NOP
+
+CHECKCHAR:
+	LI R2 0x08
+	SUBU R2 R0 R2
+	BEQZ R2 CALADDR
+	NOP
+	LI R2 0x0A
+	SUBU R2 R0 R2
+	BEQZ R2 ADDROW
+	NOP
+	SLTI R0 0x20
+	BTNEZ CALADDR
+	NOP
+	LI R1 0x7F
+	SUBU R0 R1 R1
+	BEQZ R1 QUIT
+	NOP
+
+CALADDR:
+	ADDIU3 R4 R3 0x00 ;R3循环计数器
+	ADDIU3 R5 R2 0x00 ;R2存地址
+CALADDRLOOP:
+	BEQZ R3 WRITEDATA
+	NOP
+	ADDIU R2 0x50
+	ADDIU R3 0xFF
+	B CALADDRLOOP
+	NOP
+
+	;R2=0x50*R4+R5
+WRITEDATA:
+	LI R3 0xF0
+	SLL R3 R3 0x00
+	ADDU R3 R2 R3
+	LI R2 0x08
+	SUBU R2 R0 R2
+	BEQZ R2 BACKSPACE
+	NOP
+	SW R3 R0 0x00
+	B CURSORRIGHT
+	NOP
+
+MINUSROW:
+	LI R5 0x4F
+CURSORUP:
+	LI R0 0x01
+	CMP R0 R4
+	BTEQZ READMEM
+	NOP
+	ADDIU R4 0xFF
+	B READMEM
+	NOP
+BACKSPACE:
+	LI R0 0x00
+	SW R3 R0 0x00
+CURSORLEFT:
+	BEQZ R5 MINUSROW
+	NOP
+	ADDIU R5 0xFF
+	B READMEM
+	NOP
+ADDROW:
+	LI R5 0x00
+CURSORDOWN:
+	LI R0 0x1B
+	CMP R0 R4
+	BTEQZ READMEM
+	NOP
+	ADDIU R4 0x01
+	B READMEM
+	NOP
+CURSORRIGHT:
+	LI R0 0x4F
+	CMP R0 R5
+	BTEQZ ADDROW
+	NOP
+	ADDIU R5 0x01
+	B READMEM
+	NOP
+QUIT:
+	JR R7
+	NOP
