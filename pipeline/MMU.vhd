@@ -34,8 +34,8 @@ entity MMU is
 		ram2_control_signal: out ram_control;
 
 		--vga
-		r, g, b : out std_logic_vector(2 downto 0);
-		hs, vs: out std_logic;
+--		r, g, b : out std_logic_vector(2 downto 0);
+--		hs, vs: out std_logic;
 
 		--flash control
 		FlashByte, FlashVpen : out std_logic;
@@ -49,7 +49,9 @@ entity MMU is
 	--inout
 		ram1_data: inout std_logic_vector(15 downto 0);
 		ram2_data: inout std_logic_vector(15 downto 0);
-		FlashData: inout std_logic_vector(15 downto 0)
+		FlashData: inout std_logic_vector(15 downto 0);
+		vga_control_sig: out vga_control;
+		input_data_out: out std_logic_vector(15 downto 0)
 
 	--debug
 		--debug_output: out std_logic_vector(15 downto 0)
@@ -95,18 +97,6 @@ architecture Behavioral of MMU is
 		);
 	end component Flash;
 
-	component vga_calc is
-		port(
-			clk_50, rst: IN STD_LOGIC;
-			clk: in std_logic;
-			vga_control_signal: in vga_control;
-			data_in: in std_logic_vector(15 downto 0);
-			h_sync, v_sync: OUT STD_LOGIC;  --horiztonal, vertical sync pulse
-			r, g, b: out STD_LOGIC_VECTOR(2 downto 0);
-			mem_addr_in: in std_logic_vector(15 downto 0)
-		);
-	end component vga_calc;
-
 	signal reading_flash, flash_ctl_read: std_logic;
 	signal flash_addr: std_logic_vector(22 downto 0);
 	signal flash_mem_addr: std_logic_vector(15 downto 0);
@@ -114,10 +104,10 @@ architecture Behavioral of MMU is
 	type flash_state_t is (init, reading, write_ram, update_addr, finished);
 	signal flash_state: flash_state_t;
 	signal flash_read_counter: std_logic_vector(5 downto 0);
-	signal vga_control_signal: vga_control;
-	--signal vga_data: std_logic_vector(15 downto 0);
-	signal mem_addr_in: std_logic_vector(15 downto 0);
 	--signal vga_mem_addr_in: std_logic_vector(15 downto 0);
+	signal vga_control_signal: vga_control;
+	signal mem_addr_in: std_logic_vector(15 downto 0);
+	
 	
 begin
 	--debug_output <= ascii_in;
@@ -162,21 +152,6 @@ begin
 			FlashData => FlashData
 		);
 
-	vga_calc_entity: vga_calc
-		port map(
-			rst => rst,
-			clk_50 => clk_50,
-			clk=>clk,
-			vga_control_signal => vga_control_signal,
-			data_in => input_data,  -- TODO change this.
-			h_sync => hs,
-			v_sync => vs,
-			r => r,
-			g => g,
-			b => b,
-			mem_addr_in => mem_addr
-		);
-
 	--ram1: 0x8000 ~ 0xFFFF, ram2: 0x0000 ~ 0x7FFF
 	memory_address_chooser: process(pc_in, mem_addr, mem_control_signal)
 	begin
@@ -196,6 +171,8 @@ begin
 
 	memory_control: process(mem_addr, mem_control_signal, clk, rst)
 	begin
+		vga_control_sig <= vga_control_signal;
+		input_data_out <= input_data;
 		if reading_flash = '1' then --TODO read flash
 			bus_control_signal.rdn <= '1';
 			bus_control_signal.wrn <= '1';
