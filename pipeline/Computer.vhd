@@ -10,6 +10,7 @@ entity Computer is
 		clk_50: in std_logic;
 		clk: in std_logic;
 		rst: in std_logic;
+		break_clk: in std_logic;
 		--clk_debug: in std_logic;
 
 		--Instrument Memory(SRAM2)
@@ -47,6 +48,25 @@ entity Computer is
 end Computer;
 
 architecture Behavioral of Computer is
+
+	component break_dealer is
+		port(
+		--in
+			rst: in std_logic;
+			clk: in std_logic;
+			break_clk: in std_logic;
+			ready_signal: in std_logic;
+			ih_signal: in std_logic; --ih highest bit
+			slot_signal: in std_logic;
+			pc_in: in std_logic_vector(15 downto 0);
+			bubble_signal: in std_logic;
+		--out
+			int_instruction: out std_logic_vector(15 downto 0);
+			break_control_signal: out break_control;
+			pc_out: out std_logic_vector(15 downto 0);
+			debug_out: out std_logic_vector(15 downto 0)
+		);
+	end component break_dealer;
 	--pc
 	component PC_write is
 		port (
@@ -56,13 +76,19 @@ architecture Behavioral of Computer is
 
 			--hazard
 			buble_maker_signal: in std_logic;
+			
+			--int
+			int_pc: in std_logic_vector(15 downto 0);
+			int_signal: in std_logic;
+			
 			--control signal
 			jump_control_signal: in jump_control;
-
+			
 			--data
 			last_pc, id_pc, immi, rx: in std_logic_vector(15 downto 0);
-			t: in std_logic;
 			immi_b: in  std_logic_vector(10 downto 0);
+			t: in std_logic;
+
 		--out
 			pc_out: out std_logic_vector(15 downto 0);
 			pc_one_out: out std_logic_vector(15 downto 0)
@@ -71,16 +97,22 @@ architecture Behavioral of Computer is
 
 	--IFtoID(registers)
 	component IFtoID is
-		port(
+		port (
 		--in
 			instruction_in: in std_logic_vector(15 downto 0);
 			pc_in: in std_logic_vector(15 downto 0);
 			clk: in std_logic;
 			rst: in std_logic;
 			buble_maker_signal: in std_logic;
+			slot_signal_in: in std_logic;
+			--int
+			int_instruction: in std_logic_vector(15 downto 0);
+			int_signal: in std_logic;
+			
 		--out
 			instruction_out: out std_logic_vector(15 downto 0);
-			pc_out: out std_logic_vector(15 downto 0)
+			pc_out: out std_logic_vector(15 downto 0);
+			slot_signal_out: out std_logic
 		);
 	end component IFtoID;
 
@@ -95,6 +127,7 @@ architecture Behavioral of Computer is
 	--        B_signal: out std_logic_vector(1 downto 0);
 	--        B_com_chooser: out std_logic_vector(1 downto 0);
 	--        JR_signal: out std_logic;
+				slot_signal_out: out std_logic;
 				jump_control_signal: out jump_control;
 
 			  --alu
@@ -411,10 +444,10 @@ architecture Behavioral of Computer is
 
 	    --out
 	        scan_code_out: out std_logic_vector(7 downto 0);
-	        have_data: out std_logic;
+	        have_data: out std_logic
 
 		--debug
-			debug_output: out std_logic_vector(15 downto 0)
+			--debug_output: out std_logic_vector(15 downto 0)
 		);
 	end component PS2;
 
@@ -485,8 +518,41 @@ architecture Behavioral of Computer is
 	signal ps2_have_data: std_logic;
 	signal keyboard_update: std_logic;
 	signal ascii: std_logic_vector(15 downto 0);
+	
+	--int
+	signal int_signal: std_logic;
+	signal break_control_signal: break_control;
+	signal slot_signal: std_logic;
+	signal id_slot_signal: std_logic;
+	signal int_instruction, int_pc: std_logic_vector(15 downto 0);
+		
 begin
-
+	
+--	led(0) <= keyboard_update;
+	--led(15) <= id_ih(15);
+--	led(1) <= break_control_signal.break_signal;
+--	led(2) <= break_control_signal.pc_signal;
+--	led(14 downto 1) <= int_instruction(14 downto 1);
+--	led(0) <= keyboard_update;
+	
+	break_dealer_entity: break_dealer
+		port map(
+		--in
+			clk=>clk,
+			rst=>rst,
+			break_clk=>break_clk,
+			ready_signal=>keyboard_update,
+			ih_signal=>selected_ih(15),
+			slot_signal=>slot_signal, 
+			pc_in=>id_pc,
+			bubble_signal => buble_maker,
+		--out
+			int_instruction=> int_instruction,
+			break_control_signal=> break_control_signal,
+			pc_out=>int_pc,
+			debug_out=>led
+		);
+			
 	pc_write_entity: PC_Write
 		port map(
 		--in
@@ -498,7 +564,10 @@ begin
 
 			--control signal
 			jump_control_signal=>id_jump_control,
-
+			
+			--int
+			int_pc=>int_pc,
+			int_signal=>break_control_signal.pc_signal,
 			--data
 			last_pc=>if_pc_one,
 			id_pc=>id_pc,
@@ -515,13 +584,20 @@ begin
 		port map(
 		--in
 			instruction_in => if_instruction,
+			int_instruction => int_instruction,
+			int_signal=>break_control_signal.break_signal,
 			pc_in=> if_pc_one,
 			clk => clk,
 			rst => rst,
 			buble_maker_signal=>buble_maker,
+		
+		--int
+			slot_signal_in=>id_slot_signal,
+			
 		--out
 			instruction_out => id_instruction,
-			pc_out => id_pc
+			pc_out => id_pc,
+			slot_signal_out=>slot_signal
 		);
 
 	registers_entity: Registers
@@ -558,6 +634,7 @@ begin
 			instruction => id_instruction,
 
 		--out
+			slot_signal_out=>id_slot_signal,
 			--pc_source
 			jump_control_signal=> id_jump_control,
 
@@ -849,9 +926,7 @@ begin
 
 	    --out
 	        scan_code_out => ps2_scan_data,
-	        have_data => ps2_have_data,
-
-			  debug_output => led
+	        have_data => ps2_have_data
 	);
 
 	keyboard_entity: Keyboard

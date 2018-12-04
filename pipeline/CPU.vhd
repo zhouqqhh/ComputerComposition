@@ -49,7 +49,8 @@ entity CPU is
 		FlashAddr : out std_logic_vector(22 downto 0);
 		FlashData: inout std_logic_vector(15 downto 0);
 		ps2_clk : in std_logic;
-		ps2_data : in std_logic
+		ps2_data : in std_logic;
+		break_clk: in std_logic
 	);
 end CPU;
 
@@ -60,6 +61,7 @@ architecture Behavioral of CPU is
 			clk_50: in std_logic;
 			clk: in std_logic;
 			rst: in std_logic;
+			break_clk: in std_logic;
 			--clk_debug: in std_logic;
 			vga_r, vga_g, vga_b: out std_logic_vector(2 downto 0);
 			vga_hs, vga_vs : out std_logic;
@@ -98,6 +100,7 @@ begin
 			clk_50 => clk_50,
 			clk=>clk,
 			rst => rst,
+			break_clk=>break_clk,
 			--clk_debug => clk_debug,
 
 			led => led,

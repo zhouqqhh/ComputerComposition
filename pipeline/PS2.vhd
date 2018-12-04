@@ -14,10 +14,10 @@ entity PS2 is
 
     --out
         scan_code_out: out std_logic_vector(7 downto 0);
-        have_data: out std_logic;
+        have_data: out std_logic
 		  
 	 --debug
-		  debug_output: out std_logic_vector(15 downto 0)
+		  --debug_output: out std_logic_vector(15 downto 0)
 	);
 end PS2;
 
@@ -32,7 +32,7 @@ begin
         xor scan_code(4) xor scan_code(5) xor scan_code(6) xor scan_code(7);
     scan_code_out <= scan_code when scan_code_update = '1';
 	 
-    debug_output <= "00000000" & scan_code when scan_code_update = '1';
+    --debug_output <= "00000000" & scan_code when scan_code_update = '1';
 
     --reshape clk according to textbook
     clk1 <= ps2clk_in when rising_edge(clk);

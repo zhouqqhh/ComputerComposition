@@ -173,9 +173,20 @@ package utils is
 			vga_write: std_logic;
 		end record;
 	constant vga_control_zero: vga_control:= (
-		vga_write => '1'
+		vga_write => '0'
 	);
 	
+	type break_control is
+		record
+			break_signal: std_logic;
+			pc_signal: std_logic;
+		end record;
+		
+		constant zero_break_control: break_control := (
+			break_signal => '0',
+			pc_signal => '0'
+		);
+		
 	type point is
 	record
 		x: integer;

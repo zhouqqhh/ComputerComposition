@@ -16,6 +16,7 @@ entity Controller is
         instruction: in std_logic_vector(15 downto 0);
 
     --out
+		slot_signal_out: out std_logic;
         --pc
 		jump_control_signal: out jump_control;
 
@@ -65,6 +66,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "00010" =>  --B
                     jump_control_signal.pc_src <= "01";
                     alu_control_signal.alu_op <= "ZZZ";
@@ -86,7 +88,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "01";
                     jump_control_signal.B_com_chooser <= "ZZ";
-
+						  slot_signal_out <= '1';
                 when "00100" =>  --BEQZ
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "ZZZ";
@@ -107,6 +109,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "10";
                     jump_control_signal.B_com_chooser <= "00";
+						  	slot_signal_out <= '1';
                 when "00101" =>  --BNEZ
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "ZZZ";
@@ -128,7 +131,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "10";
                     jump_control_signal.B_com_chooser <= "01";
-
+						  slot_signal_out <= '1';
                 when "00110" =>
                     case Instruction(1 downto 0) is
                         when "00" =>  --SLL
@@ -151,6 +154,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when "11" =>  --SRA
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "110";
@@ -171,6 +175,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									slot_signal_out <= '0';
                         when others =>
                     end case;
                 when "01000" =>  --ADDIU3
@@ -193,6 +198,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "01001" =>  --ADDIU
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
@@ -213,6 +219,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						   slot_signal_out <= '0';
                 when "01010" =>  --SLTI
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "011";
@@ -233,6 +240,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "01011" =>  --SLTUI
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "011";
@@ -253,6 +261,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "01100" =>
                     case Instruction(10 downto 8) is
                         when "011" =>   --ADDSP
@@ -275,6 +284,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when "000" =>  --BTEQZ
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "ZZZ";
@@ -295,6 +305,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "10";
                             jump_control_signal.B_com_chooser <= "10";
+									 slot_signal_out <= '1';
                         when "110" =>  --MTSP
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "001";
@@ -315,6 +326,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when "001" =>  --BTNEZ
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "ZZZ";
@@ -335,6 +347,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "10";
                             jump_control_signal.B_com_chooser <= "11";
+									 slot_signal_out <= '1';
                         when others =>
                     end case;
                 when "01101" =>  --LI
@@ -357,6 +370,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "10010" =>  --LW_SP
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
@@ -377,6 +391,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "10011" =>  --LW
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
@@ -397,6 +412,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "11010" =>  --SW_SP
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
@@ -417,6 +433,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "11011" =>  --SW
                     jump_control_signal.pc_src <= "00";
                     alu_control_signal.alu_op <= "001";
@@ -437,6 +454,7 @@ begin
                     jump_control_signal.JR_signal <= '0';
                     jump_control_signal.B_signal <= "00";
                     jump_control_signal.B_com_chooser <= "ZZ";
+						  slot_signal_out <= '0';
                 when "11100" =>
                     case Instruction(1 downto 0) is
                         when "01" =>  --ADDU
@@ -459,6 +477,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when "11" =>  --SUBU
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "011";
@@ -479,6 +498,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when others =>
                     end case;
                 when "11101" =>
@@ -503,6 +523,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when "01010" =>  --CMP
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "011";
@@ -523,6 +544,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when "00000" =>
                             case Instruction(7 DOWNTO 5) is
                                 when "000" =>  --JR
@@ -545,6 +567,7 @@ begin
                                     jump_control_signal.JR_signal <= '1';
                                     jump_control_signal.B_signal <= "00";
                                     jump_control_signal.B_com_chooser <= "ZZ";
+												slot_signal_out <= '0';
 
                                 when "010" =>  --MFPC
                                     jump_control_signal.pc_src <= "00";
@@ -566,6 +589,7 @@ begin
                                     jump_control_signal.JR_signal <= '0';
                                     jump_control_signal.B_signal <= "00";
                                     jump_control_signal.B_com_chooser <= "ZZ";
+												slot_signal_out <= '0';
 							    when others =>
                             end case;
                         when "01101" =>  --OR
@@ -588,6 +612,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when "01011" =>  --NEG
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "011";
@@ -608,6 +633,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when "00110" =>  --SRLV
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "111";
@@ -628,6 +654,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when others =>
                     end case;
                 when "11110" =>
@@ -652,6 +679,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when '1' =>  --MTIH
                             jump_control_signal.pc_src <= "00";
                             alu_control_signal.alu_op <= "001";
@@ -672,6 +700,7 @@ begin
                             jump_control_signal.JR_signal <= '0';
                             jump_control_signal.B_signal <= "00";
                             jump_control_signal.B_com_chooser <= "ZZ";
+									 slot_signal_out <= '0';
                         when others => --NOP
 								     jump_control_signal.pc_src <= "00";
 									  alu_control_signal.alu_op <= "ZZZ";
@@ -692,6 +721,7 @@ begin
 									  jump_control_signal.JR_signal <= '0';
 									  jump_control_signal.B_signal <= "00";
 									  jump_control_signal.B_com_chooser <= "ZZ";
+									  slot_signal_out <= '0';
                     end case;
                 when others =>
             end case;

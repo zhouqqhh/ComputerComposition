@@ -12,6 +12,10 @@ entity PC_write is
 		--hazard
 		buble_maker_signal: in std_logic;
 		
+		--int
+		int_pc: in std_logic_vector(15 downto 0);
+		int_signal: in std_logic;
+		
 		--control signal
 		jump_control_signal: in jump_control;
 		
@@ -148,7 +152,11 @@ begin
 		if rst = '0' then
 			pc <= (others=>'0');
 		elsif rising_edge(clk) and buble_maker_signal = '0' then
+			if int_signal = '0' then
 				pc <= pc_cand;
+			else
+				pc <= int_pc;
+			end if;
 		end if;
 	end process;
 
