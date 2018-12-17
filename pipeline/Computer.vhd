@@ -394,8 +394,8 @@ architecture Behavioral of Computer is
 			ram2_control_signal: out ram_control;
 			
 			--vga
-			r, g, b: out std_logic_vector(2 downto 0);
-			hs, vs : out std_logic;
+--			r, g, b: out std_logic_vector(2 downto 0);
+--			hs, vs : out std_logic;
 
 			--flash control
 			FlashByte, FlashVpen : out std_logic;
@@ -410,7 +410,9 @@ architecture Behavioral of Computer is
 		--inout
 			ram1_data: inout std_logic_vector(15 downto 0);
 			ram2_data: inout std_logic_vector(15 downto 0);
-			FlashData: inout std_logic_vector(15 downto 0)
+			FlashData: inout std_logic_vector(15 downto 0);
+			vga_control_sig: out vga_control;
+			input_data_out: out std_logic_vector(15 downto 0)
 
 		--debug
 			--debug_output: out std_logic_vector(15 downto 0)
@@ -450,6 +452,18 @@ architecture Behavioral of Computer is
 			--debug_output: out std_logic_vector(15 downto 0)
 		);
 	end component PS2;
+	
+	component vga_calc is
+		port(
+			clk_50, rst: IN STD_LOGIC;
+			clk: in std_logic;
+			vga_control_signal: in vga_control;
+			data_in: in std_logic_vector(15 downto 0);
+			h_sync, v_sync: OUT STD_LOGIC;  --horiztonal, vertical sync pulse
+			r, g, b: out STD_LOGIC_VECTOR(2 downto 0);
+			mem_addr_in: in std_logic_vector(15 downto 0)
+		);
+	end component vga_calc;
 
 	component Keyboard is
 	port (
@@ -512,6 +526,9 @@ architecture Behavioral of Computer is
 	signal reading_flash: std_logic;
 	
 	--vga
+	signal vga_control_signal: vga_control;
+	signal mem_addr_in: std_logic_vector(15 downto 0);
+	signal input_data_vga: std_logic_vector(15 downto 0);
 
 	--ps2
 	signal ps2_scan_data: std_logic_vector(7 downto 0);
@@ -813,18 +830,20 @@ begin
 			FlashWE => FlashWE,
 			FlashRP => FlashRP,
 			FlashAddr => FlashAddr,
-			r => vga_r,
-			g => vga_g,
-			b => vga_b,
-			hs => vga_hs,
-			vs => vga_vs,
+--			r => vga_r,
+--			g => vga_g,
+--			b => vga_b,
+--			hs => vga_hs,
+--			vs => vga_vs,
 
 			flash_bubble => reading_flash,
 
 		--inout
 			ram1_data => ram1_data,
 			ram2_data => ram2_data,
-			FlashData => FlashData
+			FlashData => FlashData,
+			vga_control_sig => vga_control_signal,
+			input_data_out => input_data_vga
 		--debug
 			--debug_output=>led
 		);
@@ -942,5 +961,20 @@ begin
 			ascii_out => ascii,
 			keyboard_update_out => keyboard_update
 	);
+	
+	vga_calc_entity: vga_calc
+		port map(
+			rst => rst,
+			clk_50 => clk_50,
+			clk=>clk,
+			vga_control_signal => vga_control_signal,
+			data_in => input_data_vga,  -- TODO change this.
+			h_sync => vga_hs,
+			v_sync => vga_vs,
+			r => vga_r,
+			g => vga_g,
+			b => vga_b,
+			mem_addr_in => mem_alu_result
+		);
 
 end Behavioral;
