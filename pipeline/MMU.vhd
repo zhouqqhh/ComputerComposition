@@ -192,6 +192,7 @@ begin
 			ram1_data <= (others => 'Z');
 			ram2_data <= flash_data;
 		elsif mem_control_signal.wb_signal = '1' then  --write
+			vga_control_signal <= vga_control_zero;
 			if mem_addr(15 downto 0) = x"BF00" then  --write serial
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= clk;
@@ -227,7 +228,6 @@ begin
 
 				ram1_data <= input_data;
 				ram2_data <= (others => 'Z');
-				vga_control_signal <= vga_control_zero;
 			else --ram2
 				bus_control_signal.rdn <= '1';
 				bus_control_signal.wrn <= '1';
@@ -240,7 +240,6 @@ begin
 
 				ram1_data <= (others => 'Z');
 				ram2_data <= input_data;
-				vga_control_signal <= vga_control_zero;
 			end if;
 		elsif mem_control_signal.read_signal = '1' then  --read
 			if mem_addr(15 downto 0) = x"BF00" then  --read serial
